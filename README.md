@@ -2,6 +2,10 @@
 
 2024/11/9 update
 
+## 安裝 Docker & Docker-compose
+
+上網裝
+
 ## Execution
 
 把整個專案跑起來，執行
