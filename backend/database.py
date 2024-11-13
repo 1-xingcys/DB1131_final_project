@@ -24,6 +24,11 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
 
 
 
+def db_init() :
+    create_tables(create_table_query)
+    
+    return 0 
+
 
 
 
