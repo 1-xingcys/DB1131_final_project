@@ -7,6 +7,7 @@ from flask_cors import CORS
 # import api file
 from hello import hello_bp
 from search import search_bp
+from authentication import authentication_bp
 
 # import customized library
 from utils import db_init
@@ -14,6 +15,7 @@ from utils import db_init
 app = Flask(__name__)
 app.register_blueprint(hello_bp)
 app.register_blueprint(search_bp)
+app.register_blueprint(authentication_bp)
 CORS(app)
 
 if __name__ == '__main__':
