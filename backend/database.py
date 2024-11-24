@@ -3,11 +3,11 @@ import psycopg2
 import os
 import time
 
-#================================================#
-#測試用，連我自己本機上的db
-with open('/Users/hungpu/113-1/DB/case_study/db_password.txt', 'r') as file:
-    db_password = file.read().strip()
-#=================================================#
+# #================================================#
+# #測試用，連我自己本機上的db
+# with open('/Users/hungpu/113-1/DB/case_study/db_password.txt', 'r') as file:
+#     db_password = file.read().strip()
+# #=================================================#
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -120,11 +120,26 @@ def set_regular_open_time(hours):
         cur.close()
         conn.close()
 
-def select_restaurant_reg_inf() -> list:
+def select_restaurant_reg_info() -> list:
     query = """
-    SELECT * FROM RESTAURANT
+    SELECT r.r_id, r.r_name, r.location, ro.day, ro.open_time, ro.close_time
+    FROM RESTAURANT r
+    LEFT JOIN REGULAR_OPEN_TIME ro ON r.r_id = ro.r_id
     """
-    return execute_select_query(query)
+    rows = execute_select_query(query)
+    restaurant_info = {}
+    for row in rows:
+        r_id, name, location, day, open_time, close_time = row
+        if r_id not in restaurant_info:
+            restaurant_info[r_id] = {
+                'id': r_id,
+                'name': name,
+                'location': location,
+                'mon': '', 'tue': '', 'wed': '', 'thu': '', 'fri': '', 'sat': '', 'sun': ''
+            }
+        if day:
+            restaurant_info[r_id][day.lower()] = f"{open_time}~{close_time}"
+    return list(restaurant_info.values())
 
 def select_meal_item(r_id) -> list:
     query = """
@@ -219,10 +234,12 @@ def db_init() :
     ]
     set_regular_open_time(regular_hours)
 
-    # Example usage of select_restaurant
-    restaurants = select_restaurant()
-    print("Restaurants:", restaurants)
 
+    # Example usage of select_restaurant_reg_info
+    restaurant_info = select_restaurant_reg_info()
+    print(restaurant_info)
+        
+    
     # Example usage of select_meal_item
     meal_items1 = select_meal_item(1)
     print("Meal items for 大水缸:", meal_items1)
@@ -266,12 +283,12 @@ def connect_to_database():
     for i in range(5):
         try:
 
-            # ======================= 測試用 ==================================#
-            conn = psycopg2.connect("dbname = 'project_test' user = 'postgres' host = 'localhost' password = " + db_password)
-            # ===============================================================#
+            # # ======================= 測試用 ==================================#
+            # conn = psycopg2.connect("dbname = 'project_test' user = 'postgres' host = 'localhost' password = " + db_password)
+            # # ===============================================================#
 
             # # 實際上跑的
-            # conn = psycopg2.connect(DATABASE_URL)
+            conn = psycopg2.connect(DATABASE_URL)
             return conn
         except psycopg2.OperationalError:
             print("Database not ready, retrying in 3 seconds...")
