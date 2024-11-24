@@ -3,11 +3,11 @@ import psycopg2
 import os
 import time
 
-# #================================================#
-# #測試用，連我自己本機上的db
-# with open('/Users/hungpu/113-1/DB/case_study/db_password.txt', 'r') as file:
-#     db_password = file.read().strip()
-# #=================================================#
+#================================================#
+#測試用，連我自己本機上的db
+with open('/Users/hungpu/113-1/DB/case_study/db_password.txt', 'r') as file:
+    db_password = file.read().strip()
+#=================================================#
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -45,36 +45,82 @@ def execute_select_query(query, data=None):
         cur.close()
         conn.close()
 
-def add_customer(c_id, name, pwd, phone_no):
+def add_customers(customers):
+    """
+    Insert multiple customers into the CUSTOMER table.
+
+    :param customers: A list of tuples, where each tuple contains (c_id, name, pwd, phone_no)
+    """
     query = """
     INSERT INTO CUSTOMER (c_id, c_name, c_password, c_phone_number) VALUES (%s, %s, %s, %s)
     """
-    data = (c_id, name, pwd, phone_no)
-    execute_query(query, data)
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        cur.executemany(query, customers)
+        conn.commit()
+        print(f"{len(customers)} customers added successfully")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to add customers: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
-def add_restaurant(r_id, name, pwd, location):
+
+def add_restaurants(restaurants):
     query = """
     INSERT INTO RESTAURANT (r_id, r_name, r_password, location) VALUES (%s, %s, %s, %s)
     """
-    data = (r_id,name, pwd, location)
-    execute_query(query, data)
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        cur.executemany(query, restaurants)
+        conn.commit()
+        print(f"{len(restaurants)} restaurants added successfully")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to add restaurants: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
-def add_meal_item(name, r_id, price, processing_time):
+def add_meal_items(meal_items):
     query = """
     INSERT INTO MEAL_ITEM (name, r_id, price, processing_time) VALUES (%s, %s, %s, %s)
     """
-    data = (name, r_id, price, processing_time)
-    execute_query(query, data)
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        cur.executemany(query, meal_items)
+        conn.commit()
+        print(f"{len(meal_items)} meal items added successfully")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to add meal items: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
-def set_regular_hours(r_id, day, open_time, close_time):
+def set_regular_open_time(hours):
     query = """
     INSERT INTO REGULAR_OPEN_TIME (r_id, day, open_time, close_time) VALUES (%s, %s, %s, %s)
     ON CONFLICT (r_id, day) DO UPDATE SET open_time = EXCLUDED.open_time, close_time = EXCLUDED.close_time
     """
-    data = (r_id, day, open_time, close_time)
-    execute_query(query, data)
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        cur.executemany(query, hours)
+        conn.commit()
+        print(f"{len(hours)} regular open time set successfully")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to set regular open times: {e}")
+    finally:
+        cur.close()
+        conn.close()
 
-def select_restaurant() -> list:
+def select_restaurant_reg_inf() -> list:
     query = """
     SELECT * FROM RESTAURANT
     """
@@ -119,31 +165,69 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
 
 def db_init() :
     create_tables(create_table_query)
-    # Example usage of add_customer
-    add_customer("B10303097", "張弘蒲", "B10303097", "0912345678")
-    add_customer("B10705009", "邱一新", "B10705009", "0923456789")
+        # Example usage of add_customers
+    customers = [
+        ("B10303097", "張弘蒲", "B10303097", "0912345678"),
+        ("B10705009", "邱一新", "B10705009", "0923456789"),
+        ('B10302353', 'duoduo', 'duoduo1111', '0934567891')
+    ]
+    add_customers(customers)
 
-    # Example usage of add_restaurant
-    add_restaurant(1, "銀魚", "password3", "小福")
-    add_restaurant(2, "大水缸", "password4", "科技大樓站")
+    # Example usage of add_restaurants
+    restaurants = [
+        (1, "大水缸", "password5", "科技大樓站"),
+        (2, "銀魚", "password3", "小福"),
+        (3, 'Twins手工蛋餅', 'password4', '活大')
+    ]
+    add_restaurants(restaurants)
 
-    # Example usage of add_meal_item
-    add_meal_item("鍋燒意麵", 1, 100, 5)
-    add_meal_item("泡菜意麵",1, 120, 5)
-    add_meal_item("滷味個人餐",1, 50, 2)
-    add_meal_item("椒麻雞套餐", 2, 100, 5)
-    # Example usage of set_regular_hours
-    set_regular_hours(1, 'Mon', '09:00:00', '18:00:00')
-    set_regular_hours(1, 'Tue', '10:00:00', '17:00:00')
+    # Example usage of add_meal_items
+    meal_items = [
+        ("鍋燒意麵", 1, 100, 5),
+        ("泡菜意麵", 1, 120, 5),
+        ("滷味個人餐", 1, 50, 2),
+        ('椒麻雞套餐', 2, 100, 1),
+        ('咖哩雞套餐', 2, 100, 1),
+        ('打拋豬套餐', 2, 100, 1),
+        ('火腿蛋餅', 3, 45, 3),
+        ('鮪魚蛋餅', 3, 50, 3),
+        ('紅茶', 3, 25, 1),
+        ('鮮奶茶', 3, 35, 1)
+    ]
+    add_meal_items(meal_items)
+
+    # Example usage of set_regular_open_time
+    regular_hours = [
+    ('1', 'Mon', '11:00', '19:30'),
+    ('1', 'Tue', '11:00', '19:30'),
+    ('1', 'Wed', '11:00', '19:30'),
+    ('1', 'Thu', '11:00', '19:30'),
+    ('1', 'Fri', '11:00', '19:30'),
+    ('1', 'Sat', '11:00', '15:00'),
+    ('2', 'Mon', '07:00', '14:00'),
+    ('2', 'Tue', '07:00', '14:00'),
+    ('2', 'Wed', '07:00', '14:00'),
+    ('2', 'Thu', '07:00', '14:00'),
+    ('2', 'Fri', '07:00', '14:00'),
+    ('2', 'Sat', '07:00', '14:00'),
+    ('3', 'Mon', '07:00', '14:00'),
+    ('3', 'Tue', '07:00', '14:00'),
+    ('3', 'Wed', '07:00', '14:00'),
+    ('3', 'Thu', '07:00', '14:00'),
+    ('3', 'Fri', '07:00', '14:00'),
+    ('3', 'Sat', '07:00', '14:00'),
+    ]
+    set_regular_open_time(regular_hours)
+
     # Example usage of select_restaurant
     restaurants = select_restaurant()
     print("Restaurants:", restaurants)
 
     # Example usage of select_meal_item
     meal_items1 = select_meal_item(1)
-    print("Meal items for 銀魚:", meal_items1)
+    print("Meal items for 大水缸:", meal_items1)
     meal_items2 = select_meal_item(2)
-    print("Meal items for 大水缸:", meal_items2)
+    print("Meal items for 銀魚:", meal_items2)
 
     # Example usage of submit_order
     order_time = "2024-11-13 12:00:00"
@@ -155,9 +239,9 @@ def db_init() :
     meal_items_order1 = [{"name": meal[0], "number": 3} for meal in meal_items1]
     meal_items_order2 = [{"name": meal[0], "number": 2} for meal in meal_items2]
 
-    submit_order(order_time, expected_time, pick_up_time, True, True, "No 香菜", "B10303097", 1, meal_items_order1)
+    submit_order(order_time, expected_time, pick_up_time, True, True, "蝦換肉", "B10303097", 1, meal_items_order1)
 
-    submit_order(order_time, expected_time, pick_up_time, False, False, "蝦換肉", "B10705009", 2, meal_items_order2)
+    submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10705009", 2, meal_items_order2)
     return 0 
 
 
@@ -182,12 +266,12 @@ def connect_to_database():
     for i in range(5):
         try:
 
-            # # ======================= 測試用 ==================================#
-            # conn = psycopg2.connect("dbname = 'project_test' user = 'postgres' host = 'localhost' password = " + db_password)
-            # # ===============================================================#
+            # ======================= 測試用 ==================================#
+            conn = psycopg2.connect("dbname = 'project_test' user = 'postgres' host = 'localhost' password = " + db_password)
+            # ===============================================================#
 
-            # 實際上跑的
-            conn = psycopg2.connect(DATABASE_URL)
+            # # 實際上跑的
+            # conn = psycopg2.connect(DATABASE_URL)
             return conn
         except psycopg2.OperationalError:
             print("Database not ready, retrying in 3 seconds...")
