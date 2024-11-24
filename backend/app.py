@@ -10,7 +10,7 @@ from search import search_bp
 from authentication import authentication_bp
 
 # import customized library
-from utils import db_init
+from database import db_init
 
 app = Flask(__name__)
 app.register_blueprint(hello_bp)
