@@ -7,6 +7,7 @@ export const authenticate = async (selectedRole, username, password) => {
     const response = await apiCall(`/authentication/${selectedRole}`, "POST", {username, password});
     return response;
   } catch (error) {
+    console.error("Authentication failed:", error.message);
     throw error;
   }
 };

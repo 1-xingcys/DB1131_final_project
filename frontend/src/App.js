@@ -146,7 +146,7 @@ function App() {
         <Route
           path="/CustomerDashboard"
           element={
-            <ProtectedRoute userType={userType} allowedType="Customer">
+            <ProtectedRoute userType={userType} allowedType="customer">
               <CustomerDashboard onLogout={handleLogout} /> {/* children of ProtectedRoute.js*/}
             </ProtectedRoute>
           }
@@ -154,7 +154,7 @@ function App() {
         <Route
           path="/RestaurantDashboard"
           element={
-            <ProtectedRoute userType={userType} allowedType="Restaurant">
+            <ProtectedRoute userType={userType} allowedType="restaurant">
               <RestaurantDashboard onLogout={handleLogout} />
             </ProtectedRoute>
           }
@@ -162,7 +162,7 @@ function App() {
         <Route
           path="/AdminDashboard"
           element={
-            <ProtectedRoute userType={userType} allowedType="Admin">
+            <ProtectedRoute userType={userType} allowedType="admin">
               <AdminDashboard onLogout={handleLogout} />
             </ProtectedRoute>
           }

@@ -22,48 +22,43 @@ function LoginPage({ onLogin }) {
   };
 
    // 處理登入按鈕點擊
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!username || !password) {
       setErrorMessage("請輸入帳號和密碼！");
       return;
     }
 
-    // 暫時的模擬身份驗證
-    if (username !== "B10705009" || password !== "1234567Chiu") {
-      setErrorMessage("密碼錯誤！");
-      return;
+    console.log("call api");
+
+    try {
+      const response = await authenticate(selectedRole, username, password);
+      console.log("Authentication successful:", response);
+      onLogin(selectedRole, username);
+    } catch (error) {
+      console.error("Error during authentication:", error.message);
+      setErrorMessage("帳號不存在或密碼錯誤！");
     }
-
-    // try {
-    //   // 調用後端 API 進行身份驗證
-    //   const { token, user } = authenticate(selectedRole, username, password);
-
-    //   // 模擬登入成功，回傳身份
-    //   onLogin(selectedRole);
-    // } catch (error) {
-    //   setErrorMessage(error.message || "登入失敗");
-    // }
-
-    onLogin(selectedRole, username);
+    // onLogin(selectedRole, username);
   };
 
 
   return (
     <div>
+      <h1>Login Page</h1>
+
+      {/* 下拉選單選擇身份 */}
+      <div>
+        <label htmlFor="role-select">選擇登入身份：</label>
+        <select id="role-select" value={selectedRole} onChange={handleRoleSelect}>
+          <option value="">-- 請選擇身份 --</option>
+          <option value="admin">Admin</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="customer">Customer</option>
+        </select>
+      </div>
+
       <form onSubmit={handleSubmit}>
-        <h1>Login Page</h1>
-
-        {/* 下拉選單選擇身份 */}
-        <div>
-          <label htmlFor="role-select">選擇登入身份：</label>
-          <select id="role-select" value={selectedRole} onChange={handleRoleSelect}>
-            <option value="">-- 請選擇身份 --</option>
-            <option value="Admin">Admin</option>
-            <option value="Restaurant">Restaurant</option>
-            <option value="Customer">Customer</option>
-          </select>
-        </div>
-
         
         {/* 輸入帳號與密碼 */}
         {selectedRole && (

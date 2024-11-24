@@ -8,19 +8,38 @@ authentication_bp = Blueprint('authentication',__name__)
 # function with some paremeters
 @authentication_bp.route('/authentication/customer', methods=['POST'])
 def authentication_customer():
-    # TODO
-    pass
+    data = request.json
+    c_id = data.get('username')
+    pwd = data.get('password')
+
+    if not c_id or not pwd:
+        return jsonify({"error": "Missing c_id or password"}), 400
+
+    is_valid = check_customer(c_id, pwd)
+    if is_valid:
+        return jsonify({"message": "Customer authenticated successfully"}), 200
+    else:
+        return jsonify({"error": "Invalid customer credentials"}), 401
 
 
 @authentication_bp.route('/authentication/restaurant', methods=['POST'])
 def authentication_restaurant():
-    # TODO
-    pass
+    data = request.json
+    r_id = data.get('username')
+    pwd = data.get('password')
+
+    if not r_id or not pwd:
+        return jsonify({"error": "Missing r_id or password"}), 400
+
+    is_valid = check_restaurant(r_id, pwd)
+    if is_valid:
+        return jsonify({"message": "Restaurant authenticated successfully"}), 200
+    else:
+        return jsonify({"error": "Invalid restaurant credentials"}), 401
 
 
 
 def check_customer(c_id, pwd) -> bool :
-    # TODO
     psql_conn = connect_to_database()
     cur = psql_conn.cursor()
 
@@ -35,19 +54,18 @@ def check_customer(c_id, pwd) -> bool :
     cur.execute(add_customer_query, (c_id, pwd))
 
     # get the res
-    result = cur.fetchone()
+    result = cur.fetchone()[0]
 
     cur.close()
     psql_conn.close()
-
-    if result is not None:
+    
+    if result:
         return True
     else:
         return False
 
 
 def check_restaurant(r_id, pwd) -> bool :
-    # TODO
     psql_conn = connect_to_database()
     cur = psql_conn.cursor()
 
@@ -61,12 +79,12 @@ def check_restaurant(r_id, pwd) -> bool :
     '''
     cur.execute(check_restaurant_query, (r_id, pwd))
 
-    result = cur.fetchone()
+    result = cur.fetchone()[0]
 
     cur.close()
     psql_conn.close()
 
-    if result is not None:
+    if result:
         return True
     else:
         return False
