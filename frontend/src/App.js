@@ -115,7 +115,7 @@ function App() {
   // 處理登入
   const handleLogin = (type, name) => {
     setUserType(type);
-    setUsername(name)
+    setUsername(name);
     localStorage.setItem("userType", type);
     localStorage.setItem("username", name);
   };

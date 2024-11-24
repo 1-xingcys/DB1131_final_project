@@ -5,16 +5,11 @@ import OrderForm from "./Customer/orderBody";
 
 function CustomerDashboard({ onLogout }) {
   const [view, setView] = useState("");
-  const [selectedRest, setSelectedRest] = useState("");
 
 
   const handleViewChange = (newView) => {
     setView(newView);
   };
-
-  const handleRestSelect = (e) => {
-    setSelectedRest(e.target.value);
-  }
 
 
   return (
