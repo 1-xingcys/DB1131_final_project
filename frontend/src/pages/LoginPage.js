@@ -1,5 +1,8 @@
 import React, {useState} from "react";
+
+// 我已經模組化過的的 API 介面
 import { authenticate } from "../api/auth";
+import { getName } from "../api/getName";
 
 // This page has a parameter, a function 'onlogin()' defined in App.js
 function LoginPage({ onLogin }) {
@@ -12,7 +15,6 @@ function LoginPage({ onLogin }) {
   ) ;// 保存帳號
   const [password, setPassword] = useState("");         // 保存密碼
   const [errorMessage, setErrorMessage] = useState(""); // 錯誤提示
-  // const [response, setResponse] = useState("");
 
 
   // 處理身份選擇
@@ -24,22 +26,29 @@ function LoginPage({ onLogin }) {
    // 處理登入按鈕點擊
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!username || !password) {
       setErrorMessage("請輸入帳號和密碼！");
       return;
     }
 
-    console.log("call api");
-
+    // 會確認身份是否正確以及取得使用者名字，總共 call 兩個 API
     try {
       const response = await authenticate(selectedRole, username, password);
       console.log("Authentication successful:", response);
+      try {
+        const response = await getName(username);
+        localStorage.setItem("name", response.name);
+        console.log("get name successful", response);
+      } catch (error) {
+        console.log("get name failed :", error.message);
+      }
+      // 呼叫從 App.js 傳來的處理登入的函式
       onLogin(selectedRole, username);
     } catch (error) {
       console.error("Error during authentication:", error.message);
       setErrorMessage("帳號不存在或密碼錯誤！");
     }
-    // onLogin(selectedRole, username);
   };
 
 

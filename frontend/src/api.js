@@ -1,4 +1,5 @@
-// src/api.js
+// 這個檔案用來模組化 API 呼叫，把一些 HTTP request 需要的內容封裝起來
+// 會被 src/api/ 中的 .js 檔使用
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 // 通用的 API 函數

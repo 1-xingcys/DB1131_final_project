@@ -1,144 +1,56 @@
-// import React, { useState } from 'react';
+// App.js 整個網頁的主程式
 
-// const DataTable = ({ column, table }) => {
-//   return (
-//     <table border="1">
-//       <thead>
-//         <tr>
-//           {column.map((col, index) => (
-//             <th key={index}>{col}</th>
-//           ))}
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {table.map((row, rowIndex) => (
-//           <tr key={rowIndex}>
-//             {row.map((cell, cellIndex) => (
-//               <td key={cellIndex}>{cell}</td>
-//             ))}
-//           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-//   );
-// };
-
-
-// function App() {
-//   const [message, setMessage] = useState('加载中...');
-  
-//   const [sqlinput, setSqlInput] = useState('');  // 用户输入
-//   const [data, setData] = useState({ 'column' : [], 'table' : [] })
-
-//   // 加载初始数据
-//   React.useEffect(() => {
-//     console.log("backend url is")
-//     console.log(process.env.REACT_APP_BACKEND_URL)
-//     fetch(`${process.env.REACT_APP_BACKEND_URL}/api/hello`)
-//       .then(response => response.json())
-//       .then(data => setMessage(data.message))
-//       .catch(error => console.error('错误:', error));
-//   }, []);
-
-//   // 处理表单提交
-//   const handleSearchSubmit = (e) => {
-//     e.preventDefault();
-//     fetch(`${process.env.REACT_APP_BACKEND_URL}/api/search`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({ sqlinput })
-//     })
-//     .then(response => response.json())
-//     .then(responseData => setData(responseData))
-//     .catch(error => console.error('错误:', error));
-
-//     console.log(typeof data.column)
-//     console.log(data.column)
-//     console.log(typeof data.table)
-//     console.log(data.table)
-//   };
-
-//   const handleClear = () => {
-//     setData({ 'column' : [], 'table' : [] })
-//     setSqlInput('')
-//   }
-
-//   return (
-//     <div>
-//       <h1>DB Final Project Frontend / Backend Test</h1>
-//       <p>{message}</p>
-
-//       <form onSubmit={handleSearchSubmit}>
-//         <input
-//           type="text"
-//           value={sqlinput}
-//           onChange={(e) => setSqlInput(e.target.value)}
-//           placeholder="輸入 sql 指令"
-//         />
-//         <button type="submit">Enter</button>
-//       </form>
-
-//       {/* {data.column && <p>query success</p>}  顯示後端回應 */}
-
-//       {data.column && <DataTable column={data.column} table={data.table} />}
-
-//       <button type="clear" onClick={handleClear}>clear</button>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-
-import React, { useState, useEffect } from "react";
+// 引入套件、跟其它 .js 寫的函式，這裡跟後端使用其它檔案實作的函式的概念很像
+// 比較重要的差別是，這些 .js 檔函式的回傳值通常是網頁元素的 Component，可以想成是螢幕該有的畫面的一部分
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AdminDashboard from "./pages/AdminDashboard";
-import RestaurantDashboard from "./pages/RestaurantDashboard";
-import CustomerDashboard from "./pages/CustomerDashboard";
+import LoginPage from "./pages/LoginPage"; // 一開始看到的登入畫面
+import ProtectedRoute from "./components/ProtectedRoute"; // 路由檢查，防一些不預期的事情（上網查）
+import AdminDashboard from "./pages/AdminDashboard"; // admin 的已登入畫面
+import RestaurantDashboard from "./pages/RestaurantDashboard"; // restaurant 的已登入畫面
+import CustomerDashboard from "./pages/CustomerDashboard"; // customer 的已登入畫面
 
 
 function App() {
-  // 初始化狀態時檢查 LocalStorage
+  // 初始化一個「狀態變數」，初始值為全域變數 "userType" 的值
+  // 可以上網暸解 useState 狀態變數的功用
   const [userType, setUserType] = useState(
     localStorage.getItem("userType") || null
   );
-  const [username, setUsername] = useState(
-    localStorage.getItem("username") || ""
-  )
 
-
-  // 處理登入
+  // 處理登入的函式，會當成參數傳給 pages/LoginPage.js，當身份驗證成功時會被呼叫
   const handleLogin = (type, name) => {
+    // 參數為使用者的類別（Customer, restaurant, admin）跟名字
     setUserType(type);
-    setUsername(name);
     localStorage.setItem("userType", type);
     localStorage.setItem("username", name);
   };
 
-  // 處理登出
+  // 處理登出，會當成當參數傳給 pages/[userType]Dashboard.js，會連接到某個登出按鈕的點擊事件
   const handleLogout = () => {
     setUserType(null)
-    setUsername("")
-    localStorage.removeItem("userType");
     localStorage.removeItem("username");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("name");
   };
 
+
+  // 一個網頁程式的回傳值為一整坨像是 HTML 的東西，定義了螢幕上應該出現的樣子，
+  // 但這個檔案的回傳值使用了 "react-router-dom" 套件，所以回傳值功能稍微不同。
+  // 以下的邏輯大概是:
+  // 如果使用者的類別為 A，那就印出 [A]Dashboard.js 的內容，
+  // 如果為 null，就印出 LoginPage.js 的內容
   return (
     <Router>
       <Routes>
         {/* 登入頁面 */}
         <Route
-          path="/login"
+          path="/login" // 定義網址後面的路徑
           element={
             userType ? (
               <Navigate to={`/${userType}Dashboard`} replace />
             ) : (
-              <LoginPage onLogin={handleLogin} />
+              <LoginPage onLogin={handleLogin} /> // 把登入函數傳給 LoginPage
             )
           }
         />
@@ -147,7 +59,7 @@ function App() {
           path="/CustomerDashboard"
           element={
             <ProtectedRoute userType={userType} allowedType="customer">
-              <CustomerDashboard onLogout={handleLogout} /> {/* children of ProtectedRoute.js*/}
+              <CustomerDashboard onLogout={handleLogout} /> {/* 把登出函數傳給 CustomerDashboard */}
             </ProtectedRoute>
           }
         />

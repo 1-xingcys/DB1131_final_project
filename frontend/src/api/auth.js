@@ -1,4 +1,4 @@
-// src/api/auth.js
+// 模組化身份驗證的 API，把 API 呼叫封裝成一般的函式
 import { apiCall } from "../api";
 
 
