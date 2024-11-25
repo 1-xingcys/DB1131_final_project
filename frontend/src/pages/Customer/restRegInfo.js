@@ -1,15 +1,23 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
+import { getRestRegInfo } from "../../api/restRegInfo";
 
 function RestRegInfo() {
-  const [info, setInfo] = useState([
-    {id: 0, name : "銀魚", location : "小福", 
-      mon : "11:00~19:00", tue : "11:00~19:00", wed : "11:00~19:00", 
-      thu : "11:00~19:00", fri : "11:00~19:00", sat : "11:00~19:00", sun : ""},
-    {id: 1, name : "大水缸", location : "科技大樓", 
-      mon : "10:00~21:30", tue : "10:00~21:30", wed :"10:00~21:30", 
-      thu : "10:00~21:30", fri : "10:00~21:30", sat : "10:00~21:30", sun : "10:00~21:30"},
-  ])
+  const [info, setInfo] = useState([]);
   const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getRestRegInfo();
+        setInfo(response);
+        console.log("get restaurant regular info successful", response);
+      } catch (error) {
+        console.log("get restaurant regular info failed :", error.message);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   return (
     <div>
