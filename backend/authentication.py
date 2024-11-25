@@ -3,8 +3,6 @@ from flask import jsonify, request, Blueprint
 from database import connect_to_database
 authentication_bp = Blueprint('authentication',__name__)
 
-
-
 """"
 API Interface for Authentication
 """
@@ -42,8 +40,6 @@ def authentication_restaurant():
         return jsonify({"message": "Restaurant authenticated successfully"}), 200
     else:
         return jsonify({"error": "Invalid restaurant credentials"}), 401
-
-
 
 """"
 Internal Function
@@ -98,10 +94,4 @@ def check_restaurant(r_id, pwd) -> bool :
         return True
     else:
         return False
-    
-
-
-
-
-    
-
+  
