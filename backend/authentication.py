@@ -5,12 +5,18 @@ authentication_bp = Blueprint('authentication',__name__)
 
 
 
-# function with some paremeters
+""""
+API Interface for Authentication
+"""
+
 @authentication_bp.route('/authentication/customer', methods=['POST'])
 def authentication_customer():
+    #####################################################
+    # Using Flask.request to get paremeters from frontend
     data = request.json
     c_id = data.get('username')
     pwd = data.get('password')
+    #####################################################
 
     if not c_id or not pwd:
         return jsonify({"error": "Missing c_id or password"}), 400
@@ -38,6 +44,10 @@ def authentication_restaurant():
         return jsonify({"error": "Invalid restaurant credentials"}), 401
 
 
+
+""""
+Internal Function
+"""
 
 def check_customer(c_id, pwd) -> bool :
     psql_conn = connect_to_database()
