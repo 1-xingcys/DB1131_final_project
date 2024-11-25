@@ -36,12 +36,14 @@ function LoginPage({ onLogin }) {
     try {
       const response = await authenticate(selectedRole, username, password);
       console.log("Authentication successful:", response);
-      try {
-        const response = await getName(username);
-        localStorage.setItem("name", response.name);
-        console.log("get name successful", response);
-      } catch (error) {
-        console.log("get name failed :", error.message);
+      if (selectedRole === "customer"){
+        try {
+          const response = await getName(username);
+          localStorage.setItem("name", response.name);
+          console.log("get name successful", response);
+        } catch (error) {
+          console.log("get name failed :", error.message);
+        }
       }
       // 呼叫從 App.js 傳來的處理登入的函式
       onLogin(selectedRole, username);

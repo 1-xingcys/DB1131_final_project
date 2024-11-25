@@ -3,6 +3,7 @@
 2024/11/25 update by 1xing
 
 * 新增前端程式碼註解，從 `App.js` 開始看才看的懂
+* 更改後端程式的檔案架構，如群組所述
 * 新增 `customerApi.py` 裡面定義所有 customer 使用者會用到的 api，目前包含昨天討論做的 `/restaurant/info/regular` 和剛剛我自己新增的 `/customer/cname`
   *  `/customer/cname` api，讓使用者用 id, passwd 登入之後，前端能知道使用者的 name。
 * 更改整個專案的執行方式：

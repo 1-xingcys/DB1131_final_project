@@ -1,6 +1,7 @@
 # authentication
 from flask import jsonify, request, Blueprint
-from database import connect_to_database
+from databaseInit import connect_to_database
+
 authentication_bp = Blueprint('authentication',__name__)
 
 """"

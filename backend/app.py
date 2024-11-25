@@ -1,19 +1,24 @@
-# This the main file of backend
+""""
+Main File Of Backend
+"""
 
-# Library
 from flask import Flask
 from flask_cors import CORS
 
 # import api file
-from authentication import authentication_bp
-from customerApi import CustomerApi_bp
+from ApiAuthentication import authentication_bp
+from ApiCustomer import CustomerApi_bp
+from ApiAdmin import AdminApi_bp
+from ApiRestaurant import RestaurantApi_bp
 
 # import customized library
-from database import db_init
+from databaseInit import db_init
 
 app = Flask(__name__)
 app.register_blueprint(authentication_bp)
 app.register_blueprint(CustomerApi_bp)
+app.register_blueprint(AdminApi_bp)
+app.register_blueprint(RestaurantApi_bp)
 CORS(app)
 
 if __name__ == '__main__':
