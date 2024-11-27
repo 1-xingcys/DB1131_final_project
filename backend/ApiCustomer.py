@@ -1,4 +1,3 @@
-# Library
 from flask import jsonify, request, Blueprint
 from databaseInit import connect_to_database
 from databaseUtils import execute_select_query
@@ -25,6 +24,39 @@ def GetCName() :
   else :
     return jsonify({"error": "Customer name does not exist"}), 401
 
+@CustomerApi_bp.route('/restaurant/name/regular', methods=['GET'])
+def Rest_name() :
+    result = select_restaurant_name()
+    return jsonify(result)
+
+
+@CustomerApi_bp.route('/restaurant/meal_item/regular', methods=['POST'])
+def A_rest_meal_item() :
+    data = request.json
+    r_id = data.get('id')
+    result = select_restaurant_meal_item(r_id)
+    return jsonify(result)
+
+@CustomerApi_bp.route('/customer/submit/order', methods=['POST'])
+def Submit_order() :
+    data = request.json
+    order_time = data.get('order_time')
+    expected_time = data.get('expected_time')
+    pick_up_time = data.get('pick_up_time')
+    eating_utensil = bool(data.get('eating_utensil'))
+    plastic_bag = bool(data.get('plastic_bag'))
+    note = data.get('note')
+    c_id = data.get('c_id')
+    r_id = int(data.get('r_id'))
+    meal_items = data.get('meal_items')
+    print(type(meal_items))
+    print(meal_items, flush=True)
+    
+    submit_order(order_time, expected_time, pick_up_time, \
+                 eating_utensil, plastic_bag, note, c_id, r_id, meal_items)
+    
+    return jsonify({"result" : "success"}), 200
+    
 
 @CustomerApi_bp.route('/customer/past_orders', methods=['POST'])
 def Get_past_orders():
@@ -63,7 +95,9 @@ def getCName(c_id) :
       return result[0]
   else:
       return None
-    
+  
+  
+# meal_item : [{'name' : name, 'number' : number}, {}, ...]
 def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id, meal_items: list) -> None:
     conn = connect_to_database()
     cur = conn.cursor()
@@ -86,11 +120,11 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
             cur.execute(meal_item_query, (meal['name'], o_id, r_id, meal['number']))
 
         conn.commit()
-        print("Order submitted successfully")
+        print("Order submitted successfully", flush=True)
 
     except Exception as e:
         conn.rollback()
-        print(f"Failed to submit order: {e}")
+        print(f"Failed to submit order: {e}", flush=True)
     finally:
         cur.close()
         conn.close()
@@ -121,6 +155,37 @@ def select_restaurant_reg_info() -> list:
       if day:
           restaurant_info[r_id][day.lower()] = f"{open_time}~{close_time}"
   return list(restaurant_info.values())
+
+def select_restaurant_name() -> list :
+    query = """
+    SELECT r_id, r_name
+    FROM RESTAURANT
+    """
+    rows = execute_select_query(query)
+    res = {}
+    for row in rows :
+        r_id, r_name = row
+        res[r_id] = {
+            'id' : r_id,
+            'name' : r_name
+        }
+    return list(res.values())
+
+def select_restaurant_meal_item(r_id) -> list :
+    query = """
+    SELECT name, price, processing_time
+    FROM MEAL_ITEM WHERE r_id = %s
+    """
+    rows = execute_select_query(query, (r_id,))
+    res = {}
+    for row in rows :
+        name, price, processing_time = row
+        res[name] = {
+            'name' : name,
+            'price' : price,
+            'processing_time' : processing_time
+        }
+    return list(res.values())
 
 
 def select_past_order(c_id) -> list:

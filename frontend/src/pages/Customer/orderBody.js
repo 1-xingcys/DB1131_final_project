@@ -1,28 +1,36 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import OrderDetailsForm from "./orderNoteForm";
+import { getRestName } from "../../api/restNames";
+import { getRestMealItem } from "../../api/restMealItem";
+import { submitOrder } from "../../api/submitOrder";
 
 function OrderForm(){
-  const [info, setInfo] = useState([
-    {id: 0, name : "銀魚", 
-      meal : [
-        {name: "椒麻雞", price: 100},
-        {name: "咖哩雞", price: 100}
-        ]
-    },
-    {id: 1, name : "大水缸",
-      meal : [
-        {name: "鍋燒意麵", price: 100},
-        {name: "泡菜意麵", price: 120},
-        {name: "滷味個人餐", price: 50}
-        ]
-    }
-  ]);
+  const [restNames, setrestName] = useState([]);
+  const [mealItemsForChosen, setMealItemsForChosen] = useState([
+    {name: "椒麻雞", price: 100, processing_time : 1},
+    {name: "咖哩雞", price: 100, processing_time : 3}
+  ])
+
   const [shoppingCart, setShoppingCart] = useState([]);
   const [selectedRest, setSelectedRest] = useState("");
   const [orderInfo, setOrderInfo] = useState(
     {eating_utensil : false, plastic_bag : false, note : ""}
   );
   const [checkCart, setCheckCart] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getRestName();
+        setrestName(response);
+        console.log("get restaurant names successful", response);
+      } catch (error) {
+        console.log("get restaurant names failed :", error.message);
+      }
+    };
+
+    fetchData();
+    }, []);
 
   // 更新購物車
   const handleAddToCart = (meal, quantity) => {
@@ -46,6 +54,8 @@ function OrderForm(){
 
   const handleRestSelect = (e) => {
     setSelectedRest(e.target.value);
+    console.log("select restaurant is : ", e.target.value);
+    updateMealItems(e.target.value);
   }
 
   const handleOrderInfoChange = (updatedInfo) => {
@@ -56,21 +66,32 @@ function OrderForm(){
     setCheckCart(!checkCart);
   }
 
-
-  // 使用者要訂的那間餐廳
-  const selectedRestaurant = info.find(
-    (rest) => rest.name === selectedRest
-  );
+  const updateMealItems = async (r_id) => {
+    try {
+      const response = await getRestMealItem(r_id);
+      setMealItemsForChosen(response);
+      console.log("update meal items successful", response);
+    } catch(error) {
+      console.log("update meal item fail: ", error.message);
+    }
+  };
 
   const handleSubmit = () => {
+    const order_processing_time = shoppingCart.reduce((total, item) => {return total += item.processing_time * item.quantity}, 0);
+    const mealItems = shoppingCart.map((item) => ({name : item.name, number : item.quantity }));
+
     console.log(shoppingCart.map((item) => (
        `${item.name} : ${item.quantity} = $${item.price * item.quantity}`
-    )))
+    )));
     console.log(`需要餐具：${orderInfo.eating_utensil ? "是" : "否"}`,
       `需要塑膠袋：${orderInfo.plastic_bag ? "是" : "否"}`,
       `備註：${orderInfo.note || "無"}`)
-
+    console.log(`預計備餐時間 ＝ ${order_processing_time}`);
     console.log(`總金額 = $${shoppingCart.reduce((total, item) => {return total += item.price * item.quantity}, 0)}`)
+
+    submitOrder(order_processing_time, orderInfo.eating_utensil, 
+      orderInfo.plastic_bag, orderInfo.note, 
+      localStorage.getItem("username"), selectedRest, mealItems);
 
     setShoppingCart([]);
     setOrderInfo([]);
@@ -88,8 +109,8 @@ function OrderForm(){
       <label htmlFor="order-rest-select">選擇餐廳：</label>
       <select id="order-rest-select" value={selectedRest} onChange={handleRestSelect}>
         <option value="">-- 請選擇餐廳 --</option>
-        {info.map((restaurant) => (
-          <option key={restaurant.id} value={restaurant.name}>
+        {restNames.map((restaurant) => (
+          <option key={restaurant.id} value={restaurant.id}>
             {restaurant.name}
           </option>
         ))}
@@ -100,9 +121,9 @@ function OrderForm(){
       {selectedRest && <div>
         <p>請選擇您想要的餐點：</p>
         <ul>
-          {selectedRestaurant.meal.map((meal) => (
+          {mealItemsForChosen.map((meal) => (
             <li key={meal.name}>
-              {meal.name} - ${meal.price}
+              {meal.name} - ${meal.price} 
               <input
                 type="number"
                 min="0"
@@ -111,6 +132,7 @@ function OrderForm(){
                   handleAddToCart(meal, parseInt(e.target.value, 10) || 0)
                 }
               />
+              （製作時間約 ${meal.processing_time} 分鐘）
             </li>
           ))}
         </ul>
