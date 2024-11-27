@@ -1,11 +1,21 @@
 from flask import jsonify, request, Blueprint
 from databaseInit import connect_to_database
+from databaseUtils import execute_select_query
 
 RestaurantApi_bp = Blueprint('restaurantApi', __name__)
 
 """"
 API Interface for Restaurant
 """
+@RestaurantApi_bp.route('/restaurant/past/order', methods=['POST'])
+def Rest_Past_Order():
+    data = request.json
+    r_id = data.get('r_id')
+    if not r_id:
+        return jsonify({"error": "Missing required parameter 'r_id'"}), 400
+    result = select_past_order(r_id)
+    return jsonify(result)
+
 
 """"
 Internal Function
@@ -45,3 +55,43 @@ def add_meal_items(meal_items):
     finally:
         cur.close()
         conn.close()
+
+
+def select_past_order(r_id):
+    query = """
+    SELECT *
+    FROM "ORDER"
+    WHERE r_id = %s
+    ORDER BY o_id
+    """
+    rows = execute_select_query(query, str(r_id))
+
+    # 查詢每筆訂單的餐點資訊
+    query_meals = """
+    SELECT o_id, "name", "number"
+    FROM INCLUDE_MEAL_IN_ORDER
+    WHERE o_id = %s
+    """
+
+    past_order = {}
+    for row in rows:
+        o_id, order_time, expected_time, pick_up_time, \
+        eating_utensil, plastic_bag, note, c_id, starnum, review, r_id = row
+
+        meal_rows = execute_select_query(query_meals, str(o_id))
+        meals = [{"meal_name": meal_name, "quantity": quantity} for _, meal_name, quantity in meal_rows]
+
+        past_order[r_id] = {
+            'id': o_id,
+            'order_time': order_time,
+            'expected_time': expected_time, 
+            'finish_time': pick_up_time,
+            'eating_utensil': eating_utensil,
+            'plastic_bag': plastic_bag,
+            'note': note,
+            'c_id': c_id,
+            'starnum': starnum,
+            'review': review,
+            'meals': meals 
+        }
+    return list(past_order.values())
