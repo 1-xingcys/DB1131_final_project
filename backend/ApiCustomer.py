@@ -201,8 +201,8 @@ def select_past_order(c_id) -> list:
     for row in rows:
         (o_id, order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, r_id, meal_name, meal_number) = row
         if o_id not in past_orders:
-            query = f"SELECT r_id FROM restaurant AS r WHERE r = {r_id}"
-            r_name = execute_select_query(query)
+            query1 = f"SELECT r_name FROM restaurant AS r WHERE r_id = {r_id}"
+            r_name = execute_select_query(query1)[0][0]
             past_orders[o_id] = {
                 'order_id': o_id,
                 'order_time': order_time,
