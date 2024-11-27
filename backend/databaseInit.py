@@ -83,10 +83,12 @@ def db_init() :
     # Creating meal_items list for orders, ensuring correct format
     meal_items_order1 = [{"name": meal[0], "number": 3} for meal in meal_items1]
     meal_items_order2 = [{"name": meal[0], "number": 2} for meal in meal_items2]
-
+    meal_item_order3 = [{"name": "椒麻雞套餐","number": 2}]
     submit_order(order_time, expected_time, pick_up_time, True, True, "蝦換肉", "B10303097", 1, meal_items_order1)
 
     submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10705009", 2, meal_items_order2)
+    submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10303097", 2, meal_item_order3)
+
     return 0 
 
 

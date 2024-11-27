@@ -19,11 +19,23 @@ def GetCName() :
   data = request.json
   c_id = data.get('username')
   name = getCName(c_id)
-  
+
   if name :
     return jsonify({"name": name}), 200
   else :
     return jsonify({"error": "Customer name does not exist"}), 401
+
+
+@CustomerApi_bp.route('/customer/past_orders', methods=['POST'])
+def Get_past_orders():
+    data = request.json
+    c_id = data.get('c_id')
+    # 呼叫select_past_order
+    past_orders = select_past_order(c_id)
+    if past_orders:
+        return jsonify({"past_orders": past_orders}), 200
+    else:
+        return jsonify({"error": "No past orders found for this customer"}), 404
 
 
 """"
@@ -109,3 +121,34 @@ def select_restaurant_reg_info() -> list:
       if day:
           restaurant_info[r_id][day.lower()] = f"{open_time}~{close_time}"
   return list(restaurant_info.values())
+
+
+def select_past_order(c_id) -> list:
+    query = """
+    SELECT o.o_id, o.order_time, o.expected_time, o.pick_up_time, o.eating_utensil, o.plastic_bag, o.note, o.r_id, imo.name, imo.number
+    FROM "ORDER" o
+    LEFT JOIN INCLUDE_MEAL_IN_ORDER imo ON o.o_id = imo.o_id
+    WHERE o.c_id = %s
+    ORDER BY o.order_time DESC
+    """
+    rows = execute_select_query(query, (c_id,))
+    past_orders = {}
+    for row in rows:
+        (o_id, order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, r_id, meal_name, meal_number) = row
+        if o_id not in past_orders:
+            query = f"SELECT r_id FROM restaurant AS r WHERE r = {r_id}"
+            r_name = execute_select_query(query)
+            past_orders[o_id] = {
+                'order_id': o_id,
+                'order_time': order_time,
+                'expected_time': expected_time,
+                'pick_up_time': pick_up_time,
+                'eating_utensil': eating_utensil,
+                'plastic_bag': plastic_bag,
+                'note': note,
+                'restaurant_name': r_name,
+                'meals': []
+            }
+        if meal_name:
+            past_orders[o_id]['meals'].append({'name': meal_name, 'number': meal_number})
+    return list(past_orders.values())
