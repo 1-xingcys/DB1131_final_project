@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getCustomerAvailCoupons } from "../../api/customerAvailCoupons.js";
+import { getCustomerAvailCoupons } from "../../api/getCustAvailCoupons";
 
 function CustomerAvailCoupons() {
   const [coupons, setCoupons] = useState([]);

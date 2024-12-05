@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react"
-import { getCustomerPastOrder } from "../../api/customerPastOrder";
+import { getCustomerPastOrder } from "../../api/getCustPastOrder";
 
 function CustomerPastOrders() {
     const [orders, setOrders] = useState([]);
