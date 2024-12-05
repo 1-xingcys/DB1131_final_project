@@ -19,7 +19,7 @@ function RestaurantDashboard({ onLogout }) {
   useEffect(() => {
     const fetchClockInStatus = async () => {
       try {
-        const r_id = sessionStorage.getItem("r_id"); // 假設 r_id 存儲在 sessionStorage 中
+        const r_id = sessionStorage.getItem("username"); // 假設 r_id 存儲在 sessionStorage 中
         const response = await check_clock_in_status(r_id); // 調用查詢 API
         setIsClockedIn(response.isClockedIn); // 根據 API 返回值更新狀態
       } catch (error) {
