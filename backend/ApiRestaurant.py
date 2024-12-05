@@ -1,4 +1,6 @@
 from flask import jsonify, request, Blueprint
+from datetime import datetime, timezone
+from pytz import timezone
 from databaseInit import connect_to_database
 from databaseUtils import execute_select_query
 
@@ -27,6 +29,53 @@ def Rest_Past_Order():
         return jsonify({"error": "Missing required parameter 'r_id'"}), 400
     result = select_past_order(r_id)
     return jsonify(result)
+
+@RestaurantApi_bp.route('/restaurant/clock/in', methods=['POST'])
+def Clock_In():
+    data = request.json
+    r_id = data.get('r_id')
+    if not r_id:
+        return jsonify({"error": "Missing required parameter 'r_id'"}), 400
+    current = add_clock_in(r_id)
+    return jsonify({"message": f"Clock In at {current}!"}), 200
+
+@RestaurantApi_bp.route('/restaurant/clock/out', methods=['POST'])
+def Clock_Out():
+    data = request.json
+    r_id = data.get('r_id')
+    if not r_id:
+        return jsonify({"error": "Missing required parameter 'r_id'"}), 400
+    current = add_clock_out(r_id)
+    return jsonify({"message": f"Clock Out at {current}!"}), 200
+
+@RestaurantApi_bp.route('/restaurant/check/clock', methods=['POST'])
+def check_clock_in_status():
+    data = request.json
+    r_id = data.get('r_id')
+
+    if not r_id:
+        return jsonify({"error": "Missing r_id"}), 400
+
+    is_clocked_in = get_clock_in_status(r_id)
+    if is_clocked_in:
+        return jsonify({"message": "Restaurant has clocked in!"}), 200
+    else:
+        return jsonify({"error": "Restaurant hasn't clocked in><"}), 401
+    
+@RestaurantApi_bp.route('/restaurant/update/serve/meal', methods=['POST'])
+def update_serve_meal():
+    data = request.json
+    r_id = data.get('r_id')
+    name = data.get('name')
+    supply_num = data.get('supply_num')
+
+    if not r_id:
+        return jsonify({"error": "Missing r_id"}), 400
+    elif not name:
+        return jsonify({"error": "Missing meal name"}), 400
+
+    add_serve_meal(r_id, name, supply_num)
+    return jsonify({"message": f"Update {name} successful!"}), 200 # Response(status=200)
 
 
 """"
@@ -134,3 +183,93 @@ def select_past_order(r_id):
             'meals': meals 
         }
     return list(past_order.values())
+
+
+def add_clock_in(r_id):
+    query = """
+    INSERT INTO CLOCK_IN (r_id, date, open_time, close_time) VALUES (%s, %s, %s, %s)
+    """
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        current_datetime = datetime.now()
+        open_time = current_datetime.time().replace(microsecond=0)
+        date = current_datetime.date()
+        cur.execute(query, (r_id, date, open_time, open_time))
+        conn.commit()
+        print(f"Successfully clock in {date} {open_time}!", flush=True)
+        return current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to clock in: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+def add_clock_out(r_id):
+    query = """
+    UPDATE CLOCK_IN 
+    SET close_time = %s
+    WHERE r_id = %s AND date = %s
+    """
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        current_datetime = datetime.now()
+        close_time = current_datetime.time().replace(microsecond=0)
+        date = current_datetime.date()
+        cur.execute(query, (close_time, r_id, date))
+        conn.commit()
+        print(f"Successfully set close time at {date} {close_time}!")
+        return current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to clock out: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+
+def add_serve_meal(r_id, name, supply_num):
+    query = """
+    INSERT INTO SERVE_MEAL (r_id, name, date, supply_num) VALUES (%s, %s, %s, %s)
+    """
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        today = datetime.now().date()
+        cur.execute(query, (r_id, name, supply_num))
+        conn.commit()
+        print(f"Successfully update {name}'s quantity to {supply_num} at {today}!")
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to clock in: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+
+def get_clock_in_status(r_id):
+    query = """
+    SELECT EXISTS(
+        SELECT *
+        FROM CLOCK_IN
+        WHERE r_id = %s AND date = %s
+    );
+    """
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        today = datetime.now().date()
+        cur.execute(query, (r_id, today))
+        res = cur.fetchone()[0]
+        if res:
+            return True
+        else:
+            return False
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to get clock in status: {e}")
+    finally:
+        cur.close()
+        conn.close()
