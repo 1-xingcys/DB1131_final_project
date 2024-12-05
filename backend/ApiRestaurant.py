@@ -193,8 +193,8 @@ def add_clock_in(r_id):
     cur = conn.cursor()
     try:
         current_datetime = datetime.now()
-        open_time = current_datetime.time().replace(microsecond=0)
-        date = current_datetime.date()
+        open_time = current_datetime.time().replace(microsecond=0).strftime("%H:%M:%S")
+        date = current_datetime.date().strftime("%Y-%m-%d")
         cur.execute(query, (r_id, date, open_time, open_time))
         conn.commit()
         print(f"Successfully clock in {date} {open_time}!", flush=True)
@@ -216,8 +216,8 @@ def add_clock_out(r_id):
     cur = conn.cursor()
     try:
         current_datetime = datetime.now()
-        close_time = current_datetime.time().replace(microsecond=0)
-        date = current_datetime.date()
+        close_time = current_datetime.time().replace(microsecond=0).strftime("%H:%M:%S")
+        date = current_datetime.date().strftime("%Y-%m-%d")
         cur.execute(query, (close_time, r_id, date))
         conn.commit()
         print(f"Successfully set close time at {date} {close_time}!")
