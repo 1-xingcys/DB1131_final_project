@@ -190,7 +190,7 @@ def add_serve_meal(r_id, name, supply_num):
     conn = connect_to_database()
     cur = conn.cursor()
     try:
-        today = datetime.now().date()
+        today = datetime.now().date().strftime("%Y-%m-%d")
         cur.execute(query, (r_id, name, supply_num))
         conn.commit()
         print(f"Successfully update {name}'s quantity to {supply_num} at {today}!")
