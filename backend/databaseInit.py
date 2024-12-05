@@ -18,76 +18,76 @@ def db_init() :
 
     # Example usage of add_restaurants
     restaurants = [
-        (1, "大水缸", "password5", "科技大樓站"),
-        (2, "銀魚", "password3", "小福"),
-        (3, 'Twins手工蛋餅', 'password4', '活大')
+        ("Rwatergun", "大水缸", "password", "科技大樓站"),
+        ("Rsilvfish", "銀魚", "password", "小福"),
+        ("Rtwinsegg", 'Twins手工蛋餅', 'password', '活大')
     ]
     add_restaurants(restaurants)
 
     # Example usage of add_meal_items
     meal_items = [
-        ("鍋燒意麵", 1, 100, 5),
-        ("泡菜意麵", 1, 120, 5),
-        ("滷味個人餐", 1, 50, 2),
-        ('椒麻雞套餐', 2, 100, 1),
-        ('咖哩雞套餐', 2, 100, 1),
-        ('打拋豬套餐', 2, 100, 1),
-        ('火腿蛋餅', 3, 45, 3),
-        ('鮪魚蛋餅', 3, 50, 3),
-        ('紅茶', 3, 25, 1),
-        ('鮮奶茶', 3, 35, 1)
+        ("鍋燒意麵", restaurants[0][0], 100, 5),
+        ("泡菜意麵", restaurants[0][0], 120, 5),
+        ("滷味個人餐", restaurants[0][0], 50, 2),
+        ('椒麻雞套餐', restaurants[1][0], 100, 1),
+        ('咖哩雞套餐', restaurants[1][0], 100, 1),
+        ('打拋豬套餐', restaurants[1][0], 100, 1),
+        ('火腿蛋餅', restaurants[2][0], 45, 3),
+        ('鮪魚蛋餅', restaurants[2][0], 50, 3),
+        ('紅茶', restaurants[2][0], 25, 1),
+        ('鮮奶茶', restaurants[2][0], 35, 1)
     ]
     add_meal_items(meal_items)
 
     # Example usage of set_regular_open_time
     regular_hours = [
-    ('1', 'Mon', '11:00', '19:30'),
-    ('1', 'Tue', '11:00', '19:30'),
-    ('1', 'Wed', '11:00', '19:30'),
-    ('1', 'Thu', '11:00', '19:30'),
-    ('1', 'Fri', '11:00', '19:30'),
-    ('1', 'Sat', '11:00', '15:00'),
-    ('2', 'Mon', '07:00', '14:00'),
-    ('2', 'Tue', '07:00', '14:00'),
-    ('2', 'Wed', '07:00', '14:00'),
-    ('2', 'Thu', '07:00', '14:00'),
-    ('2', 'Fri', '07:00', '14:00'),
-    ('2', 'Sat', '07:00', '14:00'),
-    ('3', 'Mon', '07:00', '14:00'),
-    ('3', 'Tue', '07:00', '14:00'),
-    ('3', 'Wed', '07:00', '14:00'),
-    ('3', 'Thu', '07:00', '14:00'),
-    ('3', 'Fri', '07:00', '14:00'),
-    ('3', 'Sat', '07:00', '14:00'),
+    (restaurants[0][0], 'Mon', '11:00', '19:30'),
+    (restaurants[0][0], 'Tue', '11:00', '19:30'),
+    (restaurants[0][0], 'Wed', '11:00', '19:30'),
+    (restaurants[0][0], 'Thu', '11:00', '19:30'),
+    (restaurants[0][0], 'Fri', '11:00', '19:30'),
+    (restaurants[0][0], 'Sat', '11:00', '15:00'),
+    (restaurants[1][0], 'Mon', '07:00', '14:00'),
+    (restaurants[1][0], 'Tue', '07:00', '14:00'),
+    (restaurants[1][0], 'Wed', '07:00', '14:00'),
+    (restaurants[1][0], 'Thu', '07:00', '14:00'),
+    (restaurants[1][0], 'Fri', '07:00', '14:00'),
+    (restaurants[1][0], 'Sat', '07:00', '14:00'),
+    (restaurants[2][0], 'Mon', '07:00', '14:00'),
+    (restaurants[2][0], 'Tue', '07:00', '14:00'),
+    (restaurants[2][0], 'Wed', '07:00', '14:00'),
+    (restaurants[2][0], 'Thu', '07:00', '14:00'),
+    (restaurants[2][0], 'Fri', '07:00', '14:00'),
+    (restaurants[2][0], 'Sat', '07:00', '14:00'),
     ]
     set_regular_open_time(regular_hours)
 
 
     # Example usage of select_restaurant_reg_info
-    restaurant_info = select_restaurant_reg_info()
-    print(restaurant_info)
+    # restaurant_info = select_restaurant_reg_info()
+    # print(restaurant_info)
         
     
-    # Example usage of select_meal_item
-    meal_items1 = select_meal_item(1)
-    print("Meal items for 大水缸:", meal_items1)
-    meal_items2 = select_meal_item(2)
-    print("Meal items for 銀魚:", meal_items2)
+    # # Example usage of select_meal_item
+    # meal_items1 = select_meal_item("Rwatergun")
+    # print("Meal items for 大水缸:", meal_items1)
+    # meal_items2 = select_meal_item("Rsilvfish")
+    # print("Meal items for 銀魚:", meal_items2)
 
-    # Example usage of submit_order
-    order_time = "2024-11-13 12:00:00"
-    expected_time = "2024-11-13 12:30:00"
-    pick_up_time = "2024-11-13 12:30:00"
+    # # Example usage of submit_order
+    # order_time = "2024-11-13 12:00:00"
+    # expected_time = "2024-11-13 12:30:00"
+    # pick_up_time = "2024-11-13 12:30:00"
 
-    # Creating meal_items list for orders, ensuring correct format
-    # Creating meal_items list for orders, ensuring correct format
-    meal_items_order1 = [{"name": meal[0], "number": 3} for meal in meal_items1]
-    meal_items_order2 = [{"name": meal[0], "number": 2} for meal in meal_items2]
-    meal_item_order3 = [{"name": "椒麻雞套餐","number": 2}]
-    submit_order(order_time, expected_time, pick_up_time, True, True, "蝦換肉", "B10303097", 1, meal_items_order1)
+    # # Creating meal_items list for orders, ensuring correct format
+    # # Creating meal_items list for orders, ensuring correct format
+    # meal_items_order1 = [{"name": meal[0], "number": 3} for meal in meal_items1]
+    # meal_items_order2 = [{"name": meal[0], "number": 2} for meal in meal_items2]
+    # meal_item_order3 = [{"name": "椒麻雞套餐","number": 2}]
+    # submit_order(order_time, expected_time, pick_up_time, True, True, "蝦換肉", "B10303097", "Rwatergun", meal_items_order1)
 
-    submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10705009", 2, meal_items_order2)
-    submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10303097", 2, meal_item_order3)
+    # submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10705009", "Rsilvfish", meal_items_order2)
+    # submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10303097", "Rsilvfish", meal_item_order3)
 
     return 0 
 
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS CUSTOMER (
 );
 -- 資料表 RESTAURANT
 CREATE TABLE IF NOT EXISTS RESTAURANT (
-    r_id BIGINT PRIMARY KEY NOT NULL,
+    r_id VARCHAR(10) PRIMARY KEY NOT NULL,
     r_name VARCHAR(20) UNIQUE NOT NULL,
     r_password VARCHAR(10) NOT NULL,
     location VARCHAR(10) UNIQUE NOT NULL
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS RESTAURANT (
 
 -- 資料表 REGULAR_OPEN_TIME
 CREATE TABLE  IF NOT EXISTS REGULAR_OPEN_TIME (
-    r_id BIGINT NOT NULL,
+    r_id VARCHAR(10) NOT NULL,
     day CHAR(3) NOT NULL,
     open_time TIME NOT NULL,
     close_time TIME NOT NULL,
@@ -150,7 +150,7 @@ CREATE TABLE  IF NOT EXISTS "ORDER" (
     c_id VARCHAR(9) NOT NULL,
     star_num INT,
     review VARCHAR(50),
-    r_id BIGINT NOT NULL,
+    r_id VARCHAR(10) NOT NULL,
     FOREIGN KEY (c_id) REFERENCES CUSTOMER(c_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (r_id) REFERENCES RESTAURANT(r_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS BUSINESS_DAY (
 -- 資料表 MEAL_ITEM
 CREATE TABLE IF NOT EXISTS MEAL_ITEM (
     name VARCHAR(10) NOT NULL,
-    r_id BIGINT NOT NULL,
+    r_id VARCHAR(10) NOT NULL,
     price INT NOT NULL,
     processing_time INT,
     PRIMARY KEY (name, r_id),
@@ -187,7 +187,7 @@ CREATE TABLE IF NOT EXISTS MEAL_ITEM (
 CREATE TABLE IF NOT EXISTS INCLUDE_MEAL_IN_ORDER (
     name VARCHAR(10) NOT NULL,
     o_id BIGSERIAL NOT NULL,
-    r_id BIGINT NOT NULL,
+    r_id VARCHAR(10) NOT NULL,
     number INT NOT NULL,
     PRIMARY KEY (name, o_id, r_id),
     FOREIGN KEY (name, r_id) REFERENCES MEAL_ITEM(name, r_id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS INCLUDE_MEAL_IN_ORDER (
 
 -- 資料表 CLOCK_IN
 CREATE TABLE IF NOT EXISTS CLOCK_IN (
-    r_id BIGINT NOT NULL,
+    r_id VARCHAR(10) NOT NULL,
     date DATE NOT NULL,
     open_time TIME NOT NULL,
     close_time TIME NOT NULL,
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS CLOCK_IN (
 
 -- 資料表 SERVE_MEAL
 CREATE TABLE IF NOT EXISTS SERVE_MEAL (
-    r_id BIGINT NOT NULL,
+    r_id VARCHAR(10) NOT NULL,
     name VARCHAR(10) NOT NULL,
     date DATE NOT NULL,
     supply_num INT NOT NULL CHECK (supply_num >= 0),
