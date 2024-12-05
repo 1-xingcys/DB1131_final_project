@@ -28,6 +28,19 @@ def Rest_Past_Order():
     result = select_past_order(r_id)
     return jsonify(result)
 
+@RestaurantApi_bp.route('/restaurant/complete/order', methods=['POST'])
+def Complete_Order() :
+    data = request.json
+    o_id = data.get('o_id')
+    complete_time = data.get('complete_time')
+    result = complete_Order(o_id, complete_time)
+    
+    if result :
+        return jsonify("successful"), 200
+    else : 
+        return jsonify({"error": "update order fail"}), 400
+    
+
 
 """"
 Internal Function
@@ -134,3 +147,28 @@ def select_past_order(r_id):
             'meals': meals 
         }
     return list(past_order.values())
+
+def complete_Order(o_id, complete_time) -> bool :
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        # Insert into ORDER table
+        query = f"""
+        UPDATE "ORDER"
+        SET pick_up_time = '{complete_time}'
+        WHERE o_id = {o_id}
+        """
+
+        cur.execute(query)
+
+        conn.commit()
+        print("Order update successfully", flush=True)
+        
+        return True
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Failed to update order: {e}", flush=True)
+    finally:
+        cur.close()
+        conn.close()

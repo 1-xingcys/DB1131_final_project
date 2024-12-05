@@ -23,12 +23,12 @@ function RestaurantDashboard({ onLogout }) {
 
       <div>
         {/* 當按鈕被點擊時改變 view 變數的值*/}
-        <button onClick={() => handleViewChange("pastOrder")}>查詢歷史訂單</button>
+        <button onClick={() => handleViewChange("checkOrder")}>查詢訂單</button>
       </div>
 
       <div>
         {/* 根據 view 的值印出對應的資訊 */}
-        {view === "pastOrder" && <PastOrder/>}
+        {view === "checkOrder" && <PastOrder/>}
       </div>
 
       <button onClick={onLogout}>Logout</button>

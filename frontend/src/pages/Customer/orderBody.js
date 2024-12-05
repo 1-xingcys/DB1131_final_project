@@ -91,7 +91,7 @@ function OrderForm(){
       sessionStorage.getItem("username"), selectedRest, mealItems);
 
     setShoppingCart([]);
-    setOrderInfo([]);
+    setOrderInfo({eating_utensil : false, plastic_bag : false, note : ""});
     setSelectedRest("");
   }
 

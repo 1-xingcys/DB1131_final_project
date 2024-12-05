@@ -65,7 +65,7 @@ def Get_past_orders():
     # 呼叫select_past_order
     past_orders = select_past_order(c_id)
     if past_orders:
-        return jsonify({"past_orders": past_orders}), 200
+        return jsonify(past_orders), 200
     else:
         return jsonify({"error": "No past orders found for this customer"}), 404
 
