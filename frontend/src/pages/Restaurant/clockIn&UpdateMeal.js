@@ -3,14 +3,14 @@ import { clock_in } from "../../api/clockInOut"; // 導入 clock_in 函數
 import { update_serve_meal } from "../../api/updateServeMeal";
 import { getRestMealItem } from "../../api/restMealItem";
 
-const r_id = sessionStorage.getItem("username");
 
 function ClockIn({ setIsClockedIn, onBack }) {
   const [meals, setMeals] = useState([]); // 存放店家品項資訊
   const [supplyNums, setSupplyNums] = useState({}); // 存放每個品項的供應量
   const [isUpdating, setIsUpdating] = useState(false); // 是否正在更新供應量
   const [isUpdated, setIsUpdated] = useState(false); // 是否完成供應量更新
-
+  const r_id = sessionStorage.getItem("username");
+  
   // 獲取商家的所有品項
   useEffect(() => {
     const fetchMeals = async () => {
