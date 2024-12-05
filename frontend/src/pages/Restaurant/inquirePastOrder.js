@@ -7,7 +7,7 @@ function RestGetPastOrder() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await getRestPastOrder(localStorage.getItem("username"));
+        const response = await getRestPastOrder(sessionStorage.getItem("username"));
         setOrders(response);
         console.log("get restaurant regular info successful", response);
       } catch (error) {

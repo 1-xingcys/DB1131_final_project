@@ -7,7 +7,7 @@ function CustomerPastOrders() {
     useEffect(() => {
       const fetchOrders = async () => {
         try {
-          const response = await getCustomerPastOrder(localStorage.getItem("username"));
+          const response = await getCustomerPastOrder(sessionStorage.getItem("username"));
           setOrders(response.past_orders);
           console.log("get customer past orders successful", response);
         } catch (error) {

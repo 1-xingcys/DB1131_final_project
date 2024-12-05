@@ -17,7 +17,7 @@ function CustomerDashboard({ onLogout }) {
   return (
     <div>
       {/* 取得顧客的名字，此全域變數在登入時已設定好，詳見 LoginPage.js */}
-      <h1>您好 {localStorage.getItem("name")} ！</h1>
+      <h1>您好 {sessionStorage.getItem("name")} ！</h1>
 
       <div>
         {/* 直接使用在 /components/time.js 定義好的函式*/}

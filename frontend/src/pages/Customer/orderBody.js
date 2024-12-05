@@ -91,7 +91,7 @@ function OrderForm(){
 
     submitOrder(order_processing_time, orderInfo.eating_utensil, 
       orderInfo.plastic_bag, orderInfo.note, 
-      localStorage.getItem("username"), selectedRest, mealItems);
+      sessionStorage.getItem("username"), selectedRest, mealItems);
 
     setShoppingCart([]);
     setOrderInfo([]);

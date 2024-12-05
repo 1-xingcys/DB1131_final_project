@@ -11,7 +11,7 @@ function LoginPage({ onLogin }) {
 
   const [selectedRole, setSelectedRole] = useState(""); // 保存選擇的身份
   const [username, setUsername] = useState(
-    localStorage.getItem("username") || ""
+    sessionStorage.getItem("username") || ""
   ) ;// 保存帳號
   const [password, setPassword] = useState("");         // 保存密碼
   const [errorMessage, setErrorMessage] = useState(""); // 錯誤提示
@@ -39,7 +39,7 @@ function LoginPage({ onLogin }) {
       if (selectedRole === "customer"){
         try {
           const response = await getName(username);
-          localStorage.setItem("name", response.name);
+          sessionStorage.setItem("name", response.name);
           console.log("get name successful", response);
         } catch (error) {
           console.log("get name failed :", error.message);

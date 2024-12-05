@@ -79,9 +79,9 @@ def select_past_order(r_id):
         eating_utensil, plastic_bag, note, c_id, starnum, review, r_id = row
 
         meal_rows = execute_select_query(query_meals, str(o_id))
-        meals = [{"meal_name": meal_name, "quantity": quantity} for _, meal_name, quantity in meal_rows]
+        meals = [{"name": name, "number": number} for _, name, number in meal_rows]
 
-        past_order[r_id] = {
+        past_order[o_id] = {
             'id': o_id,
             'order_time': order_time,
             'expected_time': expected_time, 
