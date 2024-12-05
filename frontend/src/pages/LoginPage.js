@@ -31,6 +31,17 @@ function LoginPage({ onLogin }) {
       setErrorMessage("請輸入帳號和密碼！");
       return;
     }
+    // 如果是Admin要登入，帳密都是Admin
+    if(selectedRole === "admin"){
+        if(username === "Admin" && password === "Admin") {
+          onLogin(selectedRole, username);
+          return;
+        } else {
+          setErrorMessage("帳號或密碼錯誤！");
+          return;
+        }
+  }
+
 
     // 會確認身份是否正確以及取得使用者名字，總共 call 兩個 API
     try {

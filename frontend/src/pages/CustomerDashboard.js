@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import CurrentTime from "../components/time"; // 得到即時時間
 import RestRegInfo from "./Customer/restRegInfo"; // 取得餐廳 regular 資訊
 import OrderForm from "./Customer/orderBody"; // 處理訂單
-import CustomerPastOrders from "./Customer/customerPastOrder";
+import CustomerPastOrders from "./Customer/customerPastOrder"; //顧客歷史訂單
+import CustomerAvailCoupons from "./Customer/custAvailCoupons"; // 當前可用折價券
 
 function CustomerDashboard({ onLogout }) {
   // 這個狀態變數用來判斷現在顧客是要「查看餐廳資訊」還是「立即點餐」
@@ -29,6 +30,7 @@ function CustomerDashboard({ onLogout }) {
         <button onClick={() => handleViewChange("info")}>查看餐廳資訊</button>
         <button onClick={() => handleViewChange("order")}>立即點餐</button>
         <button onClick={() => handleViewChange("pastOrder")}>查看歷史訂單</button>
+        <button onClick={() => handleViewChange("coupon")}>查看可用折價券</button>
       </div>
 
       <div>
@@ -36,6 +38,8 @@ function CustomerDashboard({ onLogout }) {
         {view === "info" && <RestRegInfo/>}
         {view === "order" && <OrderForm/>}
         {view === "pastOrder" && <CustomerPastOrders/>}
+        {view === "coupon" && <CustomerAvailCoupons/>}
+
       </div>
 
       {/* 登出按鈕按下去時會呼叫 onLogout，是 App.js 傳進來的參數 */}

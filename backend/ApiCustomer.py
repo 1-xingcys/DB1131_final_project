@@ -68,8 +68,18 @@ def Get_past_orders():
         return jsonify({"past_orders": past_orders}), 200
     else:
         return jsonify({"error": "No past orders found for this customer"}), 404
-
-
+    
+@CustomerApi_bp.route('/customer/available_coupons',methods=['POST'])
+def Get_available_coupons():
+    data = request.json
+    c_id = data.get('c_id')
+    # 呼叫select_available_coupons
+    available_coupons = select_available_coupons(c_id)
+    if available_coupons:
+        return jsonify(available_coupons), 200
+    else:
+        return jsonify({"error": "No past orders found for this customer"}), 404
+    
 """"
 Internal Function
 """
@@ -217,3 +227,26 @@ def select_past_order(c_id) -> list:
         if meal_name:
             past_orders[o_id]['meals'].append({'name': meal_name, 'number': meal_number})
     return list(past_orders.values())
+
+# 顯示顧客目前尚未使用且還沒過期的折價券
+def select_available_coupons(c_id) -> list:
+
+    query = """
+    SELECT c.coup_id, c.discount_rate, c.start_date, c.due_date
+    FROM COUPON c
+    WHERE c.owner_id = %s AND c.used_on_id IS NULL AND c.due_date >= CURRENT_DATE
+    ORDER BY c.due_date ASC
+    """
+    rows = execute_select_query(query, (c_id,))
+    available_coupons = []
+
+    for row in rows:
+        (coup_id, discount_rate, start_date, due_date) = row
+        available_coupons.append({
+            'coupon_id': coup_id,
+            'discount_rate': discount_rate,
+            'start_date': start_date,
+            'due_date': due_date
+        })
+    print("SUCCESSFULLY select available coupon 水喔")
+    return available_coupons

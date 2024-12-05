@@ -157,7 +157,7 @@ CREATE TABLE  IF NOT EXISTS "ORDER" (
 
 -- 資料表 COUPON
 CREATE TABLE IF NOT EXISTS COUPON (
-    coup_id BIGINT PRIMARY KEY NOT NULL,
+    coup_id BIGSERIAL PRIMARY KEY NOT NULL,
     discount_rate FLOAT NOT NULL CHECK (discount_rate IN (0.7, 0.75, 0.8, 0.85, 0.9)),
     start_date DATE NOT NULL,
     due_date DATE NOT NULL,
