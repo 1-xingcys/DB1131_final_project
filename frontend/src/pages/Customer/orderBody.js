@@ -6,10 +6,7 @@ import { submitOrder } from "../../api/submitOrder";
 
 function OrderForm(){
   const [restNames, setrestName] = useState([]);
-  const [mealItemsForChosen, setMealItemsForChosen] = useState([
-    {name: "椒麻雞", price: 100, processing_time : 1},
-    {name: "咖哩雞", price: 100, processing_time : 3}
-  ])
+  const [mealItemsForChosen, setMealItemsForChosen] = useState([]);
 
   const [shoppingCart, setShoppingCart] = useState([]);
   const [selectedRest, setSelectedRest] = useState("");

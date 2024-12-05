@@ -58,7 +58,7 @@ function RestGetPastOrder() {
                   <ul>
                     {order.meals.map((meal, index) => (
                       <li key={index}>
-                        {meal.meal_name} x {meal.quantity}
+                        {meal.name} x {meal.number}
                       </li>
                     ))}
                   </ul>

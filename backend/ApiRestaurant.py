@@ -98,7 +98,9 @@ def select_past_order(r_id):
     WHERE r_id = %s
     ORDER BY o_id
     """
-    rows = execute_select_query(query, str(r_id))
+    
+    rows = execute_select_query(query, (r_id, ))
+
 
     # 查詢每筆訂單的餐點資訊
     query_meals = """
@@ -111,8 +113,11 @@ def select_past_order(r_id):
     for row in rows:
         o_id, order_time, expected_time, pick_up_time, \
         eating_utensil, plastic_bag, note, c_id, starnum, review, r_id = row
+        
+        print("[select_past_order query_meals] : ", query_meals)
 
-        meal_rows = execute_select_query(query_meals, str(o_id))
+        meal_rows = execute_select_query(query_meals, (str(o_id),))
+        print("[meal_rows] : ", meal_rows, flush=True)
         meals = [{"name": name, "number": number} for _, name, number in meal_rows]
 
         past_order[o_id] = {

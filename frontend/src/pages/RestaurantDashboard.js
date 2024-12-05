@@ -6,7 +6,12 @@ function RestaurantDashboard({ onLogout }) {
   // 這個狀態變數用來判斷現在餐廳的操作
   const [view, setView] = useState("");
   const handleViewChange = (newView) => {
-    setView(newView);
+    if(view === newView){
+      setView("");
+    }
+    else {
+      setView(newView);
+    }
   };
 
 

@@ -47,7 +47,7 @@ def Submit_order() :
     plastic_bag = bool(data.get('plastic_bag'))
     note = data.get('note')
     c_id = data.get('c_id')
-    r_id = int(data.get('r_id'))
+    r_id = data.get('r_id')
     meal_items = data.get('meal_items')
     print(type(meal_items))
     print(meal_items, flush=True)
@@ -201,8 +201,11 @@ def select_past_order(c_id) -> list:
     for row in rows:
         (o_id, order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, r_id, meal_name, meal_number) = row
         if o_id not in past_orders:
-            query1 = f"SELECT r_name FROM restaurant AS r WHERE r_id = {r_id}"
-            r_name = execute_select_query(query1)[0][0]
+            query1 = f"SELECT r_name FROM restaurant AS r WHERE r_id = '{r_id}'"
+            print("query1 : ", query1)
+            result = execute_select_query(query1)
+            print("result : ", result, flush=True)
+            r_name = result[0][0]
             past_orders[o_id] = {
                 'order_id': o_id,
                 'order_time': order_time,
