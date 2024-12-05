@@ -2,9 +2,9 @@
 import { apiCall } from "../api";
 
 
-export const getName = async (username) => {
+export const getName = async (userType, username) => {
   try {
-    const response = await apiCall(`/customer/cname`, "POST", {username});
+    const response = await apiCall(`/${userType}/name`, "POST", {username});
     return response;
   } catch (error) {
     console.error("Get name failed:", error.message);

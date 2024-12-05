@@ -13,7 +13,7 @@ def Rest_reg_info():
   result = select_restaurant_reg_info()
   return jsonify(result)
 
-@CustomerApi_bp.route('/customer/cname', methods=['POST'])
+@CustomerApi_bp.route('/customer/name', methods=['POST'])
 def GetCName() :
   data = request.json
   c_id = data.get('username')

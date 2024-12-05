@@ -15,23 +15,23 @@ function App() {
   // 初始化一個「狀態變數」，初始值為全域變數 "userType" 的值
   // 可以上網暸解 useState 狀態變數的功用
   const [userType, setUserType] = useState(
-    localStorage.getItem("userType") || null
+    sessionStorage.getItem("userType") || null
   );
 
   // 處理登入的函式，會當成參數傳給 pages/LoginPage.js，當身份驗證成功時會被呼叫
   const handleLogin = (type, name) => {
     // 參數為使用者的類別（Customer, restaurant, admin）跟名字
     setUserType(type);
-    localStorage.setItem("userType", type);
-    localStorage.setItem("username", name);
+    sessionStorage.setItem("userType", type);
+    sessionStorage.setItem("username", name);
   };
 
   // 處理登出，會當成當參數傳給 pages/[userType]Dashboard.js，會連接到某個登出按鈕的點擊事件
   const handleLogout = () => {
     setUserType(null)
-    localStorage.removeItem("username");
-    localStorage.removeItem("userType");
-    localStorage.removeItem("name");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("userType");
+    sessionStorage.removeItem("name");
   };
 
 

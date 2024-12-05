@@ -36,9 +36,9 @@ function LoginPage({ onLogin }) {
     try {
       const response = await authenticate(selectedRole, username, password);
       console.log("Authentication successful:", response);
-      if (selectedRole === "customer"){
+      if (selectedRole === "customer" || selectedRole === "restaurant"){
         try {
-          const response = await getName(username);
+          const response = await getName(selectedRole, username);
           sessionStorage.setItem("name", response.name);
           console.log("get name successful", response);
         } catch (error) {

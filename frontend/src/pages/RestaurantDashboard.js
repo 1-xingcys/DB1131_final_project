@@ -14,6 +14,8 @@ function RestaurantDashboard({ onLogout }) {
     <div>
       <h1>Restaurant Dashboard</h1>
 
+      <h1>您好 {sessionStorage.getItem("name")} ！</h1>
+
       <div>
         {/* 當按鈕被點擊時改變 view 變數的值*/}
         <button onClick={() => handleViewChange("pastOrder")}>查詢歷史訂單</button>

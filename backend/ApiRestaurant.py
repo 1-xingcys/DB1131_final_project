@@ -7,6 +7,18 @@ RestaurantApi_bp = Blueprint('restaurantApi', __name__)
 """"
 API Interface for Restaurant
 """
+
+@RestaurantApi_bp.route('/restaurant/name', methods=['POST'])
+def GetRName() :
+  data = request.json
+  r_id = data.get('username')
+  name = getRName(r_id)
+
+  if name :
+    return jsonify({"name": name}), 200
+  else :
+    return jsonify({"error": "Restaurant name does not exist"}), 401
+
 @RestaurantApi_bp.route('/restaurant/past/order', methods=['POST'])
 def Rest_Past_Order():
     data = request.json
@@ -20,6 +32,28 @@ def Rest_Past_Order():
 """"
 Internal Function
 """
+
+def getRName(r_id) :
+  psql_conn = connect_to_database()
+  cur = psql_conn.cursor()
+
+  query = '''
+  SELECT r_name
+  FROM RESTAURANT
+  WHERE r_id = %s
+  '''
+  cur.execute(query, (r_id,))
+
+  # get the res
+  result = cur.fetchone()
+
+  cur.close()
+  psql_conn.close()
+  
+  if result:
+      return result[0]
+  else:
+      return None
 
 def set_regular_open_time(hours):
     query = """
