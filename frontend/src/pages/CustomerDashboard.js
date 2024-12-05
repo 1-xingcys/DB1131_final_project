@@ -12,7 +12,12 @@ function CustomerDashboard({ onLogout }) {
   const [view, setView] = useState("");
 
   const handleViewChange = (newView) => {
-    setView(newView);
+    if(view === newView){
+      setView("");
+    }
+    else {
+      setView(newView);
+    }
   };
 
   return (
@@ -29,7 +34,8 @@ function CustomerDashboard({ onLogout }) {
         {/* 當按鈕被點擊時改變 view 變數的值*/}
         <button onClick={() => handleViewChange("info")}>查看餐廳資訊</button>
         <button onClick={() => handleViewChange("order")}>立即點餐</button>
-        <button onClick={() => handleViewChange("pastOrder")}>查看歷史訂單</button>
+        <button onClick={() => handleViewChange("past")}>查看已完成訂單</button>
+        <button onClick={() => handleViewChange("processing")}>查看處理中訂單</button>
         <button onClick={() => handleViewChange("coupon")}>查看可用折價券</button>
       </div>
 
@@ -37,7 +43,8 @@ function CustomerDashboard({ onLogout }) {
         {/* 根據 view 的值印出對應的資訊 */}
         {view === "info" && <RestRegInfo/>}
         {view === "order" && <OrderForm/>}
-        {view === "pastOrder" && <CustomerPastOrders/>}
+        {view === "past" && <CustomerPastOrders view={view}/>}
+        {view === "processing" && <CustomerPastOrders view={view}/>}
         {view === "coupon" && <CustomerAvailCoupons/>}
 
       </div>

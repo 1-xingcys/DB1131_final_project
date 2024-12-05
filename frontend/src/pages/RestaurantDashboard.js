@@ -51,31 +51,30 @@ function RestaurantDashboard({ onLogout }) {
       {!isClockedIn ? (
         <>
           <button onClick={() => handleViewChange("clockIn")}>打卡上班</button>
-          <button onClick={() => handleViewChange("pastOrder")}>查詢歷史訂單</button>
         </>
       ) : (
         <>
           <button onClick={() => handleViewChange("currentOrder")}>處理中訂單</button>
           <button onClick={() => handleViewChange("clockOut")}>打卡下班</button>
-          <button onClick={() => handleViewChange("pastOrder")}>查詢歷史訂單</button>
+          <button onClick={() => handleViewChange("checkOrder")}>查詢訂單</button>
         </>
       )}
     </div>
 
       <div>
         {/* 根據 view 的值印出對應的資訊 */}
-        {view === "pastOrder" && <PastOrder/>}
         {view === "clockIn" && (
           <ClockIn
-            setIsClockedIn={setIsClockedIn}
-            onBack={() => setView("")} // 點擊返回時重置視圖
+          setIsClockedIn={setIsClockedIn}
+          onBack={() => setView("")} // 點擊返回時重置視圖
           />
         )}
-        {view === "currentOrder" && <div>查詢現有訂單功能</div>}
+        {/* {view === "currentOrder" && <div>查詢現有訂單功能</div>} */}
+        {view === "checkOrder" && <PastOrder/>}
         {view === "clockOut" && (
           <ClockOut
-            setIsClockedIn={setIsClockedIn}
-            onBack={() => setView("")} // 點擊返回時重置視圖
+          setIsClockedIn={setIsClockedIn}
+          onBack={() => setView("")} // 點擊返回時重置視圖
           />
         )}
       </div>

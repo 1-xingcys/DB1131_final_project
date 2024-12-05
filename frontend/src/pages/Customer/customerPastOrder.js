@@ -1,15 +1,19 @@
 import {useState, useEffect} from "react"
 import { getCustomerPastOrder } from "../../api/getCustPastOrder";
+import { NULL_TIME_STAMP } from "../../components/constant";
 
-function CustomerPastOrders() {
+function CustomerPastOrders( { view } ) {
     const [orders, setOrders] = useState([]);
   
     useEffect(() => {
       const fetchOrders = async () => {
         try {
+          console.log("view : ", view);
           const response = await getCustomerPastOrder(sessionStorage.getItem("username"));
-          setOrders(response.past_orders);
           console.log("get customer past orders successful", response);
+          setOrders(view === "past" ? response.filter(order => order.pick_up_time !== NULL_TIME_STAMP)
+           : response.filter(order => order.pick_up_time === NULL_TIME_STAMP)
+          );
         } catch (error) {
           console.log("get customer past orders failed :", error.message);
         }
@@ -20,7 +24,8 @@ function CustomerPastOrders() {
   
     return (
       <div>
-        <h1>歷史訂單資訊</h1>
+
+        <h1>{view === "past" ? "已完成訂單" : "處理中訂單"}</h1>
   
         {/* 動態呈現顧客的歷史訂單資訊 */}
         <div>
@@ -30,7 +35,7 @@ function CustomerPastOrders() {
               <p>餐廳名稱: {order.restaurant_name}</p>
               <p>訂單時間: {order.order_time}</p>
               <p>預計取餐時間: {order.expected_time}</p>
-              <p>取餐時間: {order.pick_up_time}</p>
+              <p>{(order.pick_up_time !== NULL_TIME_STAMP) && `取餐時間: ${order.pick_up_time}`}</p>
               <p>是否需要餐具: {order.eating_utensil ? "是" : "否"}</p>
               <p>是否需要塑膠袋: {order.plastic_bag ? "是" : "否"}</p>
               <p>備註: {order.note || "無"}</p>
