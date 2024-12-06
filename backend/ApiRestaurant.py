@@ -18,7 +18,7 @@ def GetRName() :
   name = getRName(r_id)
 
   if name :
-    return jsonify({"name": name}), 200
+    return jsonify(name), 200
   else :
     return jsonify({"error": "Restaurant name does not exist"}), 401
 

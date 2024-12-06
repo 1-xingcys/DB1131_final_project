@@ -20,7 +20,7 @@ def GetCName() :
   name = getCName(c_id)
 
   if name :
-    return jsonify({"name": name}), 200
+    return jsonify(name), 200
   else :
     return jsonify({"error": "Customer name does not exist"}), 401
 

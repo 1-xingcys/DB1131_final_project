@@ -53,7 +53,7 @@ function LoginPage({ onLogin }) {
       if (selectedRole === "customer" || selectedRole === "restaurant"){
         try {
           const response = await getName(selectedRole, username);
-          sessionStorage.setItem("name", response.name);
+          sessionStorage.setItem("name", response);
           console.log("get name successful", response);
         } catch (error) {
           console.log("get name failed :", error.message);

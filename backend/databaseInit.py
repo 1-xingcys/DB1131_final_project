@@ -2,7 +2,6 @@
 from databaseUtils import connect_to_database
 
 # temp for initializing some fake data
-from ApiCustomer import submit_order, select_restaurant_reg_info, select_meal_item
 from ApiRestaurant import set_regular_open_time, add_meal_items
 from ApiAdmin import add_customers, add_restaurants
 
@@ -201,8 +200,7 @@ CREATE TABLE IF NOT EXISTS CLOCK_IN (
     open_time TIME NOT NULL,
     close_time TIME NOT NULL,
     PRIMARY KEY (r_id, date),
-    FOREIGN KEY (r_id) REFERENCES RESTAURANT(r_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    -- FOREIGN KEY (date) REFERENCES BUSINESS_DAY(date) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (r_id) REFERENCES RESTAURANT(r_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- 資料表 SERVE_MEAL
@@ -213,8 +211,7 @@ CREATE TABLE IF NOT EXISTS SERVE_MEAL (
     supply_num INT NOT NULL CHECK (supply_num >= 0),
     PRIMARY KEY (r_id, name, date),
     FOREIGN KEY (r_id) REFERENCES RESTAURANT(r_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (name, r_id) REFERENCES MEAL_ITEM(name, r_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    -- FOREIGN KEY (date) REFERENCES BUSINESS_DAY(date) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (name, r_id) REFERENCES MEAL_ITEM(name, r_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 '''
 
