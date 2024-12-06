@@ -1,0 +1,231 @@
+/* 選擇餐廳階段的外觀 */
+
+.cardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin: 16px auto;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cardSelected {
+  border-color: #007bff;
+  background-color: #e7f1ff;
+}
+
+.cardName {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #333333;
+  background-color: #f9f9f9;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.select:focus {
+  border-color: #007bff;
+}
+
+/* 選擇餐點的外觀 */
+
+.container {
+  margin: 16px auto;
+  max-width: 600px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+  color: #333333;
+}
+
+.mealList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mealItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.mealItem:last-child {
+  border-bottom: none;
+}
+
+.mealName {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333333;
+}
+
+.price {
+  margin-left: 8px;
+  color: #007bff;
+}
+
+.input {
+  width: 60px;
+  margin-left: 16px;
+  padding: 4px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.processingTime {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  color: #888888;
+}
+
+/* 訂單餐具、塑膠袋、備註 */
+
+.formContainer {
+  margin: 16px auto;
+  max-width: 600px;
+  padding: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #333333;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  margin-right: 8px;
+}
+
+.textareaLabel {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.textarea {
+  width: 95%;
+  height: 60px;
+  padding: 8px;
+  font-size: 1rem;
+  color: #333333;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  resize: none;
+  outline: none;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+}
+
+.textarea:focus {
+  border-color: #007bff;
+}
+
+
+/* 購物車外觀 */
+
+.cartContainer {
+  margin: 16px auto;
+  max-width: 600px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.cartTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+  color: #333333;
+}
+
+.cartList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cartItem:last-child {
+  border-bottom: none;
+}
+
+.info {
+  font-size: 1rem;
+  color: #555555;
+  margin: 8px 0;
+}
+
+.total {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
+  text-align: right;
+  margin-top: 16px;
+}

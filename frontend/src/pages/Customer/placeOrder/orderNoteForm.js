@@ -1,5 +1,7 @@
 import React from "react";
 
+import styles from './placeOrder.module.css';
+
 
 // 處理是否需要餐具、塑膠袋、備註的邏輯
 function OrderDetailsForm({ orderInfo, onOrderInfoChange }) {
@@ -16,36 +18,41 @@ function OrderDetailsForm({ orderInfo, onOrderInfoChange }) {
   };
 
   return (
-    <form>
-      <div>
-        <label>
+    <form className={styles.formContainer}>
+      <div className={styles.formGroup}>
+        <label  className={styles.checkboxLabel}>
           <input
             type="checkbox"
             name="eating_utensil"
             checked={orderInfo.eating_utensil}
             onChange={handleCheckboxChange}
+            className={styles.checkboxInput}
           />
           是否需要免洗餐具
         </label>
       </div>
-      <div>
-        <label>
+      <div className={styles.formGroup}>
+        <label className={styles.checkboxLabel}>
           <input
             type="checkbox"
             name="plastic_bag"
             checked={orderInfo.plastic_bag}
             onChange={handleCheckboxChange}
+            className={styles.checkboxInput}
           />
           是否需要塑膠袋
         </label>
       </div>
-      <div>
-        <label htmlFor="order-note">備註：</label>
+      <div className={styles.formGroup}>
+        <label htmlFor="order-note" className={styles.textareaLabel}>
+          備註：
+        </label>
         <textarea
           id="order-note"
           value={orderInfo.note}
           onChange={handleNoteChange}
           placeholder="輸入..."
+          className={styles.textarea}
         />
       </div>
     </form>

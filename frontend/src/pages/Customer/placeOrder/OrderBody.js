@@ -1,8 +1,13 @@
 import {useEffect, useState} from "react"
 import OrderDetailsForm from "./orderNoteForm";
-import { getRestName } from "../../api/restNames";
-import { getRestMealItem } from "../../api/restMealItem";
-import { submitOrder } from "../../api/submitOrder";
+import { getRestName } from "../../../api/restNames";
+import { getRestMealItem } from "../../../api/restMealItem";
+import { submitOrder } from "../../../api/submitOrder";
+import RestaurantCards from "./restCard";
+import MealSelection from "./mealSelection";
+import ShoppingCart from "./ShoppingCart";
+
+import styles from "./placeOrder.module.css"
 
 function OrderForm(){
   const [restNames, setrestName] = useState([]);
@@ -49,10 +54,12 @@ function OrderForm(){
     });
   };
 
-  const handleRestSelect = (e) => {
-    setSelectedRest(e.target.value);
-    console.log("select restaurant is : ", e.target.value);
-    updateMealItems(e.target.value);
+  const handleRestSelect = (id) => {
+    setShoppingCart([]);
+    setOrderInfo({eating_utensil : false, plastic_bag : false, note : ""});
+    setSelectedRest(id);
+    console.log("select restaurant is : ", id);
+    updateMealItems(id);
   }
 
   const handleOrderInfoChange = (updatedInfo) => {
@@ -86,10 +93,19 @@ function OrderForm(){
     console.log(`預計備餐時間 ＝ ${order_processing_time}`);
     console.log(`總金額 = $${shoppingCart.reduce((total, item) => {return total += item.price * item.quantity}, 0)}`)
 
-    submitOrder(order_processing_time, orderInfo.eating_utensil, 
-      orderInfo.plastic_bag, orderInfo.note, 
-      sessionStorage.getItem("username"), selectedRest, mealItems);
+    try {
+      submitOrder(order_processing_time, orderInfo.eating_utensil, 
+        orderInfo.plastic_bag, orderInfo.note, 
+        sessionStorage.getItem("username"), selectedRest, mealItems);
+      alert("訂單已送出！")
+    } catch(error) {
+      throw error;
+    }
 
+    resetOrder();
+  }
+
+  const resetOrder = () => {
     setShoppingCart([]);
     setOrderInfo({eating_utensil : false, plastic_bag : false, note : ""});
     setSelectedRest("");
@@ -98,76 +114,44 @@ function OrderForm(){
 
   return (
     <div>
-      <h2>點餐區</h2>
-
-      {/* 下拉選單選擇餐廳 */}
+      <div>
+        <RestaurantCards
+          selectedRest={selectedRest}
+          handleRestSelect={handleRestSelect}
+          restNames={restNames}
+        />
+      </div>
 
       <div>
-      <label htmlFor="order-rest-select">選擇餐廳：</label>
-      <select id="order-rest-select" value={selectedRest} onChange={handleRestSelect}>
-        <option value="">-- 請選擇餐廳 --</option>
-        {restNames.map((restaurant) => (
-          <option key={restaurant.id} value={restaurant.id}>
-            {restaurant.name}
-          </option>
-        ))}
-      </select>
+        <MealSelection
+          selectedRest={selectedRest}
+          mealItemsForChosen={mealItemsForChosen}
+          handleAddToCart={handleAddToCart}
+        />
       </div>
 
       {/* 選擇餐點 */}
       {selectedRest && <div>
-        <p>請選擇您想要的餐點：</p>
-        <ul>
-          {mealItemsForChosen.map((meal) => (
-            <li key={meal.name}>
-              {meal.name} - ${meal.price} 
-              <input
-                type="number"
-                min="0"
-                placeholder="數量"
-                onChange={(e) =>
-                  handleAddToCart(meal, parseInt(e.target.value, 10) || 0)
-                }
-              />
-              （製作時間約 ${meal.processing_time} 分鐘）
-            </li>
-          ))}
-        </ul>
         {/* 處理餐具、塑膠袋、備註 */}
         <OrderDetailsForm orderInfo={orderInfo} onOrderInfoChange={handleOrderInfoChange} />
-
-        {/* 是否顯示購物車按鈕 */}
-        <button onClick={handleCheckCart}>{checkCart ? "隱藏購物車" : "查看購物車"}</button>  
       </div>}
+      
+      <div>
+        <ShoppingCart
+          selectedRest={selectedRest}
+          checkCart={checkCart}
+          shoppingCart={shoppingCart}
+          orderInfo={orderInfo}
+        />
+      </div>
+      {/* 是否顯示購物車按鈕 */}
 
-
-
-      {/* 顯示購物車 */}
-      {selectedRest && checkCart && <div>
-        <h2>購物車</h2>
-        {shoppingCart.length > 0 ? (
-          <ul>
-            {shoppingCart.map((item) => (
-              <li key={item.name}>
-                {item.name} x {item.quantity} = ${item.price * item.quantity}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>購物車是空的</p>
-        )}
-        
-        <div>
-          <p>需要餐具：{orderInfo.eating_utensil ? "是" : "否"}</p>
-          <p>需要塑膠袋：{orderInfo.plastic_bag ? "是" : "否"}</p>
-          <p>備註：{orderInfo.note || "無"}</p>
-        </div>
-
-        <p>總金額 = ${shoppingCart.reduce((total, item) => {return total += item.price * item.quantity}, 0)}</p>
+      {selectedRest && <div className={styles.cardsContainer}>
+        <button className={styles.card} onClick={resetOrder}>返回</button>
+        <button className={styles.card} onClick={handleCheckCart}>{checkCart ? "隱藏購物車" : "查看購物車"}</button>
+        <button className={styles.card} onClick={handleSubmit}>提交訂單</button>
       </div>}
-
-      {selectedRest && (<button onClick={handleSubmit}>提交訂單</button>)}
-
+      
 
     </div>
   );
