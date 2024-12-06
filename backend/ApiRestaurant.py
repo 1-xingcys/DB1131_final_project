@@ -10,6 +10,7 @@ RestaurantApi_bp = Blueprint('restaurantApi', __name__)
 API Interface for Restaurant
 """
 
+# 用給定的餐廳 id 取得餐廳名稱
 @RestaurantApi_bp.route('/restaurant/name', methods=['POST'])
 def GetRName() :
   data = request.json
@@ -21,6 +22,7 @@ def GetRName() :
   else :
     return jsonify({"error": "Restaurant name does not exist"}), 401
 
+# 取得所有訂單（包含已完成和處理中）
 @RestaurantApi_bp.route('/restaurant/past/order', methods=['POST'])
 def Rest_Past_Order():
     data = request.json
@@ -30,6 +32,53 @@ def Rest_Past_Order():
     result = select_past_order(r_id)
     return jsonify(result)
 
+
+@RestaurantApi_bp.route('/restaurant/clock/in', methods=['POST'])
+def Clock_In():
+    data = request.json
+    r_id = data.get('r_id')
+    if not r_id:
+        return jsonify({"error": "Missing required parameter 'r_id'"}), 400
+    current = add_clock_in(r_id)
+    return jsonify({"message": f"Clock In at {current}!"}), 200
+
+@RestaurantApi_bp.route('/restaurant/clock/out', methods=['POST'])
+def Clock_Out():
+    data = request.json
+    r_id = data.get('r_id')
+    if not r_id:
+        return jsonify({"error": "Missing required parameter 'r_id'"}), 400
+    current = add_clock_out(r_id)
+    return jsonify({"message": f"Clock Out at {current}!"}), 200
+
+@RestaurantApi_bp.route('/restaurant/check/clock', methods=['POST'])
+def check_clock_in_status():
+    data = request.json
+    r_id = data.get('r_id')
+
+    if not r_id:
+        return jsonify({"error": "Missing r_id"}), 400
+
+    is_clocked_in = get_clock_in_status(r_id)
+    if is_clocked_in:
+        return jsonify({"message": "Restaurant has clocked in!"}), 200
+    else:
+        return jsonify({"error": "Restaurant hasn't clocked in><"}), 401
+
+@RestaurantApi_bp.route('/restaurant/update/serve/meal', methods=['POST'])
+def update_serve_meal():
+    data = request.json
+    r_id = data.get('r_id')
+    name = data.get('name')
+    supply_num = data.get('supply_num')
+
+    if not r_id:
+        return jsonify({"error": "Missing r_id"}), 400
+    elif not name:
+        return jsonify({"error": "Missing meal name"}), 400
+
+    add_serve_meal(r_id, name, supply_num)
+    return jsonify({"message": f"Update {name} successful!"}), 200 # Response(status=200)
 
 """"
 Internal Function
@@ -154,7 +203,7 @@ def add_clock_in(r_id):
         return current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     except Exception as e:
         conn.rollback()
-        print(f"Failed to clock in: {e}")
+        print(f"Failed to clock in: {e}", flush=True)
     finally:
         cur.close()
         conn.close()
@@ -173,11 +222,11 @@ def add_clock_out(r_id):
         date = current_datetime.date().strftime("%Y-%m-%d")
         cur.execute(query, (close_time, r_id, date))
         conn.commit()
-        print(f"Successfully set close time at {date} {close_time}!")
+        print(f"Successfully set close time at {date} {close_time}!", flush=True)
         return current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     except Exception as e:
         conn.rollback()
-        print(f"Failed to clock out: {e}")
+        print(f"Failed to clock out: {e}", flush=True)
     finally:
         cur.close()
         conn.close()
@@ -191,13 +240,12 @@ def add_serve_meal(r_id, name, supply_num):
     cur = conn.cursor()
     try:
         today = datetime.now().date()
-        cur.execute(query, (r_id, name, supply_num))
+        cur.execute(query, (r_id, name, today, supply_num))
         conn.commit()
-        print(f"Successfully update {name}'s quantity to {supply_num} at {today}!")
+        print(f"Successfully update {name}'s quantity to {supply_num} at {today}!", flush=True)
     except Exception as e:
         conn.rollback()
-        print(f"Failed to clock in: {e}")
-    finally:
+        print(f"Failed to update {name}'s quantity to {supply_num} at {today}", flush=True)
         cur.close()
         conn.close()
 
@@ -222,7 +270,7 @@ def get_clock_in_status(r_id):
             return False
     except Exception as e:
         conn.rollback()
-        print(f"Failed to get clock in status: {e}")
+        print(f"Failed to get clock in status: {e}", flush=True)
     finally:
         cur.close()
         conn.close()
