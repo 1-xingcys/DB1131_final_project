@@ -80,6 +80,18 @@ def update_serve_meal():
     add_serve_meal(r_id, name, supply_num)
     return jsonify({"message": f"Update {name} successful!"}), 200 # Response(status=200)
 
+@RestaurantApi_bp.route('/restaurant/complete/order', methods=['POST'])
+def Complete_Order() :
+    data = request.json
+    o_id = data.get('o_id')
+    complete_time = data.get('complete_time')
+    result = complete_Order(o_id, complete_time)
+    
+    if result :
+        return jsonify("successful"), 200
+    else : 
+        return jsonify({"error": "update order fail"}), 400
+
 """"
 Internal Function
 """
