@@ -4,9 +4,8 @@ import { NULL_TIME_STAMP } from "../../components/constant";
 import { completeOrder } from "../../api/completeOrder";
 import { formatDate } from "../../components/formatDate";
 
-function RestGetPastOrder() {
+function RestGetPastOrder( {isClockIn}) {
   const [orders, setOrders] = useState([]);
-  const [refresh, setRefresh] = useState(false); // 用於控制刷新
   const [view, setView] = useState(""); // 訂單視圖
 
   useEffect(() => {
@@ -26,7 +25,7 @@ function RestGetPastOrder() {
     };
 
     fetchOrders();
-  }, [refresh, view]);
+  }, [view]);
 
   const handleConfirm = async (o_id) => {
     try {
@@ -46,7 +45,7 @@ function RestGetPastOrder() {
 
   return (
     <div>
-      <button onClick={() => handleViewChange("processing")}>待處理訂單</button>
+      {isClockIn && (<button onClick={() => handleViewChange("processing")}>待處理訂單</button>)}
       <button onClick={() => handleViewChange("past")}>已完成訂單</button>
       <h1>{(view) && (view === "past" ? "已完成訂單" : "待處理訂單")}</h1>
 
