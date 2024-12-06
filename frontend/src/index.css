@@ -1,13 +1,10 @@
+/* 全域 CSS 配置 */
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: Arial, sans-serif; /* 使用 Arial 或 sans-serif 字體，提供一致的外觀 */
+  background-color: #f7f9fc; /* 設定頁面背景為柔和淺灰藍色，減少視覺疲勞 */
+  margin: 0; /* 移除頁面預設的外邊距 */
+  padding: 0; /* 移除頁面預設的內邊距 */
+  display: flex; /* 使用 Flexbox 進行全局布局 */
+  justify-content: center; /*水平置中*/
+  height: 100vh; /* 設置高度為視窗高度 */
 }

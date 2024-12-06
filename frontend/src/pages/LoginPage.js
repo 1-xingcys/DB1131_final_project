@@ -4,6 +4,9 @@ import React, {useState} from "react";
 import { authenticate } from "../api/auth";
 import { getName } from "../api/getName";
 
+import "../index.css";
+import styles from "./LoginPage.module.css";
+
 // This page has a parameter, a function 'onlogin()' defined in App.js
 function LoginPage({ onLogin }) {
 
@@ -67,12 +70,12 @@ function LoginPage({ onLogin }) {
 
   return (
     <div>
-      <h1>Login Page</h1>
+      <h1 className={styles.title}>登入</h1>
 
       {/* 下拉選單選擇身份 */}
-      <div>
-        <label htmlFor="role-select">選擇登入身份：</label>
-        <select id="role-select" value={selectedRole} onChange={handleRoleSelect}>
+      <div className={styles.container}>
+        <label htmlFor="role-select"></label>
+        <select className={styles.formElement} id="role-select" value={selectedRole} onChange={handleRoleSelect}>
           <option value="">-- 請選擇身份 --</option>
           <option value="admin">Admin</option>
           <option value="restaurant">Restaurant</option>
@@ -88,6 +91,7 @@ function LoginPage({ onLogin }) {
             {/* <h3>請輸入帳號與密碼：</h3> */}
             <p>
             <input
+              className={styles.formElement}
               type="text"
               placeholder="請輸入帳號"
               value={username}
@@ -96,6 +100,7 @@ function LoginPage({ onLogin }) {
             </p>
             <p>
             <input
+              className={styles.formElement}
               type="password"
               placeholder="請輸入密碼"
               value={password}
@@ -107,11 +112,11 @@ function LoginPage({ onLogin }) {
 
         {/* 登入按鈕 */}
         <div>
-          {selectedRole && (<button type="submit">登入</button>)}
+          {selectedRole && (<button className={`${styles.button} ${styles.formElement}`} type="submit">登入</button>)}
         </div>
 
         {/* 錯誤提示 */}
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
 
       </form>
 

@@ -1,0 +1,63 @@
+/* 主容器樣式，包裹整個表單內容 */
+.container {
+  max-width: 400px; /* 限制容器寬度為 400 像素 */
+  margin: 50px auto; /* 上下外邊距為 50px，左右自動置中 */
+  background-color: #ffffff; /* 背景色為純白色，讓內容更清晰 */
+  padding: 20px; /* 內邊距為 20px，避免內容緊貼邊框 */
+  border-radius: 10px; /* 圓角邊框，讓容器更柔和 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加陰影，增加立體感 */
+  text-align: center;
+}
+
+/* 標題樣式 */
+.title {
+  text-align: center; /* 將標題文字置中對齊 */
+  color: #333333; /* 使用深灰色文字，比純黑色更柔和 */
+}
+
+/* 標籤樣式 */
+.label {
+  font-weight: bold; /* 加粗標籤文字 */
+  margin-bottom: 5px; /* 與下方輸入框保持 5px 間距 */
+  display: inline-block; /* 讓標籤成為行內塊元素，便於控制寬高 */
+  width: 300px; /* 設定標籤的寬度為固定 300px */
+}
+
+/* 表單元素通用樣式（下拉選單、輸入框、按鈕） */
+.formElement {
+  width: 300px; /* 設定固定寬度為 300px，與標籤一致 */
+  padding: 10px; /* 內邊距 10px，增加文字與邊框的距離 */
+  margin: 10px auto; /* 上下邊距 10px，分隔表單元素 */
+  border: 1px solid #ccc; /* 灰色邊框，讓表單元素更清晰 */
+  border-radius: 5px; /* 圓角邊框，提升美觀 */
+  font-size: 16px; /* 設定文字大小為 16px，易於閱讀 */
+  display: block; /* 設置為區塊元素，讓左右 `margin: auto` 生效 */
+}
+
+/* 表單元素的聚焦效果 */
+.formElement:focus {
+  border-color: #007bff; /* 當元素獲得焦點時，邊框變為藍色 */
+  outline: none; /* 移除瀏覽器預設的外框 */
+}
+
+/* 按鈕的基礎樣式 */
+.button {
+  background-color: #007bff; /* 設定按鈕背景色為藍色 */
+  color: white; /* 按鈕文字為白色，與背景形成對比 */
+  border: none; /* 移除按鈕的邊框 */
+  cursor: pointer; /* 當滑鼠懸停時顯示手指圖示 */
+  transition: background-color 0.3s; /* 增加背景色變化的過渡效果 */
+}
+
+/* 按鈕的懸停效果 */
+.button:hover {
+  background-color: #0056b3; /* 當滑鼠懸停時，背景色變為深藍色 */
+}
+
+/* 錯誤訊息樣式 */
+.errorMessage {
+  color: red; /* 錯誤訊息顯示為紅色，吸引使用者注意 */
+  font-size: 14px; /* 字體大小為 14px，小而不搶佔空間 */
+  margin-top: 10px; /* 與上方內容保持 10px 的距離 */
+  text-align: center; /* 將錯誤訊息置中，方便閱讀 */
+}
