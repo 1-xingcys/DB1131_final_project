@@ -206,7 +206,7 @@ def add_clock_in(r_id):
     conn = connect_to_database()
     cur = conn.cursor()
     try:
-        current_datetime = datetime.now()
+        current_datetime = datetime.now(timezone('Asia/Taipei'))
         open_time = current_datetime.time().replace(microsecond=0).strftime("%H:%M:%S")
         date = current_datetime.date().strftime("%Y-%m-%d")
         cur.execute(query, (r_id, date, open_time, open_time))
@@ -229,7 +229,7 @@ def add_clock_out(r_id):
     conn = connect_to_database()
     cur = conn.cursor()
     try:
-        current_datetime = datetime.now()
+        current_datetime = datetime.now(timezone('Asia/Taipei'))
         close_time = current_datetime.time().replace(microsecond=0).strftime("%H:%M:%S")
         date = current_datetime.date().strftime("%Y-%m-%d")
         cur.execute(query, (close_time, r_id, date))
@@ -251,7 +251,7 @@ def add_serve_meal(r_id, name, supply_num):
     conn = connect_to_database()
     cur = conn.cursor()
     try:
-        today = datetime.now().date()
+        today = datetime.now(timezone('Asia/Taipei')).date()
         cur.execute(query, (r_id, name, today, supply_num))
         conn.commit()
         print(f"Successfully update {name}'s quantity to {supply_num} at {today}!", flush=True)
@@ -273,7 +273,7 @@ def get_clock_in_status(r_id):
     conn = connect_to_database()
     cur = conn.cursor()
     try:
-        today = datetime.now().date()
+        today = datetime.now(timezone('Asia/Taipei')).date()
         cur.execute(query, (r_id, today))
         res = cur.fetchone()[0]
         if res:
