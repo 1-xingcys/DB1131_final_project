@@ -55,6 +55,7 @@ function ClockIn({ setIsClockedIn, onBack }) {
       await clock_in(r_id); // 調用打卡 API
       alert("打卡成功 ✧*｡٩(ˊᗜˋ*)و✧*｡！");
       setIsClockedIn(true); // 更新打卡狀態
+      // sessionStorage.setItem("isClockedIn", JSON.stringify(true)); // 更新 sessionStorage
       onBack(); // 返回 Dashboard
     } catch (error) {
       console.error("打卡失敗:", error.message);
