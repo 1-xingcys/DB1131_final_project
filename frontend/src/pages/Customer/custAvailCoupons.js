@@ -29,8 +29,8 @@ function CustomerAvailCoupons() {
             <div key={coupon.coupon_id} style={{ marginBottom: "20px" }}>
               <h2>折價券編號: {coupon.coupon_id}</h2>
               <p>折扣率: {coupon.discount_rate * 100}%</p>
-              <p>開始日期: {coupon.start_date}</p>
-              <p>到期日期: {coupon.due_date}</p>
+              <p>開始日期: {new Date(coupon.start_date).toISOString().split("T")[0]}</p>
+              <p>到期日期: {new Date(coupon.due_date).toISOString().split("T")[0]}</p>
             </div>
           ))
         ) : (
