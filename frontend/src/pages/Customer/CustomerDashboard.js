@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 // 以下的引用全部都是為了模組化，把以下的功能貼到這個檔案也有一樣的效果，但這樣會很混亂
-import CurrentTime from "../components/time"; // 得到即時時間
-import RestRegInfo from "./Customer/restRegInfo"; // 取得餐廳 regular 資訊
-import OrderForm from "./Customer/placeOrder/OrderBody"; // 處理訂單
-import CustomerPastOrders from "./Customer/customerPastOrder"; //顧客歷史訂單
-import CustomerAvailCoupons from "./Customer/custAvailCoupons"; // 當前可用折價券
+import CurrentTime from "../../components/time"; // 得到即時時間
+import RestRegInfo from "./restRegInfo"; // 取得餐廳 regular 資訊
+import OrderForm from "./placeOrder/OrderBody"; // 處理訂單
+import CustomerPastOrders from "./customerPastOrder"; //顧客歷史訂單
+import CustomerAvailCoupons from "./custAvailCoupons"; // 當前可用折價券
 
 import styles from "./CustomerDashboard.module.css";
 

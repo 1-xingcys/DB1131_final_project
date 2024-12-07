@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import PastOrder from "./Restaurant/inquirePastOrder"; // 取得餐廳方歷史訂單資訊
-import ClockIn from "./Restaurant/clockIn&UpdateMeal";
-import ClockOut from "./Restaurant/clockOut";
-import { check_clock_in_status } from "../api/clockInOut";
+import PastOrder from "./inquirePastOrder"; // 取得餐廳方歷史訂單資訊
+import ClockIn from "./clockIn&UpdateMeal";
+import ClockOut from "./clockOut";
+import { check_clock_in_status } from "../../api/clockInOut";
 
 
 function RestaurantDashboard({ onLogout }) {

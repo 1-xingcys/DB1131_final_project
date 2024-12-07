@@ -1,10 +1,10 @@
 import React, {useState} from "react";
 
 // 我已經模組化過的的 API 介面
-import { authenticate } from "../api/auth";
-import { getName } from "../api/getName";
+import { authenticate } from "../../api/auth";
+import { getName } from "../../api/getName";
 
-import "../index.css";
+import "../../index.css";
 import styles from "./LoginPage.module.css";
 
 // This page has a parameter, a function 'onlogin()' defined in App.js

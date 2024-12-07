@@ -4,11 +4,11 @@
 // 比較重要的差別是，這些 .js 檔函式的回傳值通常是網頁元素的 Component，可以想成是螢幕該有的畫面的一部分
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage"; // 一開始看到的登入畫面
+import LoginPage from "./pages/Login/LoginPage"; // 一開始看到的登入畫面
 import ProtectedRoute from "./components/ProtectedRoute"; // 路由檢查，防一些不預期的事情（上網查）
-import AdminDashboard from "./pages/AdminDashboard"; // admin 的已登入畫面
-import RestaurantDashboard from "./pages/RestaurantDashboard"; // restaurant 的已登入畫面
-import CustomerDashboard from "./pages/CustomerDashboard"; // customer 的已登入畫面
+import AdminDashboard from "./pages/Admin/AdminDashboard"; // admin 的已登入畫面
+import RestaurantDashboard from "./pages/Restaurant/RestaurantDashboard"; // restaurant 的已登入畫面
+import CustomerDashboard from "./pages/Customer/CustomerDashboard"; // customer 的已登入畫面
 
 
 function App() {
