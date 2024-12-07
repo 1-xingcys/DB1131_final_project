@@ -61,7 +61,7 @@ def check_clock_in_status():
 
     is_clocked_in = get_clock_in_status(r_id)
     if is_clocked_in:
-        return jsonify({"message": "Restaurant has clocked in!"}), 200
+        return jsonify(is_clocked_in), 200
     else:
         return jsonify({"error": "Restaurant hasn't clocked in><"}), 401
 

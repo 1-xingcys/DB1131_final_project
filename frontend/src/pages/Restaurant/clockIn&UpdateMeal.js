@@ -8,7 +8,15 @@ function ClockIn({ setIsClockedIn, onBack }) {
   const [meals, setMeals] = useState([]); // 存放店家品項資訊
   const [supplyNums, setSupplyNums] = useState({}); // 存放每個品項的供應量
   const [isUpdating, setIsUpdating] = useState(false); // 是否正在更新供應量
-  const [isUpdated, setIsUpdated] = useState(false); // 是否完成供應量更新
+  // const [isUpdated, setIsUpdated] = useState(false); // 是否完成供應量更新
+  const [isUpdated, setIsUpdated] = useState(() => {
+    const r_id = sessionStorage.getItem("username"); // 獲取用戶名
+    if (!r_id) return false; // 如果沒有用戶名，默認為 false
+
+    const savedState = sessionStorage.getItem(`isUpdated_${r_id}`);
+    return savedState ? JSON.parse(savedState) : false;
+  });
+  
   const r_id = sessionStorage.getItem("username");
   
   // 獲取商家的所有品項
@@ -40,6 +48,7 @@ function ClockIn({ setIsClockedIn, onBack }) {
         await update_serve_meal(r_id, name, supply_num); // 調用 API 更新供應量
       }
       setIsUpdated(true);
+      sessionStorage.setItem(`isUpdated_${r_id}`, JSON.stringify(true));
       alert("供應量更新成功 (๑╹◡╹๑)");
     } catch (error) {
       console.error("更新供應量失敗:", error.message);
@@ -55,6 +64,7 @@ function ClockIn({ setIsClockedIn, onBack }) {
       await clock_in(r_id); // 調用打卡 API
       alert("打卡成功 ✧*｡٩(ˊᗜˋ*)و✧*｡！");
       setIsClockedIn(true); // 更新打卡狀態
+      // sessionStorage.setItem("isClockedIn", JSON.stringify(true)); // 更新 sessionStorage
       onBack(); // 返回 Dashboard
     } catch (error) {
       console.error("打卡失敗:", error.message);
