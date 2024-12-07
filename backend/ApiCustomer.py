@@ -1,6 +1,6 @@
 from flask import jsonify, request, Blueprint
 from databaseInit import connect_to_database
-from databaseUtils import execute_select_query
+from databaseUtils import execute_select_query,execute_query
 
 CustomerApi_bp = Blueprint('customerApi', __name__)
 
@@ -141,7 +141,10 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         """
         for meal in meal_items:
             cur.execute(meal_item_query, (meal['name'], o_id, r_id, meal['number']))
-
+        total_price = calculate_order_total(meal_items,r_id)
+        print(f"訂單編號{o_id}的總金額為：{total_price}元。")
+        if(total_price >= 200):
+            issue_coupon(c_id, order_time)
         conn.commit()
         print("Order submitted successfully", flush=True)
 
@@ -301,17 +304,65 @@ def select_available_coupons(c_id) -> list:
             'start_date': start_date,
             'due_date': due_date
         })
-    print("SUCCESSFULLY select available coupon 水喔")
+        print(f"coupon_id {coup_id} 的 開始時間為 {start_date} , 結束時間為 {due_date}",flush=True )
+    print("SUCCESSFULLY select available coupon 水喔",flush=True)
     return available_coupons
 
-def calculate_order_total(meal_items: list) -> float:
+# meal_item : [{'name' : name, 'number' : number}, {}, ...]
+def calculate_order_total(meal_items: list, r_id) -> float:
     """
-    計算指定訂單的總金額。
+    被submit_order呼叫，給定餐點計算該訂單總金額。
+    """
+    query = """
+    SELECT price FROM MEAL_ITEM
+    WHERE r_id = %s AND name = %s
+    """
+    total_price = 0.0
+    try:
+        for meal in meal_items:
+            meal_name = meal['name']
+            meal_quantity = meal['number']
+            # 查詢餐點價格
+            result = execute_select_query(query, (r_id, meal_name))
+            if result:
+                price_per_item = result[0][0]  # 取第一行第一列的價格
+                total_price += price_per_item * meal_quantity
+            else:
+                print(f"Meal item '{meal_name}' not found in restaurant {r_id}.")
+        return total_price
+    except Exception as e:
+        print(f"Failed to calculate order total: {e}")
+        return 0.0
 
-    :param o_id: 訂單的 ID
-    :return: 訂單的總金額
+import random
+from datetime import datetime, timedelta
+
+def issue_coupon(c_id: str, order_time: str) -> None:
     """
-    # TODO: 使用 SQL 查詢計算該訂單的金額，可能需要 JOIN 餐點表和訂單表
-    pass
-def issue_coupon(c_id: str, discount_rate: float, start_date: str) -> None:
-    pass
+    在 submit_order 中被呼叫。呼叫條件是如果前面 calculate_order_total 的金額大於等於 200。
+    這個函數會拿訂單的資訊去資料庫插入一筆折價券資料，開始日期是下單時間（只取 order_time 中的日期部分），
+    結束日期是開始日期 + 7。折扣率是從 {0.7, 0.75, 0.8, 0.85, 0.9} 隨機抽出。
+    """
+    try:
+        # 從折扣率池中隨機選擇一個折扣率
+        discount_rate = random.choice([0.7, 0.75, 0.8, 0.85, 0.9])
+        
+        # 提取開始日期（只取日期部分）
+        start_date = datetime.strptime(order_time.split(" ")[0], "%Y-%m-%d").date()
+        
+        # 計算結束日期
+        due_date = start_date + timedelta(days=7)
+
+        # 插入折價券的 SQL 查詢
+        query = """
+        INSERT INTO COUPON (discount_rate, start_date, due_date, used_on_id, owner_id)
+        VALUES (%s, %s, %s, null, %s)
+        """
+        # 執行插入操作
+        data = (discount_rate, start_date, due_date, c_id)
+        execute_query(query, data)
+
+        print(f"Coupon issued successfully for customer {c_id} with discount rate {discount_rate}")
+        print(f"下單時間為 {order_time} , 發放折價券時間為 {start_date} , 截止日期為 {due_date}")
+    except Exception as e:
+        print(f"Failed to issue coupon: {e}")
