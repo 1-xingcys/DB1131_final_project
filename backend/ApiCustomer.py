@@ -2,6 +2,9 @@ from flask import jsonify, request, Blueprint
 from databaseInit import connect_to_database
 from databaseUtils import execute_select_query,execute_query
 
+import random
+from datetime import datetime, timedelta
+
 CustomerApi_bp = Blueprint('customerApi', __name__)
 
 """"
