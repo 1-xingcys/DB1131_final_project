@@ -37,6 +37,19 @@ def A_rest_meal_item() :
     result = select_restaurant_meal_item(r_id)
     return jsonify(result)
 
+@CustomerApi_bp.route('/restaurant/name/opening', methods=['GET'])
+def Opening_rest_name() :
+    result = select_opening_restaurant_name()
+    return jsonify(result)
+
+
+@CustomerApi_bp.route('/restaurant/meal_item/available', methods=['POST'])
+def A_opening_rest_meal_item() :
+    data = request.json
+    r_id = data.get('id')
+    result = select_opening_restaurant_meal_item(r_id)
+    return jsonify(result)
+
 @CustomerApi_bp.route('/customer/submit/order', methods=['POST'])
 def Submit_order() :
     data = request.json
@@ -196,6 +209,26 @@ def select_restaurant_meal_item(r_id) -> list :
             'processing_time' : processing_time
         }
     return list(res.values())
+
+def select_opening_restaurant_name() :
+    query = """
+    SELECT r.r_id, r.r_name
+    FROM RESTAURANT as r 
+        JOIN CLOCK_IN as ci ON r.r_id = ci.r_id
+    WHERE ci.date = now()::DATE  AND ci.open_time = ci.close_time
+    """
+    rows = execute_select_query(query)
+    res = {}
+    for row in rows :
+        r_id, r_name = row
+        res[r_id] = {
+            'id' : r_id,
+            'name' : r_name
+        }
+    return list(res.values())
+
+def select_opening_restaurant_meal_item(r_id) :
+    pass
 
 
 def select_past_order(c_id) -> list:
