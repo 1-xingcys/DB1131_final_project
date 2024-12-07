@@ -286,3 +286,15 @@ def select_available_coupons(c_id) -> list:
         })
     print("SUCCESSFULLY select available coupon 水喔")
     return available_coupons
+
+def calculate_order_total(meal_items: list) -> float:
+    """
+    計算指定訂單的總金額。
+
+    :param o_id: 訂單的 ID
+    :return: 訂單的總金額
+    """
+    # TODO: 使用 SQL 查詢計算該訂單的金額，可能需要 JOIN 餐點表和訂單表
+    pass
+def issue_coupon(c_id: str, discount_rate: float, start_date: str) -> None:
+    pass
