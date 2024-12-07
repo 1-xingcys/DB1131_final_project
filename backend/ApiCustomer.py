@@ -213,8 +213,8 @@ def select_restaurant_meal_item(r_id) -> list :
 def select_opening_restaurant_name() :
     query = """
     SELECT r.r_id, r.r_name
-    FROM RESTAURANT as r 
-        JOIN CLOCK_IN as ci ON r.r_id = ci.r_id
+    FROM RESTAURANT AS r 
+        JOIN CLOCK_IN AS ci ON r.r_id = ci.r_id
     WHERE ci.date = now()::DATE  AND ci.open_time = ci.close_time
     """
     rows = execute_select_query(query)
@@ -228,7 +228,24 @@ def select_opening_restaurant_name() :
     return list(res.values())
 
 def select_opening_restaurant_meal_item(r_id) :
-    pass
+    query = """
+    SELECT mi.name, mi.price, mi.processing_time, sm.supply_num
+    FROM MEAL_ITEM AS mi
+	JOIN serve_meal AS sm ON mi.r_id = sm.r_id AND mi.name = sm.name
+    WHERE mi.r_id = %s AND sm.date = now()::DATE AND sm.supply_num > 0
+    """
+    rows = execute_select_query(query, (r_id,))
+    res = {}
+    for row in rows :
+        name, price, processing_time, supply_num = row
+        res[name] = {
+            'name' : name,
+            'price' : price,
+            'processing_time' : processing_time,
+            'supply_num' : supply_num
+        }
+    return list(res.values())
+
 
 
 def select_past_order(c_id) -> list:

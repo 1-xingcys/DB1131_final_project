@@ -30,6 +30,7 @@ const MealSelection = ({ selectedRest, mealItemsForChosen, handleAddToCart }) =>
               <span className={styles.processingTime}>
                 （製作時間約 {meal.processing_time} 分鐘）
               </span>
+              <span className={styles.processingTime}>剩餘 {meal.supply_num} 份</span>
             </span>
           </li>
         ))}

@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react"
 import OrderDetailsForm from "./orderNoteForm";
 import { getRestName } from "../../../api/restNames";
-import { getRestMealItem } from "../../../api/restMealItem";
+import { getRestAvailableMealItem } from "../../../api/restMealItem";
 import { submitOrder } from "../../../api/submitOrder";
 import RestaurantCards from "./restCard";
 import MealSelection from "./mealSelection";
@@ -72,7 +72,7 @@ function OrderForm(){
 
   const updateMealItems = async (r_id) => {
     try {
-      const response = await getRestMealItem(r_id);
+      const response = await getRestAvailableMealItem(r_id);
       setMealItemsForChosen(response);
       console.log("update meal items successful", response);
     } catch(error) {
