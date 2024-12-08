@@ -96,7 +96,15 @@ def Get_available_coupons():
         return jsonify(available_coupons), 200
     else:
         return jsonify({"error": "No past orders found for this customer"}), 404
-    
+
+@CustomerApi_bp.route('/customer/submit/order/validate/coupon',methods=['POST'])
+def Validate_coupon():
+    pass
+@CustomerApi_bp.route('/customer/update/supply_num',methods=['POST'])
+def Update_supply_num():
+    pass
+
+
 """"
 Internal Function
 """
@@ -398,3 +406,14 @@ def issue_coupon(c_id: str, order_time: str) -> None:
         print(f"下單時間為 {order_time} , 發放折價券時間為 {start_date} , 截止日期為 {due_date}")
     except Exception as e:
         print(f"Failed to issue coupon: {e}")
+
+def validate_coupon(c_id, discount_rate: float) -> list:
+    '''
+    顧客會選擇他想使用的折扣率，這個函數會檢查該顧客有沒有這個折扣率的折價券，
+    如果有就回傳符合的coupon_id 沒有的話
+    '''
+    pass
+
+def update_supply_num(meal_item:list):
+    # meal_item : [{'name' : name, 'number' : number}, {}, ...]
+    pass
