@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import PastOrder from "./inquirePastOrder"; // 取得餐廳方歷史訂單資訊
+import CheckOrder from "./checkOrder"; // 取得餐廳方歷史訂單資訊
 import ClockIn from "./clockIn&UpdateMeal";
 import ClockOut from "./clockOut";
 import ServeStatus from "./serveMealStatus";
@@ -108,7 +108,7 @@ function RestaurantDashboard({ onLogout }) {
               onBack={() => setView("")}
             />
           )}
-          {view === "checkOrder" && <PastOrder isClockIn={isWorking} />}
+          {view === "checkOrder" && <CheckOrder isClockIn={isWorking} />}
           {view === "checkServe" && <ServeStatus isClockIn={isWorking} />}
         </div>
       </div>

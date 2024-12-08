@@ -4,7 +4,7 @@ import { NULL_TIME_STAMP } from "../../components/constant";
 import { completeOrder } from "../../api/completeOrder";
 import { formatDate } from "../../components/formatDate";
 
-function RestGetPastOrder( {isClockIn}) {
+function CheckOrder( {isClockIn}) {
   const [orders, setOrders] = useState([]);
   const [view, setView] = useState(""); // 訂單視圖
 
@@ -107,4 +107,4 @@ function RestGetPastOrder( {isClockIn}) {
   );
 }
 
-export default RestGetPastOrder;
+export default CheckOrder;
