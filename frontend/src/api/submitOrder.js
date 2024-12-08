@@ -3,7 +3,7 @@ import { NULL_TIME } from "../components/constant";
 import { formatDate } from "../components/formatDate";
 
 
-export const submitOrder = async (orderProcessingTime, eating_utensil, plastic_bag, note, c_id, r_id, meal_items) => {
+export const submitOrder = async (orderProcessingTime, eating_utensil, plastic_bag, note, c_id, r_id, meal_items, coupon_id = null) => {
   // 生成當下時間
   const now = new Date();
   const afterProcess = new Date(now.getTime() + orderProcessingTime * 60 * 1000);
@@ -18,6 +18,7 @@ export const submitOrder = async (orderProcessingTime, eating_utensil, plastic_b
     c_id: c_id,
     r_id: r_id,
     meal_items: meal_items,
+    coupon_id: coupon_id,
   };
 
 

@@ -65,11 +65,12 @@ def Submit_order() :
     c_id = data.get('c_id')
     r_id = data.get('r_id')
     meal_items = data.get('meal_items')
+    coupon_id = data.get('coupon_id', None)  # 默認為 None
     print(type(meal_items))
     print(meal_items, flush=True)
     
     submit_order(order_time, expected_time, pick_up_time, \
-                 eating_utensil, plastic_bag, note, c_id, r_id, meal_items)
+                 eating_utensil, plastic_bag, note, c_id, r_id, meal_items,coupon_id)
     
     return jsonify({"result" : "success"}), 200
     
@@ -124,17 +125,26 @@ def getCName(c_id) :
   
   
 # meal_item : [{'name' : name, 'number' : number}, {}, ...]
-def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id, meal_items: list) -> None:
+# coupon_id 可以為空(none)
+def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id, meal_items: list, coupon_id = None) -> None:
     conn = connect_to_database()
     cur = conn.cursor()
     try:
+        # 若有傳入 coupon_id，檢查其有效性
+        if coupon_id:
+            available_coupons = select_available_coupons(c_id)
+            valid_coupon = next((coupon for coupon in available_coupons if coupon['coupon_id'] == coupon_id), None)
+            print(f"折價券存在！")
+            if not valid_coupon:
+                print(f"折價券 {coupon_id} 不可用或不存在", flush=True)
+                raise ValueError("無效的折價券")
+
         # Insert into ORDER table
         order_query = """
         INSERT INTO "ORDER" (order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id) 
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING o_id
         """
         data =  (order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id)
-
         cur.execute(order_query,data)
         o_id = cur.fetchone()[0]
 
@@ -144,8 +154,27 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         """
         for meal in meal_items:
             cur.execute(meal_item_query, (meal['name'], o_id, r_id, meal['number']))
+
+        # 計算折價前的總金額
         total_price = calculate_order_total(meal_items,r_id)
-        print(f"訂單編號{o_id}的總金額為：{total_price}元。")
+        print(f"訂單編號{o_id}的折價前總金額為：{total_price}元。")
+
+        # 更新折價券的使用情況
+        if coupon_id:
+            discount_rate = valid_coupon['discount_rate']
+            total_price *= discount_rate
+            total_price = round(total_price)  # 四捨五入確保為整數
+            coupon_update_query = """
+            UPDATE COUPON
+            SET used_on_id = %s WHERE coup_id = %s
+            """
+            cur.execute(coupon_update_query, (o_id, coupon_id))
+            print(f"使用折價券 {coupon_id} ，折扣後總金額為：{total_price} 元。", flush=True)
+        else:
+            total_price = round(total_price)  # 確保金額為整數
+
+        # 檢查折價後（如果有）價格是否大於 200
+
         if(total_price >= 200):
             issue_coupon(c_id, order_time)
         conn.commit()
