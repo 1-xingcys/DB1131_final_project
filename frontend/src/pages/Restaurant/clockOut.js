@@ -1,14 +1,15 @@
 import React from "react";
 import { clock_out } from "../../api/clockInOut"; // 導入 clock_in 函數
 
-function ClockOut({ setIsClockedIn, onBack }) {
+function ClockOut({ setIsWorking, onBack }) {
   const handleClockOut = async () => {
     try {
       const r_id = sessionStorage.getItem("username"); // 假設 r_id 存儲在 sessionStorage 中
       await clock_out(r_id); // 調用打卡 API
       alert("Bye Bye ✧*｡٩(ˊᗜˋ*)و✧*｡");
-      setIsClockedIn(false); // 更新打卡狀態
-    //   sessionStorage.setItem("isClockedIn", JSON.stringify(false)); // 更新 sessionStorage
+      setIsWorking(false); // 更新打卡狀態
+      
+      window.location.reload(); // 刷新頁面
       onBack(); // 返回 Dashboard
     } catch (error) {
       console.error("下班失敗:", error.message);

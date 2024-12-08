@@ -11,3 +11,25 @@ export const update_serve_meal = async (r_id, name, supply_num) => {
     throw error;
   }
 };
+
+export const check_serve_meal_status = async (r_id) => {
+  try {
+    const response = await apiCall(`/restaurant/check/serve/meal`, "POST", { r_id });
+    console.log(`Check serve status successful`);
+    return response;
+  } catch (error) {
+    console.error(`Checked failed:`, error.message);
+    throw error;
+  }
+};
+
+export const get_serve_meal_status = async (r_id) => {
+  try {
+    const response = await apiCall(`/restaurant/get/serve/meal`, "POST", { r_id });
+    console.log(`Check serve status successful`);
+    return response;
+  } catch (error) {
+    console.error(`Checked failed:`, error.message);
+    throw error;
+  }
+};

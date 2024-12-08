@@ -59,11 +59,9 @@ def check_clock_in_status():
     if not r_id:
         return jsonify({"error": "Missing r_id"}), 400
 
-    is_clocked_in = get_clock_in_status(r_id)
-    if is_clocked_in:
-        return jsonify(is_clocked_in), 200
-    else:
-        return jsonify({"error": "Restaurant hasn't clocked in><"}), 401
+    status = get_clock_in_status(r_id)
+    return jsonify(status), 200
+
 
 @RestaurantApi_bp.route('/restaurant/update/serve/meal', methods=['POST'])
 def update_serve_meal():
@@ -79,6 +77,32 @@ def update_serve_meal():
 
     add_serve_meal(r_id, name, supply_num)
     return jsonify({"message": f"Update {name} successful!"}), 200 # Response(status=200)
+
+@RestaurantApi_bp.route('/restaurant/check/serve/meal', methods=['POST'])
+def check_serve_meal():
+    data = request.json
+    r_id = data.get('r_id')
+
+    if not r_id:
+        return jsonify({"error": "Missing r_id"}), 400
+
+    is_served_meal = get_serve_meal_status(r_id)
+    if not is_served_meal:
+        return jsonify(False), 200
+    else:
+        return jsonify(True), 200
+    
+@RestaurantApi_bp.route('/restaurant/get/serve/meal', methods=['POST'])
+def get_serve_meal():
+    data = request.json
+    r_id = data.get('r_id')
+
+    if not r_id:
+        return jsonify({"error": "Missing r_id"}), 400
+
+    res = get_serve_meal_status(r_id)
+    return jsonify(res), 200
+
 
 @RestaurantApi_bp.route('/restaurant/complete/order', methods=['POST'])
 def Complete_Order() :
@@ -263,29 +287,100 @@ def add_serve_meal(r_id, name, supply_num):
 
 
 def get_clock_in_status(r_id):
+    # query = """
+    # SELECT EXISTS(
+    #     SELECT *
+    #     FROM CLOCK_IN
+    #     WHERE r_id = %s AND date = %s
+    # );
+    # """
     query = """
-    SELECT EXISTS(
-        SELECT *
-        FROM CLOCK_IN
-        WHERE r_id = %s AND date = %s
-    );
+    SELECT open_time, close_time
+    FROM CLOCK_IN
+    WHERE r_id = %s AND date = %s
+    ;
     """
-    conn = connect_to_database()
-    cur = conn.cursor()
-    try:
-        today = datetime.now(timezone('Asia/Taipei')).date()
-        cur.execute(query, (r_id, today))
-        res = cur.fetchone()[0]
-        if res:
-            return True
-        else:
-            return False
-    except Exception as e:
-        conn.rollback()
-        print(f"Failed to get clock in status: {e}", flush=True)
-    finally:
-        cur.close()
-        conn.close()
+    today = datetime.now(timezone('Asia/Taipei')).date()
+    res = execute_select_query(query, (r_id, today))
+
+    if not res:
+        status = {
+        'working': False,
+        'isClocked': False
+        }
+    else:
+        # 解析查詢結果
+        open_time, close_time = res[0]
+        # 判斷工作狀態
+        working = open_time == close_time  # 上班中（close_time 未更新）
+        isClocked = bool(open_time)  # 是否有打卡紀錄
+
+        status = {
+            'working': working,
+            'isClocked': isClocked
+        }
+    print(f"working: {working}, isClocked: {isClocked}")
+    # return list(status.values())
+    return status
+    # if res and res[0][0]:
+    #     return True
+    # else:
+    #     return False
+    # conn = connect_to_database()
+    # cur = conn.cursor()
+    # try:
+    #     today = datetime.now(timezone('Asia/Taipei')).date()
+    #     cur.execute(query, (r_id, today))
+    #     res = cur.fetchone()[0]
+    #     if res:
+    #         return True
+    #     else:
+    #         return False
+    # except Exception as e:
+    #     conn.rollback()
+    #     print(f"Failed to get clock in status: {e}", flush=True)
+    # finally:
+    #     cur.close()
+    #     conn.close()
+
+
+# def get_serve_meal_status(r_id): # 確認當天是否已更新供應量
+#     query = """
+#     SELECT EXISTS(
+#         SELECT *
+#         FROM SERVE_MEAL
+#         WHERE r_id = %s AND date = %s
+#     );
+#     """
+#     today = datetime.now(timezone('Asia/Taipei')).date()
+#     res = execute_select_query(query, (r_id, today))
+#     if res and res[0][0]:
+#         return True
+#     else:
+#         return False
+    
+
+def get_serve_meal_status(r_id):
+    query = """
+    SELECT "name", supply_num
+    FROM SERVE_MEAL
+    WHERE r_id = %s AND date = %s
+    ORDER BY "name" ASC;
+    """
+    today = datetime.now(timezone('Asia/Taipei')).date()
+    res = execute_select_query(query, (r_id, today))
+
+    today_serve = {}
+    for row in res:
+        name, supply_num = row
+        print("[name] : ", name, flush=True)
+
+        today_serve[name] = {
+            'name': name,
+            'supply_num': supply_num
+        }
+    return list(today_serve.values())
+    
 
 def complete_Order(o_id, complete_time) -> bool :
     conn = connect_to_database()
