@@ -246,13 +246,13 @@ def add_clock_out(r_id):
 
 def add_serve_meal(r_id, name, supply_num):
     query = """
-    INSERT INTO SERVE_MEAL (r_id, name, date, supply_num) VALUES (%s, %s, %s, %s)
+    INSERT INTO SERVE_MEAL (r_id, name, date, supply_num, remaining_num) VALUES (%s, %s, %s, %s, %s)
     """
     conn = connect_to_database()
     cur = conn.cursor()
     try:
         today = datetime.now(timezone('Asia/Taipei')).date()
-        cur.execute(query, (r_id, name, today, supply_num))
+        cur.execute(query, (r_id, name, today, supply_num, supply_num))
         conn.commit()
         print(f"Successfully update {name}'s quantity to {supply_num} at {today}!", flush=True)
     except Exception as e:

@@ -210,6 +210,7 @@ CREATE TABLE IF NOT EXISTS SERVE_MEAL (
     name VARCHAR(10) NOT NULL,
     date DATE NOT NULL,
     supply_num INT NOT NULL CHECK (supply_num >= 0),
+    remaining_num INT NOT NULL CHECK (remaining_num >= 0),
     PRIMARY KEY (r_id, name, date),
     FOREIGN KEY (r_id) REFERENCES RESTAURANT(r_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (name, r_id) REFERENCES MEAL_ITEM(name, r_id) ON DELETE CASCADE ON UPDATE CASCADE

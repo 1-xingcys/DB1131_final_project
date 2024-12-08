@@ -132,7 +132,7 @@ def getCName(c_id) :
       return None
   
   
-# meal_item : [{'name' : name, 'number' : number}, {}, ...]
+# meal_items : [{'name' : name, 'number' : number}, {}, ...]
 # coupon_id 可以為空(none)
 def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id, meal_items: list, coupon_id = None) -> None:
     conn = connect_to_database()
@@ -147,6 +147,31 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
                 print(f"折價券 {coupon_id} 不可用或不存在", flush=True)
                 raise ValueError("無效的折價券")
 
+        # 確認供應數量足夠
+        check_supply_query = """
+        SELECT "name", remaining_num
+        FROM serve_meal
+        WHERE r_id = %s AND "name" = ANY(%s)
+        FOR UPDATE
+        """
+        name_list = [item['name'] for item in meal_items]
+        cur.execute(check_supply_query, (r_id, name_list))
+        rows = cur.fetchall()
+        
+        remaining_nums = {row[0]: row[1] for row in rows}
+        for meal_item in meal_items :
+            if meal_item['number'] > remaining_nums[ meal_item['name'] ] :
+                raise ValueError(f"{meal_item['name']} remain {remaining_nums[ meal_item['name'] ]} > meal_item['number']")
+        
+        # 更新供應（剩餘）數量
+        update_remaining_num_query = """
+        UPDATE serve_meal
+        SET remaining_num = remaining_num - %s
+        WHERE r_id = %s AND name = %s
+        """
+        update_meal_items = [(meal_item['number'], r_id, meal_item['name']) for meal_item in meal_items]
+        cur.executemany(update_remaining_num_query, update_meal_items)
+        
         # Insert into ORDER table
         order_query = """
         INSERT INTO "ORDER" (order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id) 
@@ -162,6 +187,8 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         """
         for meal in meal_items:
             cur.execute(meal_item_query, (meal['name'], o_id, r_id, meal['number']))
+            
+        conn.commit()
 
         # 計算折價前的總金額
         total_price = calculate_order_total(meal_items,r_id)
@@ -185,7 +212,7 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
 
         if(total_price >= 200):
             issue_coupon(c_id, order_time)
-        conn.commit()
+        
         print("Order submitted successfully", flush=True)
 
     except Exception as e:
@@ -272,7 +299,7 @@ def select_opening_restaurant_name() :
 
 def select_opening_restaurant_meal_item(r_id) :
     query = """
-    SELECT mi.name, mi.price, mi.processing_time, sm.supply_num
+    SELECT mi.name, mi.price, mi.processing_time, sm.remaining_num
     FROM MEAL_ITEM AS mi
 	JOIN serve_meal AS sm ON mi.r_id = sm.r_id AND mi.name = sm.name
     WHERE mi.r_id = %s AND sm.date = now()::DATE AND sm.supply_num > 0
@@ -414,6 +441,7 @@ def validate_coupon(c_id, discount_rate: float) -> list:
     '''
     pass
 
-def update_supply_num(meal_item:list):
+def update_supply_num(r_id, meal_item: list):
     # meal_item : [{'name' : name, 'number' : number}, {}, ...]
+    
     pass
