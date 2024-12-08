@@ -1,0 +1,172 @@
+.restaurantDashboard {
+    display: flex; /* 使用 Flex 布局 */
+    max-width: 1500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f1eff6; /* 卡片背景色 */
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+  }
+  
+  .title {
+    color: #5D5B6A; /* 標題文字顏色 */
+    text-align: center;
+  }
+
+  /* 側邊欄樣式 */
+.sidebar {
+  width: 200px;
+  background-color: #C5C3C6;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-right: 2px solid #EDEBE6;
+  transition: transform 0.3s ease; /* 添加過渡效果 */
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%); /* 隱藏側邊欄 */
+  opacity: 0;
+  position: absolute; /* 避免占用空間 */
+}
+
+.sidebar.visible {
+  transform: translateX(0); /* 顯示側邊欄 */
+}
+
+/* 漢堡按鈕 */
+.hamburgerButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.hamburgerButton span {
+  display: block;
+  width: 30px;
+  height: 3px;
+  background-color: #333333;
+  margin: 5px 0;
+  transition: background-color 0.3s ease;
+}
+
+.hamburgerButton:hover span {
+  background-color: #A7A2A9;
+}
+
+/* 主內容區域 */
+.content {
+  flex: 1;
+  padding: 20px;
+}
+.content.fullscreen {
+  width: 100%; /* 滿版 */
+}
+.card {
+  background-color: #F5F5F3;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
+  .sidebar {
+    width: 150px;
+    background-color: #d6cfda; /* 側邊欄背景色 */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 左對齊 */
+    border-right: 2px solid #EDEBE6; /* 分隔線 */
+  }
+  
+  .sidebar button {
+    background-color: #f5f3f4; /* 按鈕背景色 */
+    color: #333333;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    width: 100%; /* 按鈕寬度適應側邊欄 */
+    text-align: left;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .sidebar button:hover {
+    background-color: #bcb7be; /* 懸停效果 */
+    transform: scale(1.05); /* 懸停放大效果 */
+  }
+  
+  .sidebar button:disabled {
+    background-color: #EDEBE6;
+    color: #A7A2A9;
+    cursor: not-allowed;
+  }
+  
+  .content {
+    flex: 1; /* 主區域占據剩餘空間 */
+    padding: 20px;
+  }
+  
+  .card {
+    background-color: #f4f3f5;  /* 主區域背景 */
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .buttonGroup {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+
+
+
+  .button {
+    background-color: #C5C3C6; /* 按鈕背景色 */
+    color: #333333; /* 按鈕文字顏色 */
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .button:hover {
+    background-color: #A7A2A9; /* 懸停顏色 */
+    transform: scale(1.05); /* 懸停放大效果 */
+  }
+  
+  .button:disabled {
+    background-color: #EDEBE6; /* 禁用狀態顏色 */
+    color: #A7A2A9;
+    cursor: not-allowed;
+  }
+  
+  .card {
+    background-color: #f5f3f5;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cardTitle {
+    color: #5D5B6A;
+  }
+  
