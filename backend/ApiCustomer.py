@@ -89,17 +89,30 @@ def Get_past_orders():
 @CustomerApi_bp.route('/customer/available_coupons',methods=['POST'])
 def Get_available_coupons():
     data = request.json
-    c_id = data.get('c_id')
+    c_id = data.get('c_id')\
     # 呼叫select_available_coupons
     available_coupons = select_available_coupons(c_id)
     if available_coupons:
         return jsonify(available_coupons), 200
     else:
-        return jsonify({"error": "No past orders found for this customer"}), 404
+        return jsonify({"error": "No past orders found for this customer"}), 401
 
 @CustomerApi_bp.route('/customer/submit/order/validate/coupon',methods=['POST'])
 def Validate_coupon():
-    pass
+    try:
+        data = request.json
+        c_id = data.get("c_id")
+        discount_rate = data.get("discount_rate")
+        valid_coupon_id = validate_coupon(c_id, discount_rate)
+        if valid_coupon_id is not None:
+            return jsonify(valid_coupon_id), 200
+        else:
+            return jsonify({"error": "no coupon"}), 401
+            return jsonify({"error": f"顧客 {c_id} 沒有符合折扣率 {discount_rate} 的可用折價券"}), 401
+    except Exception as e:
+        print(f"Unexpected error in Validate_coupon: {e}", flush=True)
+        return jsonify({"error": "Validate_coupon內部錯誤"}), 500
+
 @CustomerApi_bp.route('/customer/update/supply_num',methods=['POST'])
 def Update_supply_num():
     pass
@@ -434,12 +447,33 @@ def issue_coupon(c_id: str, order_time: str) -> None:
     except Exception as e:
         print(f"Failed to issue coupon: {e}")
 
-def validate_coupon(c_id, discount_rate: float) -> list:
+def validate_coupon(c_id, discount_rate: float) -> int:
     '''
     顧客會選擇他想使用的折扣率，這個函數會檢查該顧客有沒有這個折扣率的折價券，
-    如果有就回傳符合的coupon_id 沒有的話
+    如果有就回傳符合的coupon_id 沒有的話就回傳none，並raise error
     '''
-    pass
+    query = """
+    SELECT coup_id, due_date
+    FROM COUPON
+    WHERE owner_id = %s AND discount_rate = %s AND used_on_id IS NULL AND due_date >= CURRENT_DATE
+    ORDER BY due_date ASC
+    """
+
+    try:
+        # 執行查詢，獲取符合條件的折價券
+        rows = execute_select_query(query, (c_id, discount_rate))
+        if not rows:
+            # 如果沒有找到符合條件的折價券，返回 None 並記錄錯誤
+            print(f"這白癡沒有這種折價券是在耍什麼低能操 {c_id} 折扣率: {discount_rate}", flush=True)
+            return None
+        # 選擇 due_date 最近的折價券 (第一個結果)
+        coupon_id = rows[0][0]  # 取出 coup_id
+        print(f"找到符合條件的折價券: coupon_id {coupon_id}, discount_rate {discount_rate}", flush=True)
+        return coupon_id
+
+    except Exception as e:
+        print(f"validate_coupon出包", flush=True)
+        raise
 
 def update_supply_num(r_id, meal_item: list):
     # meal_item : [{'name' : name, 'number' : number}, {}, ...]
