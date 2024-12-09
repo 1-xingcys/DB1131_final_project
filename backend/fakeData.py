@@ -55,3 +55,81 @@ def generate_fake_restaurant() :
     # 添加到列表
     restaurants_data.append((r_id, r_name, r_password, location))
   add_restaurants(restaurants_data)
+
+from faker import Faker
+from ApiRestaurant import set_regular_open_time
+from databaseUtils import connect_to_database
+import random
+
+def generate_and_insert_regular_open_time():
+    """
+    從資料庫中選取所有 r_id，生成模擬的 REGULAR_OPEN_TIME 資料（包含工作日區間），並插入到資料庫。
+    """
+    fake = Faker()
+    
+    # 預定義工作時間區間
+    predefined_shifts = [
+        ('08:00:00', '13:00:00'),  # 早上到中午
+        ('12:00:00', '19:00:00'),  # 中午到傍晚
+        ('08:00:00', '17:00:00'),  # 早上到傍晚
+        ('12:00:00', '21:00:00')   # 中午到晚上
+    ]
+    
+    # 預定義工作日區間
+    predefined_days = [
+        (['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], 0.6),  # 週一到週五（權重最大）
+        (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 0.2),  # 週一到週日
+        (['Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 0.2)  # 週一公休
+    ]
+    
+    hours = []
+    
+    # 從資料庫中獲取所有 r_id
+    query = "SELECT r_id FROM RESTAURANT"
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        cur.execute(query)
+        r_ids = [row[0] for row in cur.fetchall()]  # 獲取所有 r_id
+        if not r_ids:
+            print("No r_ids found in the database. Exiting...")
+            return
+        
+        # 生成 REGULAR_OPEN_TIME 的資料
+        for r_id in r_ids:
+            # 根據權重隨機選擇一個工作日區間
+            days, _ = random.choices(predefined_days, weights=[w[1] for w in predefined_days])[0]
+            for day in days:
+                # 隨機選擇一個預定義區間
+                open_time, close_time = random.choice(predefined_shifts)
+                
+                hours.append((r_id, day, open_time, close_time))
+        
+        # 插入到資料庫
+        set_regular_open_time(hours)
+        print(f"Inserted regular open times for {len(r_ids)} restaurants.")
+    
+    except Exception as e:
+        print(f"Failed to fetch r_ids or insert regular open times: {e}")
+    finally:
+        cur.close()
+        conn.close()
+
+def generate_fake_meal_items():
+   pass
+
+def generate_fake_orders():
+   # 某些超過200元的訂單會去生成 coupon
+   pass
+
+def generate_fake_holidays():
+   pass
+
+def generate_fake_clock_ins():
+   pass
+
+def gen_fake_include_meal_in_order():
+   pass
+
+def genenerate_fake_serve_meals():
+   pass

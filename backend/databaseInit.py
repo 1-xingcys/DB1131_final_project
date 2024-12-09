@@ -1,7 +1,7 @@
 
 # databaseInit.py
 from databaseUtils import connect_to_database
-from fakeData import generate_fake_customers, generate_fake_restaurant
+from fakeData import generate_fake_customers, generate_fake_restaurant, generate_and_insert_regular_open_time
 
 # temp for initializing some fake data
 from ApiRestaurant import set_regular_open_time, add_meal_items
@@ -19,7 +19,8 @@ def db_init() :
     
     generate_fake_customers()
     generate_fake_restaurant()
-
+    generate_and_insert_regular_open_time()
+    
     # Example usage of add_restaurants
     restaurants = [
         ("Rwatergun", "大水缸", "password", "科技大樓站"),
