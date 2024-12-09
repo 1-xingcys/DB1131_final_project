@@ -214,10 +214,9 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         for meal in meal_items:
             cur.execute(meal_item_query, (meal['name'], o_id, r_id, meal['number']))
             
-
         # 計算折價前的總金額
         total_price = calculate_order_total(meal_items,r_id)
-        print(f"訂單編號{o_id}的折價前總金額為：{total_price}元。")
+        print(f"訂單編號{o_id}的折價前總金額為：{total_price}元。",flush=True)
 
         # 更新折價券的使用情況
         if coupon_id:
@@ -358,14 +357,24 @@ def select_past_order(c_id) -> list:
     """
     rows = execute_select_query(query, (c_id,))
     past_orders = {}
+
     for row in rows:
         (o_id, order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, r_id, meal_name, meal_number) = row
+
         if o_id not in past_orders:
+            # 查詢餐廳名稱
             query1 = f"SELECT r_name FROM restaurant AS r WHERE r_id = '{r_id}'"
             print("query1 : ", query1)
             result = execute_select_query(query1)
-            print("result : ", result, flush=True)
             r_name = result[0][0]
+
+            # 查詢是否有折價券
+            coupon_query = "SELECT discount_rate FROM COUPON WHERE used_on_id = %s"
+            coupon_result = execute_select_query(coupon_query, (o_id,))
+            discount_rate = coupon_result[0][0] if coupon_result else None
+            print(f"訂單 {o_id} 有dicount_rate {discount_rate}",flush = True)
+
+            # 初始化訂單數據
             past_orders[o_id] = {
                 'order_id': o_id,
                 'order_time': order_time,
@@ -375,10 +384,27 @@ def select_past_order(c_id) -> list:
                 'plastic_bag': plastic_bag,
                 'note': note,
                 'restaurant_name': r_name,
-                'meals': []
+                'meals': [],
+                'discount_rate' : discount_rate if discount_rate else None,
+                'total_price' : None,  # 初始化總金額
+                'r_id' : r_id # 只是下面計算金額需要，前端會忽略他
             }
+        # 添加餐點到訂單
         if meal_name:
-            past_orders[o_id]['meals'].append({'name': meal_name, 'number': meal_number})
+            past_orders[o_id]['meals'].append({'name' : meal_name, 'number': meal_number})
+            print(f"訂單編號{o_id}有餐點： {past_orders[o_id]['meals']}",flush=True)
+    # 計算所有訂單的總金額
+    for o_id, order in past_orders.items():
+        meals_for_order = order['meals']
+        print(meals_for_order,flush=True)
+        total_price = calculate_order_total(meals_for_order, order['r_id'])
+        print(f"訂單編號 {o_id} 得折扣前總金額為 {total_price} 元",flush=True)
+        # 根據折扣率調整總金額
+        if order['discount_rate']:
+            total_price = round(total_price * order['discount_rate'])
+        # 更新總金額
+        past_orders[o_id]['total_price'] = total_price
+        print(f"訂單編號 {o_id} 得最後最後最後折扣後總金額為 {total_price} 元",flush=True)
     return list(past_orders.values())
 
 # 顯示顧客目前尚未使用且還沒過期的折價券

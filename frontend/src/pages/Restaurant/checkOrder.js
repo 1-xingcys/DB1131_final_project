@@ -65,6 +65,7 @@ function CheckOrder( {isClockIn}) {
             <th>評分</th>
             <th>評論</th>
             <th>餐點</th>
+            <th>折價</th>
             {view === "processing" && (<th>完成訂單</th>)}
           </tr>
         </thead>
@@ -72,9 +73,9 @@ function CheckOrder( {isClockIn}) {
           {orders.map(order => (
             <tr key={order.id}>
               <td>{order.id}</td>
-              <td>{order.order_time}</td>
-              <td>{order.expected_time}</td>
-              <td>{order.finish_time === NULL_TIME_STAMP ? "待處理" : order.finish_time}</td>
+              <td>{new Date(order.order_time).toISOString().replace("T", " ").slice(0, 16)}</td>
+              <td>{new Date(order.expected_time).toISOString().replace("T", " ").slice(0, 16)}</td>
+              <td>{order.finish_time === NULL_TIME_STAMP ? "待處理" : new Date(order.finish_time).toISOString().replace("T", " ").slice(0, 16)}</td>
               <td>{order.eating_utensil ? "✅" : "❌"}</td>
               <td>{order.plastic_bag ? "✅" : "❌"}</td>
               <td>{order.note || "無"}</td>
@@ -94,6 +95,8 @@ function CheckOrder( {isClockIn}) {
                   </ul>
                 </details>
               </td>
+              {/* 有的話印discount_rate,沒有的話用“無” */}
+              <td>{order.discount_rate ? `${order.discount_rate * 100}%` : "無"}</td>
               <td>
                 {view === "processing" && (
                   <button onClick={() => handleConfirm(order.id)}>完成</button>

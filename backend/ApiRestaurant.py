@@ -202,6 +202,11 @@ def select_past_order(r_id):
         eating_utensil, plastic_bag, note, c_id, starnum, review, r_id = row
         
         print("[select_past_order query_meals] : ", query_meals)
+        # 查詢是否有折價券
+        coupon_query = "SELECT discount_rate FROM COUPON WHERE used_on_id = %s"
+        coupon_result = execute_select_query(coupon_query, (o_id,))
+        discount_rate = coupon_result[0][0] if coupon_result else None
+        print(f"訂單 {o_id} 有dicount_rate {discount_rate}",flush = True)
 
         meal_rows = execute_select_query(query_meals, (str(o_id),))
         print("[meal_rows] : ", meal_rows, flush=True)
@@ -218,7 +223,8 @@ def select_past_order(r_id):
             'c_id': c_id,
             'starnum': starnum,
             'review': review,
-            'meals': meals 
+            'meals': meals,
+            'discount_rate' : discount_rate if discount_rate else None,
         }
     return list(past_order.values())
 

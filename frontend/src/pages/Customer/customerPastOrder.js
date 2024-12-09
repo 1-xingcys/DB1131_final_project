@@ -39,6 +39,7 @@ function CustomerPastOrders( { view } ) {
               <p>是否需要餐具: {order.eating_utensil ? "是" : "否"}</p>
               <p>是否需要塑膠袋: {order.plastic_bag ? "是" : "否"}</p>
               <p>備註: {order.note || "無"}</p>
+
   
               {/* 顯示餐點資訊 */}
               <h3>餐點列表：</h3>
@@ -49,6 +50,14 @@ function CustomerPastOrders( { view } ) {
                   </li>
                 ))}
               </ul>
+              {/* 顯示折價券資訊 */}
+            <p>
+              使用折價券種類:{" "}
+              {order.discount_rate ? `${order.discount_rate * 100}% 折扣` : "無使用折價券"}
+            </p>
+            {/* 顯示總金額 */}
+            <p>總金額: ${order.total_price ? order.total_price.toFixed(2) : "計算中"}</p>
+         
             </div>
           ))}
         </div>
