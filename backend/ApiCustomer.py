@@ -352,8 +352,8 @@ def select_past_order(c_id) -> list:
     SELECT o.o_id, o.order_time, o.expected_time, o.pick_up_time, o.eating_utensil, o.plastic_bag, o.note, o.r_id, imo.name, imo.number
     FROM "ORDER" o
     LEFT JOIN INCLUDE_MEAL_IN_ORDER imo ON o.o_id = imo.o_id
-    WHERE o.c_id = %s
-    ORDER BY o.order_time DESC
+    WHERE o.c_id = %s  AND o.order_time >= NOW() - INTERVAL '7 days'
+    ORDER BY o.order_time DESC;
     """
     rows = execute_select_query(query, (c_id,))
     past_orders = {}
