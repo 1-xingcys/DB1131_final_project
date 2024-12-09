@@ -1,8 +1,10 @@
-from databaseUtils import connect_to_database
+from databaseUtils import connect_to_database, execute_select_query
 from ApiRestaurant import set_regular_open_time, add_meal_items
 from ApiAdmin import add_customers, add_restaurants
 from faker import Faker
 import pandas as pd
+import random
+from datetime import timedelta
 
 
 def generate_fake_customers() :
@@ -33,12 +35,11 @@ def generate_fake_customers() :
     add_customers(customers)
     
 def generate_fake_restaurant() :
-  file_path = './restaurants.csv'
-  restaurants_df = pd.read_csv(file_path)
   r_id_set = set()  # 確保 r_id 唯一
   restaurants_data = []
+  meal_items = []
   fake = Faker("zh_TW")
-  for index, row in restaurants_df.iterrows():
+  for restaurant in restaurant_data:
     # 生成唯一的 r_id
     while True:
         r_id = f"R{fake.unique.random_number(digits=6, fix_len=True)}"
@@ -46,15 +47,25 @@ def generate_fake_restaurant() :
             r_id_set.add(r_id)
             break
     # 餐廳名稱和地點來自文件
-    r_name = row['name']
-    location = f"{row['location']}{index}"
+    r_name = restaurant[0]
+    location = f"{restaurant[1]}"
 
     # 生成密碼（10個字符，不包含特殊字符）
     r_password = fake.password(length=10, special_chars=False)
     
     # 添加到列表
     restaurants_data.append((r_id, r_name, r_password, location))
+    
+    # 新增餐點
+    for item in meal_templates[r_name] :
+      price = random.choice([50, 75, 100, 125, 150])
+      processing_time = random.choice(range(1, 6))
+      meal_items.append((item, r_id, price, processing_time))
   add_restaurants(restaurants_data)
+  add_meal_items(meal_items)
+  
+
+    
 
 from faker import Faker
 from ApiRestaurant import set_regular_open_time
@@ -119,8 +130,44 @@ def generate_fake_meal_items():
    pass
 
 def generate_fake_orders():
-   # 某些超過200元的訂單會去生成 coupon
-   pass
+  fake = Faker("zh_TW")
+  c_ids = execute_select_query("SELECT c_id FROM CUSTOMER")
+  rs = execute_select_query("SELECT r_id, r_name FROM RESTAURANT")
+  
+  conn = connect_to_database()
+  cur = conn.cursor()
+  
+  for crow in c_ids :
+    c_id = crow[0]
+    for rrow in rs : 
+      r_id, r_name = rrow[0], rrow[1]
+      for _ in range(1) :
+        order_time = fake.date_time_this_year()
+        processing_time = fake.random_number(digits=1, fix_len=True)
+        pick_time = fake.random_number(digits=1, fix_len=True)
+        expected_time = order_time + timedelta(minutes=processing_time)
+        pick_up_time = expected_time + timedelta(minutes=pick_time)
+        eating_utensil = random.choice([True, False])
+        plastic_bag = random.choice([True, False])
+        note = random.choice(notes) if random.choice([True, False]) else None
+        order_query = """
+        INSERT INTO "ORDER" (order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, c_id, r_id) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING o_id
+        """
+        data =  (order_time.strftime('%Y-%m-%d %H:%M:%S'), expected_time.strftime('%Y-%m-%d %H:%M:%S'), pick_up_time.strftime('%Y-%m-%d %H:%M:%S'), eating_utensil, plastic_bag, note, c_id, r_id)
+        cur.execute(order_query,data)
+        o_id = cur.fetchone()[0]
+        
+        meal_item_query = """
+        INSERT INTO INCLUDE_MEAL_IN_ORDER (name, o_id, r_id, number) VALUES (%s, %s, %s, %s)
+        """
+        for item in meal_templates[r_name] :
+          if random.randint(0, 1) > 0.6 :
+            cur.execute(meal_item_query, (item, o_id, r_id, random.choice(range(1,3))))
+        conn.commit()
+            
+
+      
 
 def generate_fake_holidays():
    pass
@@ -133,3 +180,74 @@ def gen_fake_include_meal_in_order():
 
 def genenerate_fake_serve_meals():
    pass
+ 
+ 
+# 餐廳資料
+restaurant_data = [
+    ["摩斯漢堡", "小福樓1"],
+    ["稻彥商號", "小福樓2"],
+    ["麗宴精緻快餐", "小福樓3"],
+    ["比司多", "小福樓4"],
+    ["強尼兄弟", "小福樓5"],
+    ["勝十蘭", "小福樓6"],
+    ["銀魚泰式料理", "小福樓7"],
+    ["炸雞大獅", "小福樓8"],
+    ["可唐茶旅", "小福樓9"],
+    ["重慶抄手", "禮賢樓(卓聯)1"],
+    ["果果涼tea", "禮賢樓(卓聯)2"],
+    ["品軒樓", "禮賢樓(卓聯)3"],
+    ["小木屋鬆餅", "鹿鳴廣場"],
+    ["SUBWAY", "二活"],
+    ["稍飽燒肉", "醉月湖畔1"],
+    ["TT 法國麵包", "醉月湖畔2"],
+    ["穀果廚房", "社會科學院"],
+    ["JM Cafe & Bistro", "次震宇宙館"],
+    ["小農飯盒x茶茶小王子", "學新館"],
+    ["蘇杭餐廳", "校友會館"],
+]
+
+meal_templates = {
+  "摩斯漢堡": ["燒肉珍珠堡", "海洋珍珠堡", "摩斯雞塊"],
+  "稻彥商號": ["稻無敵", "龍蝦花壽司", "豆皮壽司"],
+  "麗宴精緻快餐": ["炒泡麵", "香腸飯", "日式烤肉飯"],
+  "比司多": ["卡拉雞腿堡套餐", "蘿蔔糕加蛋", "鐵板麵套餐"],
+  "強尼兄弟": ["油蔥雞肉飯", "精緻滷牛腱", "黑胡椒嫩煎雞胸"],
+  "勝十蘭": ["北海道味噌拉麵", "京都醬油拉麵", "日式牛五花蓋飯"],
+  "銀魚泰式料理": ["椒麻雞套餐", "咖哩雞套餐", "打拋豬套餐"],
+  "炸雞大獅": ["炸雞薯條", "大師蓋飯", "虎咬雞"],
+  "可唐茶旅": ["桑椹鮮果茶", "藍莓鮮果茶", "火龍鮮果茶"],
+  "重慶抄手": ["抄手", "酸辣湯", "擔擔麵"],
+  "果果涼tea": ["水果茶", "芋圓甜品", "椰奶凍"],
+  "品軒樓": ["烤鴨便當", "清蒸魚便當", "麻婆豆腐便當"],
+  "小木屋鬆餅": ["鮪魚沙拉蔬菜鬆餅", "葡萄奶酥鬆餅", "花生牛肉堡蔬菜鬆餅"],
+  "SUBWAY": ["火雞火腿潛艇堡", "百味俱樂部潛艇堡", "牛肉丸潛艇堡"],
+  "稍飽燒肉": ["牛肉套餐", "豬肉套餐"],
+  "TT 法國麵包": ["可頌", "法棍", "拿鐵"],
+  "穀果廚房": ["健康沙拉", "五穀飯", "綠茶"],
+  "JM Cafe & Bistro": ["咖啡", "三明治", "千層蛋糕"],
+  "小農飯盒x茶茶小王子": ["飯盒套餐", "烤雞腿", "果汁"],
+  "蘇杭餐廳": ["東坡肉", "醉雞", "蝦仁炒飯"],
+}
+
+notes = [
+    "加辣",
+    "不要蔥",
+    "不要香菜",
+    "去冰",
+    "醬料多一點",
+    "要大份量",
+    "請分開包裝",
+    "餐點請快速製作",
+    "要發票",
+    "加一份餐具",
+    "請幫我切成小塊",
+    "請不要加糖",
+    "我要全糖",
+    "請附上餐巾紙",
+    "請不要加花生",
+    "冷熱分離",
+    "請按時送達",
+    "我要少鹽",
+    "飲料不要太甜"
+]
+
