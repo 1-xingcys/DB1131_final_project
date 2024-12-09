@@ -30,8 +30,11 @@ function CustomerDashboard({ onLogout }) {
   return (
     <div style={{ display: 'flex' }}>
       {/* 常駐左上方的按鈕 */}
-      <button className={styles.fixedToggleButton} onClick={toggleSidebar}>
-        {isSidebarVisible ? "隱藏側邊欄" : "顯示側邊欄"}
+      <button className={styles.hamburgerButton} onClick={toggleSidebar}>
+        {/* {isSidebarVisible ? "隱藏側邊欄" : "顯示側邊欄"} */}
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
 
       {/* 側邊欄 */}

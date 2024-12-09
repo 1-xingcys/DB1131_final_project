@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/Login/LoginPage"; // 一開始看到的登入畫面
 import ProtectedRoute from "./components/ProtectedRoute"; // 路由檢查，防一些不預期的事情（上網查）
-import AdminDashboard from "./pages/Admin/AdminDashboard"; // admin 的已登入畫面
 import RestaurantDashboard from "./pages/Restaurant/RestaurantDashboard"; // restaurant 的已登入畫面
 import CustomerDashboard from "./pages/Customer/CustomerDashboard"; // customer 的已登入畫面
 
@@ -68,14 +67,6 @@ function App() {
           element={
             <ProtectedRoute userType={userType} allowedType="restaurant">
               <RestaurantDashboard onLogout={handleLogout} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/AdminDashboard"
-          element={
-            <ProtectedRoute userType={userType} allowedType="admin">
-              <AdminDashboard onLogout={handleLogout} />
             </ProtectedRoute>
           }
         />

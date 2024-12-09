@@ -34,17 +34,6 @@ function LoginPage({ onLogin }) {
       setErrorMessage("請輸入帳號和密碼！");
       return;
     }
-    // 如果是Admin要登入，帳密都是Admin
-    if(selectedRole === "admin"){
-        if(username === "Admin" && password === "Admin") {
-          onLogin(selectedRole, username);
-          return;
-        } else {
-          setErrorMessage("帳號或密碼錯誤！");
-          return;
-        }
-  }
-
 
     // 會確認身份是否正確以及取得使用者名字，總共 call 兩個 API
     try {
@@ -77,9 +66,8 @@ function LoginPage({ onLogin }) {
         <label htmlFor="role-select"></label>
         <select className={styles.formElement} id="role-select" value={selectedRole} onChange={handleRoleSelect}>
           <option value="">-- 請選擇身份 --</option>
-          <option value="admin">Admin</option>
-          <option value="restaurant">Restaurant</option>
-          <option value="customer">Customer</option>
+          <option value="restaurant">商家（Restaurant）</option>
+          <option value="customer">顧客（Customer）</option>
         </select>
       </div>
 
