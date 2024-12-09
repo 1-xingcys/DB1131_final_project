@@ -16,9 +16,12 @@ function OrderForm(){
   const [shoppingCart, setShoppingCart] = useState([]);
   const [selectedRest, setSelectedRest] = useState("");
   const [orderInfo, setOrderInfo] = useState(
-    {eating_utensil : false, plastic_bag : false, note : "",coupon_id: null}
+    {eating_utensil : false, plastic_bag : false, note : "", coupon_id: null}
   );
   const [checkCart, setCheckCart] = useState(false);
+
+  const [selectedDiscountRate, setSelectedDiscountRate] = useState("");
+  const [couponId, setCouponId] = useState(null); // 用於存儲驗證成功的 coupon_id
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,7 +30,7 @@ function OrderForm(){
         setrestName(response);
         console.log("get restaurant names successful", response);
       } catch (error) {
-        console.log("get restaurant names failed :", error.message);
+        console.log("get restaurant names failed :", error.error);
       }
     };
 
@@ -80,7 +83,7 @@ function OrderForm(){
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const order_processing_time = shoppingCart.reduce((total, item) => {return total += item.processing_time * item.quantity}, 0);
     const mealItems = shoppingCart.map((item) => ({name : item.name, number : item.quantity }));
 
@@ -90,26 +93,33 @@ function OrderForm(){
     console.log(`需要餐具：${orderInfo.eating_utensil ? "是" : "否"}`,
       `需要塑膠袋：${orderInfo.plastic_bag ? "是" : "否"}`,
       `備註：${orderInfo.note || "無"}`)
-    console.log(`折扣率：${orderInfo.discount_rate || "無"}`);
+    console.log(`折價券編號：${orderInfo.coupon_id || "無"}`);
+    console.log(`折扣率為 ${selectedDiscountRate}`);
     console.log(`預計備餐時間 ＝ ${order_processing_time}`);
     console.log(`總金額 = $${shoppingCart.reduce((total, item) => {return total += item.price * item.quantity}, 0)}`)
     
     try {
-      submitOrder(order_processing_time, orderInfo.eating_utensil, 
+      const response = await submitOrder(order_processing_time, orderInfo.eating_utensil, 
         orderInfo.plastic_bag, orderInfo.note, 
-        sessionStorage.getItem("username"), selectedRest, mealItems,orderInfo.coupon_id);
-      alert("訂單已送出！")
+        sessionStorage.getItem("username"), selectedRest, mealItems, orderInfo.coupon_id);
+      console.log(`submitOrder response : ${response}`);
+      if(response.getCoupon){
+        alert(`訂單已送出！\n獲得 ${response.discount_rate} 折價券！
+          使用期限為 ${new Date(response.start_date).toISOString().split("T")[0]} ~ ${new Date(response.due_date).toISOString().split("T")[0]}`);
+      } else alert("訂單已送出！");
+      resetOrder();
     } catch(error) {
-      throw error;
+      resetOrder();
+      alert(error);
     }
-
-    resetOrder();
   }
 
   const resetOrder = () => {
     setShoppingCart([]);
     setOrderInfo({eating_utensil : false, plastic_bag : false, note : "",coupon_id: null});
     setSelectedRest("");
+    setSelectedDiscountRate("");
+    setCouponId("");
   }
 
 
@@ -134,7 +144,13 @@ function OrderForm(){
       {/* 選擇餐點 */}
       {selectedRest && <div>
         {/* 處理餐具、塑膠袋、備註 */}
-        <OrderDetailsForm orderInfo={orderInfo} onOrderInfoChange={handleOrderInfoChange} />
+        <OrderDetailsForm 
+          orderInfo={orderInfo} 
+          onOrderInfoChange={handleOrderInfoChange}
+          couponId={couponId}
+          setCouponId={setCouponId}
+          selectedDiscountRate={selectedDiscountRate}
+          setSelectedDiscountRate={setSelectedDiscountRate} />
       </div>}
       
       <div>
@@ -143,6 +159,7 @@ function OrderForm(){
           checkCart={checkCart}
           shoppingCart={shoppingCart}
           orderInfo={orderInfo}
+          selectedDiscountRate={selectedDiscountRate}
         />
       </div>
       {/* 是否顯示購物車按鈕 */}

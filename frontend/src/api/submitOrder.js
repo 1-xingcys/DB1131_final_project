@@ -26,7 +26,7 @@ export const submitOrder = async (orderProcessingTime, eating_utensil, plastic_b
     const response = await apiCall(`/customer/submit/order`, "POST", orderData);
     return response;
   } catch (error) {
-    console.error("Authentication failed:", error.message);
+    console.error("submit order failed:", error);
     throw error;
   }
 };

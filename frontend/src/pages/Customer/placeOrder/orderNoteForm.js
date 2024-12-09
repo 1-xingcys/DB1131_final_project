@@ -4,9 +4,9 @@ import styles from './placeOrder.module.css';
 import { validateCoupon } from "../../../api/validCoupon";
 
 // 處理是否需要餐具、塑膠袋、備註的邏輯
-function OrderDetailsForm({ orderInfo, onOrderInfoChange }) {
-  const[selectedDiscountRate, setSelectedDiscountRate] = useState("");
-  const [couponId, setCouponId] = useState(null); // 用於存儲驗證成功的 coupon_id
+function OrderDetailsForm({ orderInfo, onOrderInfoChange, couponId, setCouponId,  selectedDiscountRate, setSelectedDiscountRate}) {
+  // const[selectedDiscountRate, setSelectedDiscountRate] = useState("");
+  // const [couponId, setCouponId] = useState(null); // 用於存儲驗證成功的 coupon_id
 
   // 處理勾選框變化
   const handleCheckboxChange = (e) => {
@@ -21,19 +21,25 @@ function OrderDetailsForm({ orderInfo, onOrderInfoChange }) {
   };
   // 處理折扣率選擇變化
   const handleDiscountRateChange = async (e) => {
-    setSelectedDiscountRate(e.target.value);
+    const discountRate = e.target.value;
+    setSelectedDiscountRate(discountRate);
+
+    if (discountRate === "") return;
     try {
-      const result = await validateCoupon(sessionStorage.getItem("username"), e.target.value);
+      const result  = await validateCoupon(sessionStorage.getItem("username"), discountRate);
       setCouponId(result);
-      onOrderInfoChange({ ...orderInfo, coupon_id: result});
+      const updatedOrderInfo = { ...orderInfo, coupon_id: result };
+      onOrderInfoChange(updatedOrderInfo);
+      console.log(`選取編號 ${result} 折價券`);
     } catch(error){
       console.log("handleDiscountRateChange出包");
       console.error("無法驗證折價券:", error?.response?.error || "未知錯誤");
       alert("折價券驗證失敗，請到左攔查看現有折價券！");
       setSelectedDiscountRate("");
+      return;
     }
-
   };
+
   return (
     <form className={styles.formContainer}>
       <div className={styles.formGroup}>
@@ -88,7 +94,6 @@ function OrderDetailsForm({ orderInfo, onOrderInfoChange }) {
           <option value="0.8">八折</option>
           <option value="0.85">八五折</option>
           <option value="0.9">九折</option>
-          {!couponId && <p>沒有折扣率 {selectedDiscountRate} 的折價券，請到左攔查看現有折價券</p>}
         </select>
       </div>
     </form>

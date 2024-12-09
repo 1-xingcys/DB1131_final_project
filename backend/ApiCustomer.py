@@ -69,10 +69,18 @@ def Submit_order() :
     print(type(meal_items))
     print(meal_items, flush=True)
     
-    submit_order(order_time, expected_time, pick_up_time, \
-                 eating_utensil, plastic_bag, note, c_id, r_id, meal_items,coupon_id)
+    # 向資料庫更新訂單相關資訊，並回傳折價券資訊給前端
+    try :
+        issued_discount_rate, start_date, due_date = submit_order(order_time, expected_time, pick_up_time, \
+                 eating_utensil, plastic_bag, note, c_id, r_id, meal_items, coupon_id)
+        result = {"getCoupon" : bool(issued_discount_rate), 
+                    "discount_rate" : issued_discount_rate, 
+                    "start_date" : start_date, 
+                    "due_date" : due_date}
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error" : str(e)}), 401
     
-    return jsonify({"result" : "success"}), 200
     
 
 @CustomerApi_bp.route('/customer/past_orders', methods=['POST'])
@@ -89,13 +97,13 @@ def Get_past_orders():
 @CustomerApi_bp.route('/customer/available_coupons',methods=['POST'])
 def Get_available_coupons():
     data = request.json
-    c_id = data.get('c_id')\
+    c_id = data.get('c_id')
     # 呼叫select_available_coupons
     available_coupons = select_available_coupons(c_id)
     if available_coupons:
         return jsonify(available_coupons), 200
     else:
-        return jsonify({"error": "No past orders found for this customer"}), 401
+        return jsonify({"error": "No past orders found for this customer"}), 404
 
 @CustomerApi_bp.route('/customer/submit/order/validate/coupon',methods=['POST'])
 def Validate_coupon():
@@ -108,15 +116,9 @@ def Validate_coupon():
             return jsonify(valid_coupon_id), 200
         else:
             return jsonify({"error": "no coupon"}), 401
-            return jsonify({"error": f"顧客 {c_id} 沒有符合折扣率 {discount_rate} 的可用折價券"}), 401
     except Exception as e:
         print(f"Unexpected error in Validate_coupon: {e}", flush=True)
         return jsonify({"error": "Validate_coupon內部錯誤"}), 500
-
-@CustomerApi_bp.route('/customer/update/supply_num',methods=['POST'])
-def Update_supply_num():
-    pass
-
 
 """"
 Internal Function
@@ -160,6 +162,10 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
                 print(f"折價券 {coupon_id} 不可用或不存在", flush=True)
                 raise ValueError("無效的折價券")
 
+        ###########################################
+        # 重要 Transection 開始：確認餐點數量 & 更新餐點數量
+        ###########################################
+
         # 確認供應數量足夠
         check_supply_query = """
         SELECT "name", remaining_num
@@ -174,7 +180,7 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         remaining_nums = {row[0]: row[1] for row in rows}
         for meal_item in meal_items :
             if meal_item['number'] > remaining_nums[ meal_item['name'] ] :
-                raise ValueError(f"{meal_item['name']} remain {remaining_nums[ meal_item['name'] ]} > meal_item['number']")
+                raise ValueError(f"{meal_item['name']} remain {remaining_nums[ meal_item['name'] ]} > {meal_item['number']}")
         
         # 更新供應（剩餘）數量
         update_remaining_num_query = """
@@ -184,6 +190,13 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         """
         update_meal_items = [(meal_item['number'], r_id, meal_item['name']) for meal_item in meal_items]
         cur.executemany(update_remaining_num_query, update_meal_items)
+        
+        conn.commit()
+        
+        ###########################################
+        # 重要 Transection 結束
+        ###########################################
+        
         
         # Insert into ORDER table
         order_query = """
@@ -201,7 +214,6 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         for meal in meal_items:
             cur.execute(meal_item_query, (meal['name'], o_id, r_id, meal['number']))
             
-        conn.commit()
 
         # 計算折價前的總金額
         total_price = calculate_order_total(meal_items,r_id)
@@ -221,16 +233,21 @@ def submit_order(order_time, expected_time, pick_up_time, eating_utensil, plasti
         else:
             total_price = round(total_price)  # 確保金額為整數
 
+        conn.commit()
+        
         # 檢查折價後（如果有）價格是否大於 200
 
-        if(total_price >= 200):
-            issue_coupon(c_id, order_time)
-        
         print("Order submitted successfully", flush=True)
-
+        if(total_price >= 200):
+            issued_discount_rate, start_date, due_date = issue_coupon(c_id, order_time)
+            return issued_discount_rate, start_date, due_date
+        
+        return "", "", ""
+        
     except Exception as e:
         conn.rollback()
         print(f"Failed to submit order: {e}", flush=True)
+        raise ValueError(e)
     finally:
         cur.close()
         conn.close()
@@ -315,7 +332,7 @@ def select_opening_restaurant_meal_item(r_id) :
     SELECT mi.name, mi.price, mi.processing_time, sm.remaining_num
     FROM MEAL_ITEM AS mi
 	JOIN serve_meal AS sm ON mi.r_id = sm.r_id AND mi.name = sm.name
-    WHERE mi.r_id = %s AND sm.date = now()::DATE AND sm.supply_num > 0
+    WHERE mi.r_id = %s AND sm.date = now()::DATE AND sm.remaining_num > 0
     """
     rows = execute_select_query(query, (r_id,))
     res = {}
@@ -414,10 +431,7 @@ def calculate_order_total(meal_items: list, r_id) -> float:
         print(f"Failed to calculate order total: {e}")
         return 0.0
 
-import random
-from datetime import datetime, timedelta
-
-def issue_coupon(c_id: str, order_time: str) -> None:
+def issue_coupon(c_id: str, order_time: str) -> tuple:
     """
     在 submit_order 中被呼叫。呼叫條件是如果前面 calculate_order_total 的金額大於等於 200。
     這個函數會拿訂單的資訊去資料庫插入一筆折價券資料，開始日期是下單時間（只取 order_time 中的日期部分），
@@ -444,6 +458,8 @@ def issue_coupon(c_id: str, order_time: str) -> None:
 
         print(f"Coupon issued successfully for customer {c_id} with discount rate {discount_rate}")
         print(f"下單時間為 {order_time} , 發放折價券時間為 {start_date} , 截止日期為 {due_date}")
+        
+        return discount_rate, start_date, due_date
     except Exception as e:
         print(f"Failed to issue coupon: {e}")
 
@@ -474,8 +490,3 @@ def validate_coupon(c_id, discount_rate: float) -> int:
     except Exception as e:
         print(f"validate_coupon出包", flush=True)
         raise
-
-def update_supply_num(r_id, meal_item: list):
-    # meal_item : [{'name' : name, 'number' : number}, {}, ...]
-    
-    pass

@@ -27,7 +27,7 @@ export const apiCall = async (endpoint, method = "GET", body = null, headers = {
     // 處理非成功狀態碼
     if (!response.ok) {
       const errorData = await response.json(); // 解析錯誤訊息
-      throw new Error(errorData.message || `Error: ${response.status}`);
+      throw new Error(errorData.error || `Error: ${response.status}`);
     }
 
     // 返回成功的數據

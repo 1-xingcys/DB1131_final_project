@@ -1,11 +1,11 @@
 import React from 'react';
 import styles from "./placeOrder.module.css"
 
-const ShoppingCart = ({ selectedRest, checkCart, shoppingCart, orderInfo }) => {
+const ShoppingCart = ({ selectedRest, checkCart, shoppingCart, orderInfo, selectedDiscountRate }) => {
   if (!selectedRest || !checkCart) return null;
 
   const totalPrice = shoppingCart.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item.price * item.quantity * (selectedDiscountRate ? selectedDiscountRate : 1),
     0
   );
 
@@ -26,6 +26,7 @@ const ShoppingCart = ({ selectedRest, checkCart, shoppingCart, orderInfo }) => {
       <p className={styles.info}>需要餐具：{orderInfo.eating_utensil ? "是" : "否"}</p>
       <p className={styles.info}>需要塑膠袋：{orderInfo.plastic_bag ? "是" : "否"}</p>
       <p className={styles.info}>備註：{orderInfo.note || "無"}</p>
+      <p className={styles.info}>{selectedDiscountRate ? `使用 ${selectedDiscountRate} 折價券` : `未使用折價券`}</p>
       <p className={styles.total}>總金額 = ${totalPrice}</p>
     </div>
   );
