@@ -231,7 +231,10 @@ def select_past_order(r_id):
 
 def add_clock_in(r_id):
     query = """
-    INSERT INTO CLOCK_IN (r_id, date, open_time, close_time) VALUES (%s, %s, %s, %s)
+    INSERT INTO CLOCK_IN (r_id, date, open_time, close_time)
+    VALUES (%s, %s, %s, %s)
+    ON CONFLICT (r_id, date)
+    DO UPDATE SET open_time = EXCLUDED.open_time, close_time = EXCLUDED.close_time
     """
     conn = connect_to_database()
     cur = conn.cursor()
@@ -241,11 +244,11 @@ def add_clock_in(r_id):
         date = current_datetime.date().strftime("%Y-%m-%d")
         cur.execute(query, (r_id, date, open_time, open_time))
         conn.commit()
-        print(f"Successfully clock in {date} {open_time}!", flush=True)
+        print(f"{r_id} Successfully clock in {date} {open_time}!", flush=True)
         return current_datetime.strftime("%Y-%m-%d %H:%M:%S")
     except Exception as e:
         conn.rollback()
-        print(f"Failed to clock in: {e}", flush=True)
+        print(f"{r_id} Failed to clock in: {e}", flush=True)
     finally:
         cur.close()
         conn.close()
@@ -262,6 +265,7 @@ def add_clock_out(r_id):
         current_datetime = datetime.now(timezone('Asia/Taipei'))
         close_time = current_datetime.time().replace(microsecond=0).strftime("%H:%M:%S")
         date = current_datetime.date().strftime("%Y-%m-%d")
+
         cur.execute(query, (close_time, r_id, date))
         conn.commit()
         print(f"Successfully set close time at {date} {close_time}!", flush=True)
