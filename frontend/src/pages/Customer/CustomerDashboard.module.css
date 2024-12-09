@@ -58,24 +58,6 @@
   background-color: #c82333; /* 滑鼠懸停時背景顏色加深 */
 }
 
-/* 常駐左上方的按鈕 */
-.fixedToggleButton {
-  position: fixed; /* 固定在視窗中的一個位置，滾動時不會移動 */
-  top: 10px; /* 距離視窗頂端 10px */
-  left: 10px; /* 距離視窗左側 10px */
-  padding: 10px; /* 按鈕內邊距設為 10px，方便點擊 */
-  background-color: #28a745; /* 按鈕背景色設為綠色 */
-  color: white; /* 按鈕文字設為白色 */
-  border: none; /* 移除按鈕的預設邊框 */
-  border-radius: 4px; /* 添加圓角，讓按鈕更具美感 */
-  cursor: pointer; /* 滑鼠移到按鈕上時顯示手型指標 */
-  z-index: 1000; /* 設定較高的層級，確保按鈕位於所有元素的上層 */
-}
-
-.fixedToggleButton:hover {
-  background-color: #218838; /* 滑鼠懸停時，背景顏色加深，提供視覺回饋 */
-}
-
 /* 漢堡按鈕 */
 .hamburgerButton {
   position: fixed;
