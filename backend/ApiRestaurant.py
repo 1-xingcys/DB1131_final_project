@@ -182,7 +182,7 @@ def select_past_order(r_id):
     query = """
     SELECT *
     FROM "ORDER"
-    WHERE r_id = %s
+    WHERE r_id = %s AND order_time >= NOW() - INTERVAL '7 days'
     ORDER BY o_id
     """
     
