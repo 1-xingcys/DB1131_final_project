@@ -156,7 +156,19 @@ def generate_fake_orders():
         for item in meal_templates[r_name] :
           if random.randint(0, 1) > 0.6 :
             cur.execute(meal_item_query, (item, o_id, r_id, random.choice(range(1,3))))
-        conn.commit()
+        
+        # 加入折價券
+        if random.randint(0, 1) > 0.6 :
+          discount_rate = random.choice([0.7, 0.75, 0.8, 0.85, 0.9])
+          cur.execute(
+                  """
+                  INSERT INTO COUPON (discount_rate, start_date, due_date, used_on_id, owner_id)
+                  VALUES (%s, %s, %s, null, %s)
+                  """,
+                  (discount_rate, order_time.date(), order_time.date() + timedelta(days=7), c_id)
+          )
+          conn.commit()
+        
             
 
 def generate_fake_holidays():
@@ -284,7 +296,6 @@ def generate_fake_clock_ins():
             open_time = str(open_time)
             close_time = str(close_time)
 
-            # 打印測試日誌
             print(f"Processing {r_id} on {current_date} ({current_day}): Open {open_time}, Close {close_time}")
 
             case = random.choices(
@@ -293,6 +304,28 @@ def generate_fake_clock_ins():
             )[0]
 
             try:
+                meal_item_query = """
+                SELECT name FROM meal_item WHERE r_id = %s
+                """
+                result = execute_select_query(meal_item_query, (r_id,))
+                meal_items = [row[0] for row in result]
+                
+                serve_meal_query = """
+                INSERT INTO SERVE_MEAL (r_id, name, date, supply_num, remaining_num) VALUES (%s, %s, %s, %s, %s)
+                """
+                
+                if case != "當天不營業":
+                  conn = connect_to_database()
+                  cur = conn.cursor()
+                  for meal_item in meal_items :
+                    supply_num = random.choice([50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200])
+                    sale_rate = random.choice([0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8])
+                    remaining_num  = supply_num * sale_rate
+                    cur.execute(serve_meal_query, (r_id, meal_item, current_date, supply_num, remaining_num))
+                  conn.commit()
+                  cur.close()
+                  conn.close()
+
                 if case == "準時上下班":
                     add_clock_in_with_time(r_id, current_date, open_time)
                     add_clock_out_with_time(r_id, current_date, close_time)
@@ -327,9 +360,6 @@ def generate_fake_clock_ins():
                 print(f"Error processing {r_id} on {current_date}: {e}")
 
         start_date += delta
-
-def generate_fake_serve_meals():
-   pass
  
 def generate_fake_coupon():
    pass
