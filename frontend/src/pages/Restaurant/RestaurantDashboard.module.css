@@ -3,7 +3,7 @@
     width: 100vw;
     height: 100vh; /* 讓主容器充滿視窗 */
     background-color: #f1eff6; /* 卡片背景色 */
-    overflow: hidden;
+    overflow: auto;
     position: relative; /* 為絕對定位的側邊欄做準備 */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 柔和陰影 */

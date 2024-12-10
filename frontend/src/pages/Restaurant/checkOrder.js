@@ -9,9 +9,12 @@ import styles from "./clockInOut.module.css"; // 引入樣式模組
 function CheckOrder( {isClockIn}) {
   const [orders, setOrders] = useState([]);
   const [view, setView] = useState(""); // 訂單視圖
-
+  const [isLoading, setIsLoading] = useState(false); // 加載狀態
   useEffect(() => {
     const fetchOrders = async () => {
+      if (!view) return; // 若沒有選擇視圖，不進行查詢
+
+      setIsLoading(true); // 開始加載
       try {
         const response = await getRestOrder(sessionStorage.getItem("username"));
         console.log("get restaurant regular info successful", response);
@@ -23,6 +26,8 @@ function CheckOrder( {isClockIn}) {
         );
       } catch (error) {
         console.log("get restaurant regular info failed:", error.message);
+      } finally {
+        setIsLoading(false); // 結束加載
       }
     };
 
@@ -70,8 +75,15 @@ function CheckOrder( {isClockIn}) {
         {view ? (view === "past" ? "已完成訂單" : "待處理訂單") : ""}
       </h1>
 
+      {isLoading && (
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner}></div>
+          <p>加載中，請稍候...</p>
+        </div>
+      )}
+
       {/* 動態生成表格 */}
-      {view && (
+      {view && !isLoading && (
         <table className={styles.table}>
           <thead>
             <tr>
