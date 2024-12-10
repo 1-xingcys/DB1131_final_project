@@ -1,6 +1,8 @@
 import {useState, useEffect} from "react"
 import { getCustomerPastOrder } from "../../api/getCustPastOrder";
 import { NULL_TIME_STAMP } from "../../components/constant";
+
+import styles from "./custOther.module.css"; 
 import { updateReview } from "../../api/updateReview";
 
 function CustomerPastOrders( { view } ) {
@@ -56,8 +58,10 @@ function CustomerPastOrders( { view } ) {
   
     return (
       <div>
-
-        <h1>{view === "past" ? "已完成訂單" : "處理中訂單"}</h1>
+        {/* 訂單標題 */}
+        <h1 className={styles.title}>
+          {view ? (view === "past" ? "已完成訂單" : "待處理訂單") : ""}
+        </h1>
   
         {/* 動態呈現顧客的歷史訂單資訊 */}
         <div>

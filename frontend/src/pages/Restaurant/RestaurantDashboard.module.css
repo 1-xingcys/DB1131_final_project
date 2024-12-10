@@ -3,20 +3,25 @@
     width: 100vw;
     height: 100vh; /* 讓主容器充滿視窗 */
     background-color: #f1eff6; /* 卡片背景色 */
-    overflow: hidden;
+    overflow: auto;
     position: relative; /* 為絕對定位的側邊欄做準備 */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
   }
   
-  .title {
-    font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
-    text-align: center;
-    font-size: 2.5rem;
-    color: #42404b; /* 莫蘭迪色系 */
-    margin-top: 60px; /* 為漢堡菜單預留空間 */
-  }
-
+.title {
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+  text-align: center;
+  font-size: 2.5rem;
+  color: #42404b; /* 莫蘭迪色系 */
+  margin-top: 60px; /* 為漢堡菜單預留空間 */
+}
+.helloMessage {
+  font-size: 25px;
+  color: #464450;
+  margin-bottom: 20px;
+  text-align: center;
+}
 
 
   /* 側邊欄樣式 */
@@ -39,7 +44,6 @@
 }
 .sidebar.hidden {
   transform: translateX(-100%); /* 隱藏側邊欄 */
-  /* opacity: 0; */
    position: absolute; /* 避免占用空間 */
 }
 .sidebar.visible {
@@ -92,9 +96,9 @@
   background-color: #A7A2A9;
 }
 
+
 /* 主內容區域 */
 .content {
-
   flex: 1;
   padding: 20px;
   margin-left: 0; /* 默認無偏移 */
@@ -103,6 +107,8 @@
   box-shadow: none; /* 移除陰影 */
   background: none; /* 移除背景色 */
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+  width: 100%;
+  height: 100%;
 }
 .content.shifted {
   margin-left: 250px; /* 側邊欄打開時的偏移量 */
@@ -115,16 +121,22 @@
   padding: 15px;
   margin: 15px 0;
   border-radius: 8px;
-  /* border: none;  */
   box-shadow: none;
   background: none;
 }
-  
 .cardTitle {
   color: #5D5B6A;
 }
 
 
+/* 表格容器 */
+.tableContainer {
+  width: 100%;
+  max-width: 100%; /* 防止超出視窗 */
+  overflow-x: auto; /* 允許橫向滾動 */
+  margin: 0 auto; /* 讓表格居中 */
+  padding: 10px; /* 增加容器內邊距 */
+}
 /* 表格 */
 .table {
   width: 100%; /* 撐滿父容器 */
@@ -134,13 +146,11 @@
   overflow: hidden; /* 修復邊框溢出問題 */
   margin-top: 10px;
 }
-
 /* 表頭 */
 .table thead {
   background-color: #dedbdf; /* 表頭背景色 */
   border-bottom: 2px solid #c2c2c2; /* 表頭與內容分隔線 */
 }
-
 .table thead th {
   padding: 10px;
   color: #333;
@@ -148,28 +158,25 @@
   font-weight: bold;
   border-right: 1px solid #c2c2c2; /* 列分隔線 */
 }
-
 /* 表格行 */
 .table tbody tr {
   border-bottom: 1px solid #EDEBE6; /* 行間分隔線 */
 }
-
 .table tbody tr:last-child {
   border-bottom: none; /* 去掉最後一行的分隔線 */
 }
-
 .table tbody td {
   padding: 10px;
   text-align: center;
   color: #5D5B6A;
   border-right: 1px solid #e0e0e0; /* 列分隔線 */
 }
-
 /* 表格行懸停效果 */
 .table tbody tr:hover {
   background-color: #f9f9f9; /* 懸停背景色 */
   transition: background-color 0.3s ease;
 }
+
 
 /* 錯誤信息 */
 .error {
@@ -177,7 +184,6 @@
   text-align: center;
   margin-top: 10px;
 }
-
 /* 加載信息 */
 .loading {
   text-align: center;

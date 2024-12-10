@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { getCustomerAvailCoupons } from "../../api/getCustAvailCoupons";
 
+import styles from "./custOther.module.css";
+
 function CustomerAvailCoupons() {
   const [coupons, setCoupons] = useState([]);
 
@@ -20,23 +22,30 @@ function CustomerAvailCoupons() {
 
   return (
     <div>
-      <h1>可用折價券資訊</h1>
-
-      {/* 動態呈現顧客的可用折價券資訊 */}
-      <div>
-        {coupons.length > 0 ? (
-          coupons.map((coupon) => (
-            <div key={coupon.coupon_id} style={{ marginBottom: "20px" }}>
-              <h2>折價券編號: {coupon.coupon_id}</h2>
-              <p>折扣率: {coupon.discount_rate * 100}%</p>
-              <p>開始日期: {new Date(coupon.start_date).toISOString().split("T")[0]}</p>
-              <p>到期日期: {new Date(coupon.due_date).toISOString().split("T")[0]}</p>
-            </div>
-          ))
-        ) : (
-          <p>目前沒有可用的折價券。</p>
-        )}
-      </div>
+      {coupons.length > 0 ? (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>折價券編號</th>
+              <th>折扣率</th>
+              <th>開始日期</th>
+              <th>到期日期</th>
+            </tr>
+          </thead>
+          <tbody>
+            {coupons.map((coupon) => (
+              <tr key={coupon.coupon_id}>
+                <td>{coupon.coupon_id}</td>
+                <td>{(coupon.discount_rate * 100)}%</td>
+                <td>{new Date(coupon.start_date).toISOString().split("T")[0]}</td>
+                <td>{new Date(coupon.due_date).toISOString().split("T")[0]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className={styles.noCoupons}>目前沒有可用的折價券。</p>
+      )}
     </div>
   );
 }
