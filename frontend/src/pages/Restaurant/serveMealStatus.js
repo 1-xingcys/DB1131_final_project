@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { get_serve_meal_status } from "../../api/updateServeMeal"; // API 函數
 
+import styles from "./RestaurantDashboard.module.css"; // 引入樣式模組
+
 function ServeStatus({ isClockIn, onBack }) {
   const [serveMealData, setServeMealData] = useState([]);
   const [loading, setLoading] = useState(true); // 加載狀態
@@ -27,22 +29,19 @@ function ServeStatus({ isClockIn, onBack }) {
 
   // 返回的頁面結構
   return (
-    <div>
-      <h2>今日品項供應情形</h2>
+    <div className={styles.container}>
+      <h1>今日品項供應情形</h1>
 
-      {/* 加載中狀態 */}
-      {loading && <p>正在加載數據...</p>}
+      {loading && <p className={styles.loading}>正在加載數據...</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
-      {/* 錯誤信息 */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {/* 表格展示供應數據 */}
       {!loading && !error && (
-        <table border="1" cellPadding="5" style={{ borderCollapse: "collapse", width: "100%" }}>
+        <table className={styles.table}>
           <thead>
             <tr>
               <th>品項名稱</th>
-              <th>供應量</th>
+              <th>今日供應量</th>
+              <th>今日剩餘份數</th>
             </tr>
           </thead>
           <tbody>
@@ -51,11 +50,12 @@ function ServeStatus({ isClockIn, onBack }) {
                 <tr key={index}>
                   <td>{item.name}</td>
                   <td>{item.supply_num}</td>
+                  <td>{item.remaining_num}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="2" style={{ textAlign: "center" }}>
+                <td colSpan="3" style={{ textAlign: "center" }}>
                   暫無供應數據
                 </td>
               </tr>
@@ -63,11 +63,6 @@ function ServeStatus({ isClockIn, onBack }) {
           </tbody>
         </table>
       )}
-
-      {/* 返回按鈕 */}
-      {/* <button onClick={onBack} style={{ marginTop: "20px" }}>
-        返回
-      </button> */}
     </div>
   );
 }

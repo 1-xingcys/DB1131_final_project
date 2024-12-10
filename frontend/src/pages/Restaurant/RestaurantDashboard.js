@@ -11,8 +11,9 @@ import styles from "./RestaurantDashboard.module.css"; // 引入樣式模組
 
 
 function RestaurantDashboard({ onLogout }) {
-  // 確認是否上班中、
+  // 確認是否上班中
   const [isWorking, setIsWorking] = useState(false);
+  // 確認今日是否已有打卡紀錄
   const [hasClockInRecord, setHasClockInRecord] = useState(false);
   // 這個狀態變數用來判斷現在餐廳的操作
   const [view, setView] = useState("");
@@ -61,7 +62,6 @@ function RestaurantDashboard({ onLogout }) {
           isSidebarVisible ? styles.visible : styles.hidden
         }`}
       >
-        {/* <h2>操作選單</h2> */}
         <h3>您好 {sessionStorage.getItem("name")} ！</h3>
         {!isWorking ? (
           <>
@@ -92,26 +92,29 @@ function RestaurantDashboard({ onLogout }) {
       </div>
 
       {/* 主內容區域 */}
-      <div className={styles.content}>
-        <h1>Restaurant Dashboard</h1>
-        {/* <h2>您好 {sessionStorage.getItem("name")} ！</h2> */}
-        <div className={styles.card}>
-          {view === "clockIn" && (
-            <ClockIn
-              setIsWorking={setIsWorking}
-              onBack={() => setView("")}
-            />
-          )}
-          {view === "clockOut" && (
-            <ClockOut
-              setIsWorking={setIsWorking}
-              onBack={() => setView("")}
-            />
-          )}
-          {view === "checkOrder" && <CheckOrder isClockIn={isWorking} />}
-          {view === "checkServe" && <ServeStatus isClockIn={isWorking} />}
-        </div>
+      <div
+      className={`${styles.content} ${
+        isSidebarVisible ? styles.shifted : ""
+      }`}
+      >
+      <h1 className={styles.title}>真正的餓徒是不排隊的！</h1>
+      <div className={styles.card}>
+        {view === "clockIn" && (
+          <ClockIn
+            setIsWorking={setIsWorking}
+            onBack={() => setView("")}
+          />
+        )}
+        {view === "clockOut" && (
+          <ClockOut
+            setIsWorking={setIsWorking}
+            onBack={() => setView("")}
+          />
+        )}
+        {view === "checkOrder" && <CheckOrder isClockIn={isWorking} />}
+        {view === "checkServe" && <ServeStatus isClockIn={isWorking} />}
       </div>
+    </div>
     </div>
   );
 }

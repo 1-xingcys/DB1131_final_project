@@ -1,6 +1,8 @@
 import React from "react";
 import { clock_out } from "../../api/clockInOut"; // 導入 clock_in 函數
 
+import styles from "./clockInOut.module.css"; // 引入樣式模組
+
 function ClockOut({ setIsWorking, onBack }) {
   const handleClockOut = async () => {
     try {
@@ -18,10 +20,14 @@ function ClockOut({ setIsWorking, onBack }) {
   };
 
   return (
-    <div>
-      <h2>確認打卡</h2>
-      <button onClick={handleClockOut}>關閉值班</button>
-      <button onClick={onBack}>返回</button>
+    <div className={styles.container}>
+      <h2 className={styles.title}>確認打卡</h2>
+      <button onClick={handleClockOut} className={styles.button}>
+        關閉值班
+      </button>
+      <button onClick={onBack} className={styles.button}>
+        返回
+      </button>
     </div>
   );
 }

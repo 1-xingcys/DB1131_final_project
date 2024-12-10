@@ -1,57 +1,85 @@
 .restaurantDashboard {
     display: flex; /* 使用 Flex 布局 */
-    max-width: 1500px;
-    margin: 50px auto;
-    padding: 20px;
+    width: 100vw;
+    height: 100vh; /* 讓主容器充滿視窗 */
     background-color: #f1eff6; /* 卡片背景色 */
+    overflow: hidden;
+    position: relative; /* 為絕對定位的側邊欄做準備 */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
   }
   
   .title {
-    color: #5D5B6A; /* 標題文字顏色 */
+    font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
     text-align: center;
+    font-size: 2.5rem;
+    color: #42404b; /* 莫蘭迪色系 */
+    margin-top: 60px; /* 為漢堡菜單預留空間 */
   }
-
-
-  
-
 
 
 
   /* 側邊欄樣式 */
 .sidebar {
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+  margin-top: 60px; /* 為漢堡菜單預留空間 */
   width: 200px;
-  background-color: #C5C3C6;
+  height: 100%; /* 側邊欄高度 */
+  position: absolute;
+  background-color: #dedbdf;
+  left: 0;
+  top: 0;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   border-right: 2px solid #EDEBE6;
   transition: transform 0.3s ease; /* 添加過渡效果 */
+  z-index: 10; /* 確保側邊欄位於頂層 */
 }
-
 .sidebar.hidden {
   transform: translateX(-100%); /* 隱藏側邊欄 */
-  opacity: 0;
-  position: absolute; /* 避免占用空間 */
+  /* opacity: 0; */
+   position: absolute; /* 避免占用空間 */
 }
-
 .sidebar.visible {
   transform: translateX(0); /* 顯示側邊欄 */
+}
+.sidebar button {
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+  background-color: #fff; /* 按鈕背景色 */
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+.sidebar button:hover {
+  background-color: #c5c0c7; /* 懸停效果 */
+  transform: scale(1.05); /* 懸停放大效果 */
+}
+.sidebar button:disabled {
+  background-color: #EDEBE6;
+  color: #A7A2A9;
+  cursor: not-allowed;
 }
 
 /* 漢堡按鈕 */
 .hamburgerButton {
-  position: absolute;
+  /* position: absolute; */
+  position: fixed; /* 固定位置，讓它始終在左上角 */
   top: 20px;
   left: 20px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 24px;
+  z-index: 20; /* 確保在所有元素之上 */
 }
-
 .hamburgerButton span {
   display: block;
   width: 30px;
@@ -60,15 +88,24 @@
   margin: 5px 0;
   transition: background-color 0.3s ease;
 }
-
 .hamburgerButton:hover span {
   background-color: #A7A2A9;
 }
 
 /* 主內容區域 */
 .content {
+
   flex: 1;
   padding: 20px;
+  margin-left: 0; /* 默認無偏移 */
+  transition: margin-left 0.3s ease; /* 與側邊欄同步過渡 */
+  border: none; /* 確保內容區域無邊框 */
+  box-shadow: none; /* 移除陰影 */
+  background: none; /* 移除背景色 */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+}
+.content.shifted {
+  margin-left: 250px; /* 側邊欄打開時的偏移量 */
 }
 .content.fullscreen {
   width: 100%; /* 滿版 */
@@ -78,101 +115,72 @@
   padding: 15px;
   margin: 15px 0;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* border: none;  */
+  box-shadow: none;
+  background: none;
+}
+  
+.cardTitle {
+  color: #5D5B6A;
 }
 
 
+/* 表格 */
+.table {
+  width: 100%; /* 撐滿父容器 */
+  border-collapse: collapse; /* 去掉表格內邊距 */
+  background-color: #ffffff; /* 白色背景 */
+  border-radius: 8px;
+  overflow: hidden; /* 修復邊框溢出問題 */
+  margin-top: 10px;
+}
 
+/* 表頭 */
+.table thead {
+  background-color: #dedbdf; /* 表頭背景色 */
+  border-bottom: 2px solid #c2c2c2; /* 表頭與內容分隔線 */
+}
 
+.table thead th {
+  padding: 10px;
+  color: #333;
+  text-align: center; /* 靠左對齊 */
+  font-weight: bold;
+  border-right: 1px solid #c2c2c2; /* 列分隔線 */
+}
 
+/* 表格行 */
+.table tbody tr {
+  border-bottom: 1px solid #EDEBE6; /* 行間分隔線 */
+}
 
-  .sidebar {
-    width: 150px;
-    background-color: #d6cfda; /* 側邊欄背景色 */
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* 左對齊 */
-    border-right: 2px solid #EDEBE6; /* 分隔線 */
-  }
-  
-  .sidebar button {
-    background-color: #f5f3f4; /* 按鈕背景色 */
-    color: #333333;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px 0;
-    width: 100%; /* 按鈕寬度適應側邊欄 */
-    text-align: left;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .sidebar button:hover {
-    background-color: #bcb7be; /* 懸停效果 */
-    transform: scale(1.05); /* 懸停放大效果 */
-  }
-  
-  .sidebar button:disabled {
-    background-color: #EDEBE6;
-    color: #A7A2A9;
-    cursor: not-allowed;
-  }
-  
-  .content {
-    flex: 1; /* 主區域占據剩餘空間 */
-    padding: 20px;
-  }
-  
-  .card {
-    background-color: #f4f3f5;  /* 主區域背景 */
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  .buttonGroup {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
+.table tbody tr:last-child {
+  border-bottom: none; /* 去掉最後一行的分隔線 */
+}
 
+.table tbody td {
+  padding: 10px;
+  text-align: center;
+  color: #5D5B6A;
+  border-right: 1px solid #e0e0e0; /* 列分隔線 */
+}
 
+/* 表格行懸停效果 */
+.table tbody tr:hover {
+  background-color: #f9f9f9; /* 懸停背景色 */
+  transition: background-color 0.3s ease;
+}
 
-  .button {
-    background-color: #C5C3C6; /* 按鈕背景色 */
-    color: #333333; /* 按鈕文字顏色 */
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .button:hover {
-    background-color: #A7A2A9; /* 懸停顏色 */
-    transform: scale(1.05); /* 懸停放大效果 */
-  }
-  
-  .button:disabled {
-    background-color: #EDEBE6; /* 禁用狀態顏色 */
-    color: #A7A2A9;
-    cursor: not-allowed;
-  }
-  
-  .card {
-    background-color: #f5f3f5;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cardTitle {
-    color: #5D5B6A;
-  }
-  
+/* 錯誤信息 */
+.error {
+  color: rgb(140, 6, 6);
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* 加載信息 */
+.loading {
+  text-align: center;
+  color: #333;
+  margin-top: 10px;
+}

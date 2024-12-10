@@ -2,9 +2,9 @@
 import { apiCall } from "../api";
 
 
-export const getRestPastOrder = async (r_id) => {
+export const getRestOrder = async (r_id) => {
   try {
-    const response = await apiCall(`/restaurant/past/order`, "POST", {r_id});
+    const response = await apiCall(`/restaurant/order`, "POST", {r_id});
     return response;
   } catch (error) {
     console.error("Get past order failed:", error.message);

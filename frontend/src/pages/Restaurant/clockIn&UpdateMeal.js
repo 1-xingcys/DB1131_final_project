@@ -4,6 +4,8 @@ import { update_serve_meal } from "../../api/updateServeMeal";
 import { getRestMealItem } from "../../api/restMealItem";
 import { check_serve_meal_status } from "../../api/updateServeMeal";
 
+import styles from "./clockInOut.module.css"; // 引入樣式模組
+
 
 function ClockIn({ setIsWorking, onBack }) {
   const [meals, setMeals] = useState([]); // 存放店家品項資訊
@@ -81,41 +83,56 @@ function ClockIn({ setIsWorking, onBack }) {
 
 
   return (
-    <div>
-      <h2>更新供應量並打卡上班</h2>
+    <div className={styles.tableContainer}>
+      <h2>更新供應量</h2>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>品項</th>
+            <th>數量</th>
+          </tr>
+        </thead>
+        <tbody>
+          {meals.map((meal, index) => (
+            <tr key={index}>
+              <td>{meal.name}</td>
+              <td>
+                <input
+                  type="number"
+                  value={supplyNums[meal.name] || ""}
+                  onChange={(e) =>
+                    setSupplyNums({
+                      ...supplyNums,
+                      [meal.name]: parseInt(e.target.value, 10),
+                    })
+                  }
+                  disabled={isUpdated}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className={styles.buttonContainer}>
+        <button
+          className={styles.button}
+          onClick={handleUpdateSupplies}
+          disabled={isUpdated || isUpdating}
+        >
+          更新供應量
+        </button>
 
-      {/* 列出所有品項及輸入框 */}
-    <div>
-      {meals.map((meal) => (
-        <div key={meal.name}>
-          <label>
-            {meal.name}:
-            <input
-              type="number"
-              value={supplyNums[meal.name] || ""}
-              onChange={(e) =>
-                setSupplyNums({ ...supplyNums, [meal.name]: parseInt(e.target.value, 10) })
-              }
-              disabled={isUpdated} // 如果已更新供應量，禁止修改
-            />
-          </label>
-        </div>
-      ))}
-    </div>
-
-      {/* 更新供應量按鈕 */}
-      <button 
-        onClick={handleUpdateSupplies} 
-        disabled={isUpdated || isUpdating}>
-        更新供應量
-      </button>
-
-      {/* 確認打卡按鈕（只有在供應量更新完成後可見） */}
-      {isUpdated && (
-        <button onClick={handleClockIn}>開啟值班</button>
-      )}
-
-      <button onClick={onBack}>返回</button>
+        {/* 確認打卡按鈕 */}
+        {isUpdated && (
+          <button className={styles.button} onClick={handleClockIn}>
+            開啟值班
+          </button>
+        )}
+        
+        <button className={styles.button} onClick={onBack}>
+          返回
+        </button>
+      </div>
     </div>
   );
 }

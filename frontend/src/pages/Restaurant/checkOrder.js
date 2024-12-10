@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { getRestPastOrder } from "../../api/getRestPastOrder";
+import { getRestOrder } from "../../api/getRestOrder";
 import { NULL_TIME_STAMP } from "../../components/constant";
 import { completeOrder } from "../../api/completeOrder";
 import { formatDate } from "../../components/formatDate";
+
+import styles from "./clockInOut.module.css"; // 引入樣式模組
 
 function CheckOrder( {isClockIn}) {
   const [orders, setOrders] = useState([]);
@@ -11,7 +13,7 @@ function CheckOrder( {isClockIn}) {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await getRestPastOrder(sessionStorage.getItem("username"));
+        const response = await getRestOrder(sessionStorage.getItem("username"));
         console.log("get restaurant regular info successful", response);
 
         setOrders(
@@ -44,68 +46,108 @@ function CheckOrder( {isClockIn}) {
   };
 
   return (
-    <div>
-      {isClockIn && (<button onClick={() => handleViewChange("processing")}>待處理訂單</button>)}
-      <button onClick={() => handleViewChange("past")}>已完成訂單</button>
-      <h1>{(view) && (view === "past" ? "已完成訂單" : "待處理訂單")}</h1>
+    <div className={styles.tableContainer}>
+      {/* 按鈕區域 */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        {isClockIn && (
+          <button
+            className={styles.button}
+            onClick={() => handleViewChange("processing")}
+          >
+            待處理訂單
+          </button>
+        )}
+        <button
+          className={styles.button}
+          onClick={() => handleViewChange("past")}
+        >
+          已完成訂單
+        </button>
+      </div>
+
+      {/* 訂單標題 */}
+      <h1 className={styles.title}>
+        {view ? (view === "past" ? "已完成訂單" : "待處理訂單") : ""}
+      </h1>
 
       {/* 動態生成表格 */}
-      {view &&
-      <table border="1" style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>訂餐時間</th>
-            <th>預期完成時間</th>
-            <th>完成時間</th>
-            <th>餐具</th>
-            <th>塑膠袋</th>
-            <th>備註</th>
-            <th>顧客ID</th>
-            <th>評分</th>
-            <th>評論</th>
-            <th>餐點</th>
-            <th>折價</th>
-            {view === "processing" && (<th>完成訂單</th>)}
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map(order => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{new Date(order.order_time).toISOString().replace("T", " ").slice(0, 16)}</td>
-              <td>{new Date(order.expected_time).toISOString().replace("T", " ").slice(0, 16)}</td>
-              <td>{order.finish_time === NULL_TIME_STAMP ? "待處理" : new Date(order.finish_time).toISOString().replace("T", " ").slice(0, 16)}</td>
-              <td>{order.eating_utensil ? "✅" : "❌"}</td>
-              <td>{order.plastic_bag ? "✅" : "❌"}</td>
-              <td>{order.note || "無"}</td>
-              <td>{order.c_id}</td>
-              <td>{order.starnum}</td>
-              <td>{order.review || "無"}</td>
-              <td>
-                {/* 餐點展開 */}
-                <details>
-                  <summary>訂單細節</summary>
-                  <ul>
-                    {order.meals.map((meal, index) => (
-                      <li key={index}>
-                        {meal.name} x {meal.number}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              </td>
-              {/* 有的話印discount_rate,沒有的話用“無” */}
-              <td>{order.discount_rate ? `${order.discount_rate * 100}%` : "無"}</td>
-              <td>
-                {view === "processing" && (
-                  <button onClick={() => handleConfirm(order.id)}>完成</button>
-                )}
-              </td>
+      {view && (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>訂餐時間</th>
+              <th>預期完成時間</th>
+              <th>完成時間</th>
+              <th>餐具</th>
+              <th>塑膠袋</th>
+              <th>備註</th>
+              <th>顧客ID</th>
+              <th>評分</th>
+              <th>評論</th>
+              <th>餐點</th>
+              <th>折價</th>
+              {view === "processing" && <th>完成訂單</th>}
             </tr>
-          ))}
-        </tbody>
-      </table> }
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>
+                  {new Date(order.order_time)
+                    .toISOString()
+                    .replace("T", " ")
+                    .slice(0, 16)}
+                </td>
+                <td>
+                  {new Date(order.expected_time)
+                    .toISOString()
+                    .replace("T", " ")
+                    .slice(0, 16)}
+                </td>
+                <td>
+                  {order.finish_time === NULL_TIME_STAMP
+                    ? "待處理"
+                    : new Date(order.finish_time)
+                        .toISOString()
+                        .replace("T", " ")
+                        .slice(0, 16)}
+                </td>
+                <td>{order.eating_utensil ? "✅" : "❌"}</td>
+                <td>{order.plastic_bag ? "✅" : "❌"}</td>
+                <td>{order.note || "無"}</td>
+                <td>{order.c_id}</td>
+                <td>{order.starnum}</td>
+                <td>{order.review || "無"}</td>
+                <td>
+                  <details className={styles.details}>
+                    <summary>訂單細節</summary>
+                    <ul>
+                      {order.meals.map((meal, index) => (
+                        <li key={index}>
+                          {meal.name} x {meal.number}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                  </td>
+                  <td>{order.discount_rate ? `${order.discount_rate * 100}%` : "無"}</td>
+                  {view === "processing" && (
+                    <td>
+                      <button
+                        className={styles.button}
+                        onClick={() => handleConfirm(order.id)}
+                      >
+                        完成
+                      </button>
+                    </td>
+                  )}
+                </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

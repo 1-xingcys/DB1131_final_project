@@ -23,13 +23,13 @@ def GetRName() :
     return jsonify({"error": "Restaurant name does not exist"}), 401
 
 # 取得所有訂單（包含已完成和處理中）
-@RestaurantApi_bp.route('/restaurant/past/order', methods=['POST'])
-def Rest_Past_Order():
+@RestaurantApi_bp.route('/restaurant/order', methods=['POST'])
+def Rest_Order():
     data = request.json
     r_id = data.get('r_id')
     if not r_id:
         return jsonify({"error": "Missing required parameter 'r_id'"}), 400
-    result = select_past_order(r_id)
+    result = select_order(r_id)
     return jsonify(result)
 
 
@@ -78,6 +78,7 @@ def update_serve_meal():
     add_serve_meal(r_id, name, supply_num)
     return jsonify({"message": f"Update {name} successful!"}), 200 # Response(status=200)
 
+# 確認是否已更新過供應量
 @RestaurantApi_bp.route('/restaurant/check/serve/meal', methods=['POST'])
 def check_serve_meal():
     data = request.json
@@ -91,7 +92,8 @@ def check_serve_meal():
         return jsonify(False), 200
     else:
         return jsonify(True), 200
-    
+
+# 取得當天供應量與即時狀態
 @RestaurantApi_bp.route('/restaurant/get/serve/meal', methods=['POST'])
 def get_serve_meal():
     data = request.json
@@ -178,7 +180,7 @@ def add_meal_items(meal_items):
         conn.close()
 
 
-def select_past_order(r_id):
+def select_order(r_id):
     query = """
     SELECT *
     FROM "ORDER"
@@ -187,7 +189,6 @@ def select_past_order(r_id):
     """
     
     rows = execute_select_query(query, (r_id, ))
-
 
     # 查詢每筆訂單的餐點資訊
     query_meals = """
@@ -201,7 +202,7 @@ def select_past_order(r_id):
         o_id, order_time, expected_time, pick_up_time, \
         eating_utensil, plastic_bag, note, c_id, starnum, review, r_id = row
         
-        print("[select_past_order query_meals] : ", query_meals)
+        print("[select_order query_meals] : ", query_meals)
         # 查詢是否有折價券
         coupon_query = "SELECT discount_rate FROM COUPON WHERE used_on_id = %s"
         coupon_result = execute_select_query(coupon_query, (o_id,))
@@ -297,13 +298,6 @@ def add_serve_meal(r_id, name, supply_num):
 
 
 def get_clock_in_status(r_id):
-    # query = """
-    # SELECT EXISTS(
-    #     SELECT *
-    #     FROM CLOCK_IN
-    #     WHERE r_id = %s AND date = %s
-    # );
-    # """
     query = """
     SELECT open_time, close_time
     FROM CLOCK_IN
@@ -332,47 +326,11 @@ def get_clock_in_status(r_id):
     print(f"working: {working}, isClocked: {isClocked}")
     # return list(status.values())
     return status
-    # if res and res[0][0]:
-    #     return True
-    # else:
-    #     return False
-    # conn = connect_to_database()
-    # cur = conn.cursor()
-    # try:
-    #     today = datetime.now(timezone('Asia/Taipei')).date()
-    #     cur.execute(query, (r_id, today))
-    #     res = cur.fetchone()[0]
-    #     if res:
-    #         return True
-    #     else:
-    #         return False
-    # except Exception as e:
-    #     conn.rollback()
-    #     print(f"Failed to get clock in status: {e}", flush=True)
-    # finally:
-    #     cur.close()
-    #     conn.close()
-
-
-# def get_serve_meal_status(r_id): # 確認當天是否已更新供應量
-#     query = """
-#     SELECT EXISTS(
-#         SELECT *
-#         FROM SERVE_MEAL
-#         WHERE r_id = %s AND date = %s
-#     );
-#     """
-#     today = datetime.now(timezone('Asia/Taipei')).date()
-#     res = execute_select_query(query, (r_id, today))
-#     if res and res[0][0]:
-#         return True
-#     else:
-#         return False
     
 
 def get_serve_meal_status(r_id):
     query = """
-    SELECT "name", supply_num
+    SELECT "name", supply_num, remaining_num
     FROM SERVE_MEAL
     WHERE r_id = %s AND date = %s
     ORDER BY "name" ASC;
@@ -382,12 +340,13 @@ def get_serve_meal_status(r_id):
 
     today_serve = {}
     for row in res:
-        name, supply_num = row
+        name, supply_num, remaining_num = row
         print("[name] : ", name, flush=True)
 
         today_serve[name] = {
             'name': name,
-            'supply_num': supply_num
+            'supply_num': supply_num, 
+            'remaining_num': remaining_num
         }
     return list(today_serve.values())
     
