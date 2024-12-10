@@ -378,7 +378,7 @@ def select_opening_restaurant_meal_item(r_id) :
 
 def select_past_order(c_id) -> list:
     query = """
-    SELECT o.o_id, o.order_time, o.expected_time, o.pick_up_time, o.eating_utensil, o.plastic_bag, o.note, o.r_id, imo.name, imo.number
+    SELECT o.o_id, o.order_time, o.expected_time, o.pick_up_time, o.eating_utensil, o.plastic_bag, o.note, o.r_id, imo.name, imo.number, o.star_num, o.review
     FROM "ORDER" o
     LEFT JOIN INCLUDE_MEAL_IN_ORDER imo ON o.o_id = imo.o_id
     WHERE o.c_id = %s  AND o.order_time >= NOW() - INTERVAL '7 days'
@@ -388,7 +388,7 @@ def select_past_order(c_id) -> list:
     past_orders = {}
 
     for row in rows:
-        (o_id, order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, r_id, meal_name, meal_number) = row
+        (o_id, order_time, expected_time, pick_up_time, eating_utensil, plastic_bag, note, r_id, meal_name, meal_number, star_num, review) = row
 
         if o_id not in past_orders:
             # 查詢餐廳名稱
@@ -416,7 +416,9 @@ def select_past_order(c_id) -> list:
                 'meals': [],
                 'discount_rate' : discount_rate if discount_rate else None,
                 'total_price' : None,  # 初始化總金額
-                'r_id' : r_id # 只是下面計算金額需要，前端會忽略他
+                'r_id' : r_id, # 只是下面計算金額需要，前端會忽略他
+                'star_num' : star_num,
+                'review' : review
             }
         # 添加餐點到訂單
         if meal_name:

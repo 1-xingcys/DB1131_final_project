@@ -4,22 +4,10 @@ import time
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# #================================================#
-# #測試用，連我自己本機上的db
-# with open('/Users/hungpu/113-1/DB/case_study/db_password.txt', 'r') as file:
-#     db_password = file.read().strip()
-# #=================================================#
-
 # Connect to the database
 def connect_to_database():
     for i in range(5):
         try:
-
-            # # ======================= 測試用 ==================================#
-            # conn = psycopg2.connect("dbname = 'project_test' user = 'postgres' host = 'localhost' password = " + db_password)
-            # # ===============================================================#
-
-            # # 實際上跑的
             conn = psycopg2.connect(DATABASE_URL)
             return conn
         except psycopg2.OperationalError:

@@ -9,9 +9,12 @@ function CustomerPastOrders({ view }) {
   const [orders, setOrders] = useState([]);
   const [isWritingNote, setIsWritingNote] = useState(false);
   const [writingOrder, setWrtingOrder] = useState({})
+  const [isLoading, setIsLoading] = useState(false); // 加載狀態
 
   useEffect(() => {
     const fetchOrders = async () => {
+
+        setIsLoading(true); // 開始加載
         try {
           console.log("view : ", view);
           const response = await getCustomerPastOrder(sessionStorage.getItem("username"));
@@ -21,11 +24,13 @@ function CustomerPastOrders({ view }) {
           );
         } catch (error) {
           console.log("get customer past orders failed :", error.message);
+        } finally {
+          setIsLoading(false); // 結束加載
         }
       };
 
       fetchOrders();
-    }, []);
+    }, [isWritingNote]);
 
     const handleWriteNoteButtonClick = (order) => {
       setIsWritingNote(true);
@@ -39,8 +44,15 @@ function CustomerPastOrders({ view }) {
         {!isWritingNote && view ? (view === "past" ? "已完成訂單" : "待處理訂單") : ""}
       </h1>
 
+      {isLoading && (
+        <div className={styles.loadingContainer}>
+          <div className={styles.spinner}></div>
+          <p>加載中，請稍候...</p>
+        </div>
+      )}
+
       {/* 動態生成表格 */}
-      {!isWritingNote && view && (
+      {!isWritingNote && view && !isLoading && (
         <table className={styles.table}>
           <thead>
             <tr>
@@ -83,9 +95,11 @@ function CustomerPastOrders({ view }) {
                 </td>
                 <td>{order.eating_utensil ? "✅" : "❌"}</td>
                 <td>{order.plastic_bag ? "✅" : "❌"}</td>
-                <td>{order.review || "無"}</td>
-                {view === "past" && (<td> {order.review ? order.review : <button onClick={() => handleWriteNoteButtonClick(order)}>為此訂單評分</button>}</td>)}
-                {view === "past" && (<td> {order.starnum ? order.startnum : <button onClick={() => handleWriteNoteButtonClick(order)}>為此訂單評論</button>}</td>)}
+                <td>{order.note || "無"}</td>
+                {view === "past" && (<td> {order.star_num ? order.star_num : 
+                  <button className={styles.button} onClick={() => handleWriteNoteButtonClick(order)}>為此訂單評論</button>}</td>)}
+                {view === "past" && (<td> {order.review ? order.review : 
+                  <button className={styles.button} onClick={() => handleWriteNoteButtonClick(order)}>為此訂單評分</button>}</td>)}
                 <td>
                   <details className={styles.details}>
                     <summary>訂單細節</summary>

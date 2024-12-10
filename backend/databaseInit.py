@@ -1,3 +1,5 @@
+### 僅在開發時使用 ###
+
 
 # databaseInit.py
 from databaseUtils import connect_to_database
@@ -197,4 +199,8 @@ CREATE TABLE IF NOT EXISTS SERVE_MEAL (
     FOREIGN KEY (r_id) REFERENCES RESTAURANT(r_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (name, r_id) REFERENCES MEAL_ITEM(name, r_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE INDEX idx_order_r_id ON "ORDER" (r_id);
+CREATE INDEX idx_order_c_id ON "ORDER" (c_id);
+CREATE INDEX idx_include_meal_in_order_rid_oid ON INCLUDE_MEAL_IN_ORDER (r_id, o_id);
 '''

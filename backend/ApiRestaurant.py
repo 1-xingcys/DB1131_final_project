@@ -185,7 +185,7 @@ def select_order(r_id):
     SELECT *
     FROM "ORDER"
     WHERE r_id = %s AND order_time >= NOW() - INTERVAL '7 days'
-    ORDER BY o_id
+    ORDER BY o_id DESC
     """
     
     rows = execute_select_query(query, (r_id, ))

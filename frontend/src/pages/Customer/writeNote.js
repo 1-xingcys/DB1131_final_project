@@ -27,6 +27,7 @@ function WriteNote({ order, setIsWritingNote }) {
         const reviewData = reviews[orderId];
         try {
             const response = await updateReview(orderId, reviewData.review, reviewData.star_num);
+            console.log(response);
             if (response.message === "Order updated successfully") {
             alert(`訂單 ${orderId} 的評論和星數已提交成功！`);
             } else if (response.error === "Review or star_num already exists") {
