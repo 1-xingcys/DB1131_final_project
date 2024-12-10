@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$1" == "all" ]; then
-    docker-compose up -d --build
+    docker-compose up -d  --build
 elif [ "$1" == "dev" ]; then
     docker-compose -f docker-compose.dev.yml up -d --build
 else

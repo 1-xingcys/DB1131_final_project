@@ -71,33 +71,6 @@ def db_init() :
     ]
     set_regular_open_time(regular_hours)
 
-
-    # Example usage of select_restaurant_reg_info
-    # restaurant_info = select_restaurant_reg_info()
-    # print(restaurant_info)
-        
-    
-    # # Example usage of select_meal_item
-    # meal_items1 = select_meal_item("Rwatergun")
-    # print("Meal items for 大水缸:", meal_items1)
-    # meal_items2 = select_meal_item("Rsilvfish")
-    # print("Meal items for 銀魚:", meal_items2)
-
-    # # Example usage of submit_order
-    # order_time = "2024-11-13 12:00:00"
-    # expected_time = "2024-11-13 12:30:00"
-    # pick_up_time = "2024-11-13 12:30:00"
-
-    # # Creating meal_items list for orders, ensuring correct format
-    # # Creating meal_items list for orders, ensuring correct format
-    # meal_items_order1 = [{"name": meal[0], "number": 3} for meal in meal_items1]
-    # meal_items_order2 = [{"name": meal[0], "number": 2} for meal in meal_items2]
-    # meal_item_order3 = [{"name": "椒麻雞套餐","number": 2}]
-    # submit_order(order_time, expected_time, pick_up_time, True, True, "蝦換肉", "B10303097", "Rwatergun", meal_items_order1)
-
-    # submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10705009", "Rsilvfish", meal_items_order2)
-    # submit_order(order_time, expected_time, pick_up_time, False, False, "三高", "B10303097", "Rsilvfish", meal_item_order3)
-
     return 0 
 
 
@@ -134,7 +107,7 @@ CREATE TABLE IF NOT EXISTS RESTAURANT (
     r_id VARCHAR(10) PRIMARY KEY NOT NULL,
     r_name VARCHAR(20) UNIQUE NOT NULL,
     r_password VARCHAR(10) NOT NULL,
-    location VARCHAR(10) UNIQUE NOT NULL
+    location VARCHAR(10) NOT NULL
 );
 
 -- 資料表 REGULAR_OPEN_TIME
@@ -225,13 +198,3 @@ CREATE TABLE IF NOT EXISTS SERVE_MEAL (
     FOREIGN KEY (name, r_id) REFERENCES MEAL_ITEM(name, r_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 '''
-
-
-if __name__ == "__main__":
-    psql_conn = connect_to_database()
-    cur = psql_conn.cursor()
-    db_init()
-     # commit the change to database server
-    psql_conn.commit()
-    cur.close()
-    psql_conn.close()

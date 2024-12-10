@@ -22,5 +22,5 @@ app.register_blueprint(RestaurantApi_bp)
 CORS(app)
 
 if __name__ == '__main__':
-    db_init()
+    # db_init()
     app.run(host="0.0.0.0", port=5000)
