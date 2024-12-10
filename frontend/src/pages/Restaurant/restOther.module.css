@@ -1,0 +1,132 @@
+/* 父容器 */
+.container {
+  padding: 20px;
+  background-color: #f1eff6;
+  border-radius: 12px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 95%;
+  margin: 50px auto;
+}
+  
+/* 標題樣式 */
+.title {
+  color: #25242a;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+/* 表格容器 */
+.tableContainer {
+  width: 100%;
+  max-width: 100%; /* 防止超出視窗 */
+  overflow-x: auto; /* 允許橫向滾動 */
+  margin: 0 auto; /* 讓表格居中 */
+  padding: 10px; /* 增加容器內邊距 */
+}
+/* 表格樣式 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.table thead th {
+  padding: 12px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+  border-right: 1px solid #c2c2c2;
+  min-width: 50px;
+  background-color: #dedbdf;
+  border-bottom: 2px solid #c2c2c2;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #EDEBE6;
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+.table tbody td {
+  padding: 12px;
+  text-align: center;
+  color: #5D5B6A;
+  border-right: 1px solid #e0e0e0;
+}
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+.table tr:hover {
+  background-color: #e0e0e0;
+}
+.table td input {
+  width: 80px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #dedbdf;
+  border-radius: 4px;
+}
+/* 設置餐點細節欄位的最小寬度 */
+.table td:nth-child(11),
+.table th:nth-child(11) {
+  min-width: 130px; /* 可以根據需求調整 */
+  text-align: center; /* 讓內容靠左，方便閱讀 */
+}
+/* 訂單細節樣式 */
+.details {
+  background-color: #ffffff;
+  border: 1px solid #dedbdf;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: left;
+}
+.details summary {
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+.details ul {
+  padding-left: 20px;
+  list-style-type: square;
+  margin-top: 10px;
+}
+.details li {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #5D5B6A;
+}
+  
+  
+/* 按鈕樣式 */
+.button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #dedbdf;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+.button:hover {
+  background-color: #dedbdf;
+  transform: scale(1.05);
+}
+.button:active {
+  transform: scale(0.95);
+}
+.button:disabled {
+  background-color: #EDEBE6;
+  color: #A7A2A9;
+  cursor: not-allowed;
+}
+  

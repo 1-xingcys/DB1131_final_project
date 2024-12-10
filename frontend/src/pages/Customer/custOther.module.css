@@ -1,0 +1,164 @@
+/* 主容器：卡片布局 */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); /* 自適應列數，最小寬度 290px */
+  gap: 20px; /* 卡片之間的間距 */
+  padding: 20px;
+  overflow: overflow;
+  width: 100%; /* 撐滿父容器 */
+  max-width: 1200px; /* 最大寬度 */
+  margin: 0 auto; /* 居中對齊 */
+}
+
+/* 卡片樣式 */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #dedbdf;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 懸停時陰影加強 */
+  transform: translateY(-5px); /* 輕微上移 */
+}
+.cardHeader { /* 卡片標題 */
+  font-size: 20px;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 10px;
+}
+.location { /* 地點樣式 */
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 15px;
+}
+.scheduleList { /* 營業時間清單 */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.scheduleItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+.scheduleText {
+  font-size: 16px;
+  color: #5D5B6A;
+}
+
+/* 訂單查詢 */
+.tableContainer {
+  margin: 0 auto;
+  text-align: center;
+  max-width: 90%;
+}
+/* 表格樣式 */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.table thead th {
+  padding: 12px;
+  color: #686767;
+  text-align: center;
+  font-weight: bold;
+  border-right: 1px solid #c2c2c2;
+  min-width: 50px;
+  background-color: #dedbdf;
+  border-bottom: 2px solid #c2c2c2;
+}
+.table tbody tr {
+  border-bottom: 1px solid #EDEBE6;
+}
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody td {
+  padding: 12px;
+  text-align: center;
+  color: #5D5B6A;
+  border-right: 1px solid #e0e0e0;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #ebe9e9;
+}
+
+.table td input {
+  width: 80px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #dedbdf;
+  border-radius: 4px;
+}
+
+/* 設置餐點細節欄位的最小寬度 */
+.table td:nth-child(11),
+.table th:nth-child(11) {
+  min-width: 130px; /* 根據需求調整 */
+  text-align: center; /* 讓內容靠左，方便閱讀 */
+}
+/* 訂單細節樣式 */
+.details {
+  background-color: #ffffff;
+  border: 1px solid #dedbdf;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: left;
+}
+.details summary {
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+.details ul {
+  padding-left: 20px;
+  list-style-type: square;
+  margin-top: 10px;
+}
+.details li {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #5D5B6A;
+}
+
+/* 按鈕樣式 */
+.button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #dedbdf;
+  border-radius: 8px;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: #dedbdf;
+  transform: scale(1.05);
+}
+
+.button:active {
+  transform: scale(0.95);
+}
+
+.button:disabled {
+  background-color: #EDEBE6;
+  color: #A7A2A9;
+  cursor: not-allowed;
+}

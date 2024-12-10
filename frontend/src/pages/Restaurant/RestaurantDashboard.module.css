@@ -3,7 +3,7 @@
     width: 100vw;
     height: 100vh; /* 讓主容器充滿視窗 */
     background-color: #f1eff6; /* 卡片背景色 */
-    overflow: hidden;
+    overflow: auto;
     position: relative; /* 為絕對定位的側邊欄做準備 */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
@@ -16,7 +16,12 @@
     color: #42404b; /* 莫蘭迪色系 */
     margin-top: 60px; /* 為漢堡菜單預留空間 */
   }
-
+  .helloMessage {
+    font-size: 25px;
+    color: #464450;
+    margin-bottom: 20px;
+    text-align: center;
+  }
 
 
   /* 側邊欄樣式 */
@@ -39,7 +44,6 @@
 }
 .sidebar.hidden {
   transform: translateX(-100%); /* 隱藏側邊欄 */
-  /* opacity: 0; */
    position: absolute; /* 避免占用空間 */
 }
 .sidebar.visible {
@@ -103,6 +107,8 @@
   box-shadow: none; /* 移除陰影 */
   background: none; /* 移除背景色 */
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+  width: 100%;
+  height: 100%;
 }
 .content.shifted {
   margin-left: 250px; /* 側邊欄打開時的偏移量 */
@@ -115,7 +121,6 @@
   padding: 15px;
   margin: 15px 0;
   border-radius: 8px;
-  /* border: none;  */
   box-shadow: none;
   background: none;
 }
@@ -124,7 +129,14 @@
   color: #5D5B6A;
 }
 
-
+/* 表格容器 */
+.tableContainer {
+  width: 100%;
+  max-width: 100%; /* 防止超出視窗 */
+  overflow-x: auto; /* 允許橫向滾動 */
+  margin: 0 auto; /* 讓表格居中 */
+  padding: 10px; /* 增加容器內邊距 */
+}
 /* 表格 */
 .table {
   width: 100%; /* 撐滿父容器 */

@@ -1,75 +1,90 @@
-.sidebar {
-  display: flex; /* 使用 Flexbox 排版，方便內部項目垂直排列 */
-  flex-direction: column; /* 將內部項目設定為垂直方向排列 */
-  width: 200px; /* 側邊欄的寬度，最初設定為 200px */
-  background-color: #f8f9fa; /* 背景顏色為淡灰色 */
-  padding: 10px 10px; /* 四周內邊距，上下為 60px，左右為 10px，避免內容貼邊 */
-  border-right: 1px solid #ddd; /* 右邊添加淺灰色的邊框，增強視覺區分 */
-  width: 250px; /* 寬度最終設為 250px，覆蓋之前的設定 */
-  height: 100vh; /* 高度設定為視窗高度，讓側邊欄填滿整個屏幕高度 */
-  position: fixed; /* 固定在視窗的左側，滾動時仍保持不動 */
-  top: 0; /* 側邊欄從視窗頂端開始 */
-  left: 0; /* 側邊欄從視窗左端開始 */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 添加輕微陰影，讓側邊欄有浮動的感覺 */
-  z-index: 5; /* 設定側邊欄的層級，確保覆蓋其他低層級的元素 */
-  transition: transform 0.3s ease-in-out; /* 為側邊欄添加平滑的過渡動畫，適用於位置變化 */
-  /* overflow-y: auto; 当内容超出时，启用滚动条 */
+/* 主容器 */
+.dashboard {
+  display: flex; /* 使用 Flex 布局 */
+  width: 100vw;
+  height: 100vh; /* 讓主容器充滿視窗 */
+  background-color: #fbf3f3; /* 卡片背景色 */
+  overflow: auto;
+  position: relative; /* 為絕對定位的側邊欄做準備 */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(15, 15, 15, 0.1); /* 柔和陰影 */
 }
 
+.title {
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+  text-align: center;
+  font-size: 2.5rem;
+  color: #42404b; /* 莫蘭迪色系 */
+  margin-top: 60px; /* 為漢堡菜單預留空間 */
+}
+
+  /* 側邊欄樣式 */
+  .sidebar {
+    font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+    margin-top: 60px; /* 為漢堡菜單預留空間 */
+    width: 200px;
+    height: 100%; /* 側邊欄高度 */
+    position: absolute;
+    background-color: #dedbdf;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-right: 2px solid #EDEBE6;
+    transition: transform 0.3s ease; /* 添加過渡效果 */
+    z-index: 10; /* 確保側邊欄位於頂層 */
+  }
+  .sidebar.hidden {
+    transform: translateX(-100%); /* 隱藏側邊欄 */
+    position: absolute; /* 避免占用空間 */
+  }
+  .sidebar.visible {
+    transform: translateX(0); /* 顯示側邊欄 */
+  }
+  .sidebar button {
+    font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+    background-color: #fff; /* 按鈕背景色 */
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+  .sidebar button:hover {
+    background-color: #c5c0c7; /* 懸停效果 */
+    transform: scale(1.05); /* 懸停放大效果 */
+  }
+  .sidebar button:disabled {
+    background-color: #EDEBE6;
+    color: #A7A2A9;
+    cursor: not-allowed;
+  }
 .helloMessage {
-  margin-top: 45pt;
+  font-size: 25px;
+  color: #464450;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
-.content {
-  flex-grow: 1; /* 讓主內容區域自動填滿剩餘空間 */
-}
-
-.hidden {
-  transform: translateX(-100%); /* 將側邊欄向左移出畫面，達到隱藏效果 */
-}
-
-.button {
-  margin: 10px 0; /* 按鈕上下間距設為 10px，避免按鈕之間過於擁擠 */
-  padding: 10px; /* 按鈕內邊距設定為 10px，增強點擊區域 */
-  background-color: #007bff; /* 按鈕的背景色設為藍色 */
-  color: white; /* 按鈕文字設為白色，與背景色形成對比 */
-  border: none; /* 移除按鈕預設的邊框 */
-  border-radius: 4px; /* 添加圓角，讓按鈕看起來更柔和 */
-  cursor: pointer; /* 滑鼠移到按鈕上時顯示手型指標 */
-  text-align: left; /* 按鈕文字靠左對齊 */
-}
-
-.button:hover {
-  background-color: #0056b3; /* 滑鼠懸停時，背景顏色加深 */
-}
-
-.logoutButton {
-  margin-top: 10pt; /* 將登出按鈕推到側邊欄底部 */
-  padding: 10px 10px; /* 登出按鈕內邊距 */
-  background-color: #dc3545; /* 登出按鈕背景色設為紅色 */
-  color: white; /* 登出按鈕文字顏色設為白色 */
-  border: none; /* 移除預設邊框 */
-  border-radius: 4px; /* 圓角按鈕 */
-  cursor: pointer; /* 鼠標移動到按鈕上時顯示手型指標 */
-  text-align: center; /* 登出按鈕文字置中 */
-}
-
-.logoutButton:hover {
-  background-color: #c82333; /* 滑鼠懸停時背景顏色加深 */
-}
 
 /* 漢堡按鈕 */
 .hamburgerButton {
-  position: fixed;
-  top: 10px;
-  left: 10px;
+  /* position: absolute; */
+  position: fixed; /* 固定位置，讓它始終在左上角 */
+  top: 20px;
+  left: 20px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 24px;
-  z-index: 1000;
+  z-index: 20; /* 確保在所有元素之上 */
 }
-
 .hamburgerButton span {
   display: block;
   width: 30px;
@@ -78,7 +93,25 @@
   margin: 5px 0;
   transition: background-color 0.3s ease;
 }
-
 .hamburgerButton:hover span {
   background-color: #A7A2A9;
+}
+
+
+/* 主內容區域 */
+.content {
+  flex: 1;
+  padding: 20px;
+  margin-left: 0; /* 默認無偏移 */
+  transition: margin-left 0.3s ease; /* 與側邊欄同步過渡 */
+  border: none; /* 確保內容區域無邊框 */
+  box-shadow: none; /* 移除陰影 */
+  background: none; /* 移除背景色 */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* 柔和陰影 */
+}
+.content.shifted {
+  margin-left: 250px; /* 側邊欄打開時的偏移量 */
+}
+.content.fullscreen {
+  width: 100%; /* 滿版 */
 }

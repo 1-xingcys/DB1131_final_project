@@ -1,9 +1,12 @@
 import {useState, useEffect} from "react"
 import { getRestRegInfo } from "../../api/restRegInfo";
 
+import styles from "./custOther.module.css"; // 引入樣式模組
+
 function RestRegInfo() {
   const [info, setInfo] = useState([]);
   const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+  const dayNames = ["一", "二", "三", "四", "五", "六", "日"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,33 +21,25 @@ function RestRegInfo() {
   
     fetchData();
   }, []);
+  
 
   return (
-    <div>
-      <h1>所有商家資訊</h1>
-      
-      {/* 動態呈現餐廳資訊 */}
-      <div>
-        {info.map((restaurant) => (
-          <div key={restaurant.id} style={{ marginBottom: "20px" }}>
-            <h2>{restaurant.name}</h2>
-            <p>地點: {restaurant.location}</p>
-
-            {/* 顯示營業時間 */}
-            <h3>營業時間：</h3>
-            <ul>
-              {days.map((day) => (
-                <li key={day}>
-                  {day.charAt(0).toUpperCase() + day.slice(1)}:{" "}
-                  {restaurant[day] || "休息日"}
-                  {/* A || B  iff 
-                  if (A == true) return A; else return B; */}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+    <div className={styles.container}>
+      {info.map((restaurant) => (
+        <div key={restaurant.id} className={styles.card}>
+          <div className={styles.cardHeader}>{restaurant.name}</div>
+          <div className={styles.location}>📍{restaurant.location}</div>
+          <ul className={styles.scheduleList}>
+            {days.map((day, index) => (
+              <li key={day} className={styles.scheduleItem}>
+                <span className={styles.scheduleText}>
+                  {dayNames[index]}：{restaurant[day] || "💤"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }

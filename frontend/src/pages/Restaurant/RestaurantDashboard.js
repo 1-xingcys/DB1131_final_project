@@ -62,7 +62,7 @@ function RestaurantDashboard({ onLogout }) {
           isSidebarVisible ? styles.visible : styles.hidden
         }`}
       >
-        <h3>您好 {sessionStorage.getItem("name")} ！</h3>
+        <h1 className={styles.helloMessage}>您好 {sessionStorage.getItem("name")} ！</h1>
         {!isWorking ? (
           <>
             <button

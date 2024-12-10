@@ -1,7 +1,7 @@
 import React from "react";
 import { clock_out } from "../../api/clockInOut"; // 導入 clock_in 函數
 
-import styles from "./clockInOut.module.css"; // 引入樣式模組
+import styles from "./restOther.module.css"; // 引入樣式模組
 
 function ClockOut({ setIsWorking, onBack }) {
   const handleClockOut = async () => {

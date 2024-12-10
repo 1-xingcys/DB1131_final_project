@@ -4,7 +4,7 @@ import { NULL_TIME_STAMP } from "../../components/constant";
 import { completeOrder } from "../../api/completeOrder";
 import { formatDate } from "../../components/formatDate";
 
-import styles from "./clockInOut.module.css"; // 引入樣式模組
+import styles from "./restOther.module.css"; // 引入樣式模組
 
 function CheckOrder( {isClockIn}) {
   const [orders, setOrders] = useState([]);
@@ -35,6 +35,7 @@ function CheckOrder( {isClockIn}) {
       await completeOrder(o_id, formatDate(now));
       setView("");
       alert(`訂單 ${o_id} 已完成`);
+      window.location.reload(); // 刷新頁面
     } catch (error) {
       console.error(`完成訂單失敗:`, error.message);
       alert("完成訂單時出現錯誤，請稍後再試");

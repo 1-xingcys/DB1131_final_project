@@ -28,48 +28,58 @@ function CustomerDashboard({ onLogout }) {
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      {/* 常駐左上方的按鈕 */}
-      <button className={styles.hamburgerButton} onClick={toggleSidebar}>
-        {/* {isSidebarVisible ? "隱藏側邊欄" : "顯示側邊欄"} */}
+    <div className={styles.dashboard}>
+      {/* 漢堡菜單按鈕 */}
+      <button
+        className={styles.hamburgerButton}
+        onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+      >
         <span></span>
         <span></span>
         <span></span>
       </button>
 
       {/* 側邊欄 */}
-      {isSidebarVisible && (
-        <div className={styles.sidebar}>
-          <h2 className={styles.helloMessage}>您好 {sessionStorage.getItem("name")} ！</h2>
-            <CurrentTime />
-          <button className={styles.button} onClick={() => handleViewChange("info")}>
-            查看餐廳資訊
-          </button>
-          <button className={styles.button} onClick={() => handleViewChange("order")}>
-            立即點餐
-          </button>
-          <button className={styles.button} onClick={() => handleViewChange("past")}>
-            查看已完成訂單
-          </button>
-          <button className={styles.button} onClick={() => handleViewChange("processing")}>
-            查看處理中訂單
-          </button>
-          <button className={styles.button} onClick={() => handleViewChange("coupon")}>
-            查看可用折價券
-          </button>
-          <button className={styles.logoutButton} onClick={onLogout}>
-            登出
-          </button>
-        </div>
-      )}
+      <div
+        className={`${styles.sidebar} ${
+          isSidebarVisible ? styles.visible : styles.hidden
+        }`}
+      >
+
+        <h1 className={styles.helloMessage}>您好 {sessionStorage.getItem("name")} ！</h1>
+          <CurrentTime />
+        <button className={styles.button} onClick={() => handleViewChange("info")}>
+          查看餐廳資訊
+        </button>
+        <button className={styles.button} onClick={() => handleViewChange("order")}>
+          立即點餐
+        </button>
+        <button className={styles.button} onClick={() => handleViewChange("past")}>
+          查看已完成訂單
+        </button>
+        <button className={styles.button} onClick={() => handleViewChange("processing")}>
+          查看處理中訂單
+        </button>
+        <button className={styles.button} onClick={() => handleViewChange("coupon")}>
+          查看可用折價券
+        </button>
+        <button onClick={onLogout}>Logout</button>
+      </div>
 
       {/* 主內容區域 */}
-      <div style={{ flex: 1, padding: '20px' }}> 
+      <div
+      className={`${styles.content} ${
+        isSidebarVisible ? styles.shifted : ""
+      }`}
+      >
+      <h1 className={styles.title}>真正的餓徒是不排隊的！</h1>
+      <div className={styles.card}>
         {view === "info" && <RestRegInfo />}
         {view === "order" && <OrderForm />}
         {view === "past" && <CustomerPastOrders view={view} />}
         {view === "processing" && <CustomerPastOrders view={view} />}
         {view === "coupon" && <CustomerAvailCoupons />}
+        </div>
       </div>
     </div>
   );
