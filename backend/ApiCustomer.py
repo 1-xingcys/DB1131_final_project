@@ -119,6 +119,35 @@ def Validate_coupon():
     except Exception as e:
         print(f"Unexpected error in Validate_coupon: {e}", flush=True)
         return jsonify({"error": "Validate_coupon內部錯誤"}), 500
+    
+@CustomerApi_bp.route('/customer/update/review',methods=['POST'])
+def Update_review():
+    try:
+        data = request.json
+        o_id = data.get('o_id')
+        review = data.get('review')  # 默認為 None
+        star_num = data.get('star_num')  # 默認為 None
+
+        if not o_id:
+            return jsonify({"error": "o_id is required"}), 400
+        if review is None and star_num is None:
+            return jsonify({"error": "At least one of review or star_num is required"}), 400
+
+        # 調用更新函數
+        try:
+            update_review_and_stars(o_id, review=review, star_num=star_num)
+            return jsonify({"message": "Order updated successfully"}), 200
+        except ValueError as ve:
+            # 捕獲自定義錯誤並返回對應的錯誤消息
+            return jsonify({"error": str(ve)}), 400
+    
+    except Exception as e:
+        print(f"Unexpected error in Validate_coupon: {e}", flush=True)
+        return jsonify({"error": "Validate_coupon內部錯誤"}), 500
+
+
+
+
 
 """"
 Internal Function
@@ -516,3 +545,46 @@ def validate_coupon(c_id, discount_rate: float) -> int:
     except Exception as e:
         print(f"validate_coupon出包", flush=True)
         raise
+
+def update_review_and_stars(o_id, review=None, star_num=None):
+    """
+    更新指定訂單的 review 和 star_num 屬性，但僅更新原本為 NULL 的欄位。
+    """
+    # 查詢當前的 review 和 star_num 狀態
+    check_query = """
+    SELECT review, star_num FROM "ORDER" WHERE o_id = %s
+    """
+    # 更新 review 和 star_num 的 SQL 查詢
+    update_query = """
+    UPDATE "ORDER"
+    SET 
+        review = CASE WHEN review IS NULL THEN %s ELSE review END, 
+        star_num = CASE WHEN star_num IS NULL THEN %s ELSE star_num END
+    WHERE o_id = %s
+    """
+    
+    conn = connect_to_database()
+    cur = conn.cursor()
+    try:
+        # 查詢當前的 review 和 star_num
+        cur.execute(check_query, (o_id,))
+        current_data = cur.fetchone()
+        
+
+        current_review, current_star_num = current_data
+        
+        # 如果 review 和 star_num 都已經有值，則不更新
+        if current_review is not None and current_star_num is not None:
+            raise ValueError("Review or star_num already exists")
+
+        # 執行更新操作
+        cur.execute(update_query, (review, star_num, o_id))
+        conn.commit()
+        print(f"更新訂單 {o_id} 的評論為 {review} , 星數為 {star_num} 成功（僅更新原本為 NULL 的欄位）", flush=True)
+    except Exception as e:
+        conn.rollback()
+        print(f"Error updating review and stars: {e}", flush=True)
+        raise e
+    finally:
+        cur.close()
+        conn.close()
