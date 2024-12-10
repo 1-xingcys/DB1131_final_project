@@ -76,8 +76,8 @@ function CustomerDashboard({ onLogout }) {
       <div className={styles.card}>
         {view === "info" && <RestRegInfo />}
         {view === "order" && <OrderForm />}
-        {view === "past" && <CustomerPastOrders view={view} />}
-        {view === "processing" && <CustomerPastOrders view={view} />}
+        {view === "past" && <CustomerPastOrders view={view}/>}
+        {view === "processing" && <CustomerPastOrders view={view}/>}
         {view === "coupon" && <CustomerAvailCoupons />}
         </div>
       </div>
