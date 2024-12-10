@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-import CheckOrder from "./checkOrder"; // 取得餐廳方歷史訂單資訊
+import CheckOrder from "./checkOrder"; 
 import ClockIn from "./clockIn&UpdateMeal";
 import ClockOut from "./clockOut";
 import ServeStatus from "./serveMealStatus";
 import { check_clock_in_status } from "../../api/clockInOut";
 
-import styles from "./RestaurantDashboard.module.css"; // 引入樣式模組
+import styles from "./RestaurantDashboard.module.css"; 
 
 
 
 function RestaurantDashboard({ onLogout }) {
-  // 確認是否上班中
-  const [isWorking, setIsWorking] = useState(false);
-  // 確認今日是否已有打卡紀錄
-  const [hasClockInRecord, setHasClockInRecord] = useState(false);
-  // 這個狀態變數用來判斷現在餐廳的操作
-  const [view, setView] = useState("");
+  const [isWorking, setIsWorking] = useState(false);// 確認是否上班中
+  const [hasClockInRecord, setHasClockInRecord] = useState(false); // 確認今日是否已有打卡紀錄
+  const [view, setView] = useState(""); // 這個狀態變數用來判斷現在餐廳的操作
   const [isSidebarVisible, setIsSidebarVisible] = useState(true); // 控制側邊欄的顯示/隱藏
 
   const handleViewChange = (newView) => {
@@ -32,9 +29,9 @@ function RestaurantDashboard({ onLogout }) {
   useEffect(() => {
     const fetchClockInStatus = async () => {
       try {
-        const r_id = sessionStorage.getItem("username"); // 假設 r_id 存儲在 sessionStorage 中
-        const response = await check_clock_in_status(r_id); // 調用查詢 API
-        setIsWorking(response.working); // 根據 API 返回值更新狀態
+        const r_id = sessionStorage.getItem("username"); 
+        const response = await check_clock_in_status(r_id); 
+        setIsWorking(response.working); 
         setHasClockInRecord(response.isClocked)
       } catch (error) {
         console.error("Failed to fetch clock-in status:", error.message);
@@ -46,7 +43,7 @@ function RestaurantDashboard({ onLogout }) {
 
   return (
     <div className={styles.restaurantDashboard}>
-      {/* 漢堡菜單按鈕 */}
+      {/* 三條線按鈕 */}
       <button
         className={styles.hamburgerButton}
         onClick={() => setIsSidebarVisible(!isSidebarVisible)}

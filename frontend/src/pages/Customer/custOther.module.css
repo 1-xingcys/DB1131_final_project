@@ -49,6 +49,7 @@
   color: #5D5B6A;
 }
 
+
 /* 訂單查詢 */
 .tableContainer {
   margin: 0 auto;
@@ -80,22 +81,18 @@
 .table tbody tr:last-child {
   border-bottom: none;
 }
-
 .table tbody td {
   padding: 12px;
   text-align: center;
   color: #5D5B6A;
   border-right: 1px solid #e0e0e0;
 }
-
 .table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
-
 .table tr:hover {
   background-color: #ebe9e9;
 }
-
 .table td input {
   width: 80px;
   padding: 5px;
@@ -103,7 +100,6 @@
   border: 1px solid #dedbdf;
   border-radius: 4px;
 }
-
 /* 設置餐點細節欄位的最小寬度 */
 .table td:nth-child(11),
 .table th:nth-child(11) {
@@ -147,16 +143,13 @@
   font-size: 14px;
   transition: all 0.3s ease;
 }
-
 .button:hover {
   background-color: #dedbdf;
   transform: scale(1.05);
 }
-
 .button:active {
   transform: scale(0.95);
 }
-
 .button:disabled {
   background-color: #EDEBE6;
   color: #A7A2A9;

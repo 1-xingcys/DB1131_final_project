@@ -29,7 +29,7 @@ function CustomerDashboard({ onLogout }) {
 
   return (
     <div className={styles.dashboard}>
-      {/* 漢堡菜單按鈕 */}
+      {/* 三條線按鈕 */}
       <button
         className={styles.hamburgerButton}
         onClick={() => setIsSidebarVisible(!isSidebarVisible)}

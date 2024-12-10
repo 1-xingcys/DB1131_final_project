@@ -14,13 +14,6 @@ export const validateCoupon = async (c_id, discount_rate) => {
       } else {
         console.error("Validate Coupon failed: 其他錯誤", error.message);
       }
-    // if (error) {
-    //     // 如果後端有返回錯誤響應
-    //     console.error("Validate Coupon failed:", error.response.data.error);
-    //   } else {
-    //     // 捕獲其他錯誤（例如網絡錯誤）
-    //     console.error("Validate Coupon failed:", error.message);
-    //   }
         console.error("Validate Coupon failed:");
       throw error; // 重新拋出錯誤以便上層處理
   }

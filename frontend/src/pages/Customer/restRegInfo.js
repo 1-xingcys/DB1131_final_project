@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react"
 import { getRestRegInfo } from "../../api/restRegInfo";
 
-import styles from "./custOther.module.css"; // 引入樣式模組
+import styles from "./custOther.module.css";
 
 function RestRegInfo() {
   const [info, setInfo] = useState([]);

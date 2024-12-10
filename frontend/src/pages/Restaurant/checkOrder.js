@@ -4,11 +4,11 @@ import { NULL_TIME_STAMP } from "../../components/constant";
 import { completeOrder } from "../../api/completeOrder";
 import { formatDate } from "../../components/formatDate";
 
-import styles from "./restOther.module.css"; // 引入樣式模組
+import styles from "./restOther.module.css"; 
 
 function CheckOrder( {isClockIn}) {
   const [orders, setOrders] = useState([]);
-  const [view, setView] = useState(""); // 訂單視圖
+  const [view, setView] = useState(""); 
 
   useEffect(() => {
     const fetchOrders = async () => {

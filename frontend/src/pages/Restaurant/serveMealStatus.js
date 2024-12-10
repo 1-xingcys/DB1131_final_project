@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { get_serve_meal_status } from "../../api/updateServeMeal"; // API 函數
+import { get_serve_meal_status } from "../../api/updateServeMeal"; 
 
-import styles from "./RestaurantDashboard.module.css"; // 引入樣式模組
+import styles from "./RestaurantDashboard.module.css";
 
 function ServeStatus({ isClockIn, onBack }) {
   const [serveMealData, setServeMealData] = useState([]);
   const [loading, setLoading] = useState(true); // 加載狀態
   const [error, setError] = useState(null); // 錯誤信息
 
-  // 當組件加載時調用 API 獲取數據
+  // 獲取今日供應狀況及剩餘份數
   useEffect(() => {
     const fetchServeMealData = async () => {
       try {
         setLoading(true);
         const r_id = sessionStorage.getItem("username"); // 獲取餐廳 ID
-        const response = await get_serve_meal_status(r_id); // 調用 API
+        const response = await get_serve_meal_status(r_id); 
         setServeMealData(response); // 保存數據
       } catch (error) {
         console.error("Failed to fetch serve meal status:", error.message);

@@ -18,53 +18,53 @@
   margin-top: 60px; /* 為漢堡菜單預留空間 */
 }
 
-  /* 側邊欄樣式 */
-  .sidebar {
-    font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
-    margin-top: 60px; /* 為漢堡菜單預留空間 */
-    width: 200px;
-    height: 100%; /* 側邊欄高度 */
-    position: absolute;
-    background-color: #dedbdf;
-    left: 0;
-    top: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    border-right: 2px solid #EDEBE6;
-    transition: transform 0.3s ease; /* 添加過渡效果 */
-    z-index: 10; /* 確保側邊欄位於頂層 */
-  }
-  .sidebar.hidden {
-    transform: translateX(-100%); /* 隱藏側邊欄 */
-    position: absolute; /* 避免占用空間 */
-  }
-  .sidebar.visible {
-    transform: translateX(0); /* 顯示側邊欄 */
-  }
-  .sidebar button {
-    font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
-    background-color: #fff; /* 按鈕背景色 */
-    color: #333;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    text-align: left;
-    width: 100%;
-    transition: background-color 0.3s ease;
-  }
-  .sidebar button:hover {
-    background-color: #c5c0c7; /* 懸停效果 */
-    transform: scale(1.05); /* 懸停放大效果 */
-  }
-  .sidebar button:disabled {
-    background-color: #EDEBE6;
-    color: #A7A2A9;
-    cursor: not-allowed;
-  }
+/* 側邊欄樣式 */
+.sidebar {
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+  margin-top: 60px; /* 為漢堡菜單預留空間 */
+  width: 200px;
+  height: 100%; /* 側邊欄高度 */
+  position: absolute;
+  background-color: #dedbdf;
+  left: 0;
+  top: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-right: 2px solid #EDEBE6;
+  transition: transform 0.3s ease; /* 添加過渡效果 */
+  z-index: 10; /* 確保側邊欄位於頂層 */
+}
+.sidebar.hidden {
+  transform: translateX(-100%); /* 隱藏側邊欄 */
+  position: absolute; /* 避免占用空間 */
+}
+.sidebar.visible {
+  transform: translateX(0); /* 顯示側邊欄 */
+}
+.sidebar button {
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif; /* 好看的中文字體 */
+  background-color: #fff; /* 按鈕背景色 */
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+.sidebar button:hover {
+  background-color: #c5c0c7; /* 懸停效果 */
+  transform: scale(1.05); /* 懸停放大效果 */
+}
+.sidebar button:disabled {
+  background-color: #EDEBE6;
+  color: #A7A2A9;
+  cursor: not-allowed;
+}
 .helloMessage {
   font-size: 25px;
   color: #464450;

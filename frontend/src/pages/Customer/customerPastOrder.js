@@ -2,7 +2,7 @@ import {useState, useEffect} from "react"
 import { getCustomerPastOrder } from "../../api/getCustPastOrder";
 import { NULL_TIME_STAMP } from "../../components/constant";
 
-import styles from "./custOther.module.css"; // 引入樣式模組
+import styles from "./custOther.module.css"; 
 
 function CustomerPastOrders( { view } ) {
     const [orders, setOrders] = useState([]);

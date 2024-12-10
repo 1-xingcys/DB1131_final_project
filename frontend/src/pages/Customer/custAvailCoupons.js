@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getCustomerAvailCoupons } from "../../api/getCustAvailCoupons";
 
-import styles from "./custOther.module.css"; // 引入樣式模組
+import styles from "./custOther.module.css";
 
 function CustomerAvailCoupons() {
   const [coupons, setCoupons] = useState([]);

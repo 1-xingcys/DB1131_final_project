@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { clock_in } from "../../api/clockInOut"; // 導入 clock_in 函數
+import { clock_in } from "../../api/clockInOut"; 
 import { update_serve_meal } from "../../api/updateServeMeal";
 import { getRestMealItem } from "../../api/restMealItem";
 import { check_serve_meal_status } from "../../api/updateServeMeal";
 
-import styles from "./restOther.module.css"; // 引入樣式模組
+import styles from "./restOther.module.css"; 
 
 
 function ClockIn({ setIsWorking, onBack }) {
@@ -56,7 +56,7 @@ function ClockIn({ setIsWorking, onBack }) {
       for (const meal of meals) {
         const name = meal.name;
         const supply_num = supplyNums[name];
-        await update_serve_meal(r_id, name, supply_num); // 調用 API 更新供應量
+        await update_serve_meal(r_id, name, supply_num);
       }
       setIsUpdated(true);
       alert("供應量更新成功 (๑╹◡╹๑)");
